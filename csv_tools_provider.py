@@ -54,7 +54,7 @@ class CSVToolsProvider(QgsProcessingProvider):
         Loads all algorithms belonging to this provider.
         """
         for alg in self.alglist:
-            self.addAlgorithm( alg )
+            self.addAlgorithm(alg)
 
     def id(self):
         """

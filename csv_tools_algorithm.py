@@ -95,7 +95,9 @@ class CSVToolsAlgorithm(QgsProcessingAlgorithm):
         # dictionary returned by the processAlgorithm function.
         source = self.parameterAsSource(parameters, self.INPUT, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
-                context, source.fields(), source.wkbType(), source.sourceCrs())
+                                               context, source.fields(),
+                                               source.wkbType(),
+                                               source.sourceCrs())
 
         # Compute the number of steps to display within the progress bar and
         # get features from source
