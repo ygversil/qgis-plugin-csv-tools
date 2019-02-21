@@ -26,7 +26,7 @@ repository=https://framagit.org/ygversil/qgis-processing-csv-tools
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=python, csv, postgresql, import, export, vector
+tags=python,csv,postgresql,import,export,vector
 
 homepage=https://framagit.org/ygversil/qgis-processing-csv-tools
 category=Analysis
