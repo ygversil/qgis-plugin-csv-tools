@@ -45,7 +45,9 @@ PLUGINNAME = csv_tools
 
 PY_FILES = \
 	__init__.py \
-	csv_tools.py
+	csv_tools.py \
+	csv_tools_provider.py \
+	csv_tools_algorithm.py
 
 EXTRAS = metadata.txt
 
