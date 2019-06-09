@@ -31,6 +31,7 @@ __copyright__ = '(C) 2019 by Yann Voté'
 __revision__ = '$Format:%H$'
 
 
+from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
 
 from .resources import *  # noqa
@@ -84,3 +85,11 @@ class CSVToolsProvider(QgsProcessingProvider):
         implementation returns the same string as name().
         """
         return self.name()
+
+    def icon(self):
+        """The provider's icon."""
+        return QIcon(':/plugins/csv_tools/csv.svg')
+
+    def svgIconPath(self):
+        """The provider's icon."""
+        return QIcon(':/plugins/csv_tools/csv.svg')

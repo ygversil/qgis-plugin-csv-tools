@@ -49,7 +49,7 @@ PY_FILES = \
 	csv_tools_provider.py \
 	csv_tools_algorithm.py
 
-EXTRAS = metadata.txt csv.png
+EXTRAS = metadata.txt csv.png csv.svg
 
 EXTRA_DIRS =
 
