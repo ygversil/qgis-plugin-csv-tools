@@ -49,9 +49,9 @@ PY_FILES = \
 	csv_tools_provider.py \
 	csv_tools_algorithm.py
 
-EXTRAS = metadata.txt csv.png csv.svg
+EXTRAS = metadata.txt
 
-EXTRA_DIRS =
+EXTRA_DIRS = icons
 
 COMPILED_RESOURCE_FILES = resources.py
 

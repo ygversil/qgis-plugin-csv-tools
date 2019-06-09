@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/plugins/csv_tools" >
-        <file>csv.png</file>
-        <file>csv.svg</file>
+        <file alias="csv.png">icons/csv.png</file>
+        <file alias="csv.svg">icons/csv.svg</file>
     </qresource>
 </RCC>

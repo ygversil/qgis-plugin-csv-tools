@@ -30,7 +30,7 @@ tags=python,csv,postgresql,import,export,vector
 
 homepage=https://framagit.org/ygversil/qgis-processing-csv-tools
 category=Analysis
-icon=csv.png
+icon=icons/csv.png
 # experimental flag
 experimental=False
 
