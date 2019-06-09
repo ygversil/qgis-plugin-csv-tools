@@ -28,5 +28,15 @@
         <source>Output layer</source>
         <translation>Couche en sortie</translation>
     </message>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="148"/>
+        <source>Vector creation</source>
+        <translation>Création de vecteurs</translation>
+    </message>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="141"/>
+        <source>Create vector layer from CSV</source>
+        <translation>Créer une couche vecteur à partir d'un CSV</translation>
+    </message>
 </context>
 </TS>
