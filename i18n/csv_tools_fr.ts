@@ -21,12 +21,12 @@
     <message>
         <location filename="../load_csv_algorithm.py" line="70"/>
         <source>Input layer</source>
-        <translation type="unfinished">Couche en entrée</translation>
+        <translation>Couche en entrée</translation>
     </message>
     <message>
         <location filename="../load_csv_algorithm.py" line="81"/>
         <source>Output layer</source>
-        <translation type="unfinished">Couche en sortie</translation>
+        <translation>Couche en sortie</translation>
     </message>
 </context>
 </TS>
