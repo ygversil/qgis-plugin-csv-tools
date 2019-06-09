@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/csv_tools" >
+        <file>csv.png</file>
+    </qresource>
+</RCC>

@@ -30,7 +30,10 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
+
 from qgis.core import QgsProcessingProvider
+
+from .resources import *  # noqa
 from .csv_tools_algorithm import CSVToolsAlgorithm
 
 
