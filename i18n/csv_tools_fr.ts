@@ -9,24 +9,24 @@
     </message>
 </context>
 <context>
-    <name>CSVToolsAlgorithm</name>
-    <message>
-        <location filename="../csv_tools_algorithm.py" line="70"/>
-        <source>Input layer</source>
-        <translation>Couche en entrée</translation>
-    </message>
-    <message>
-        <location filename="../csv_tools_algorithm.py" line="81"/>
-        <source>Output layer</source>
-        <translation>Couche en sortie</translation>
-    </message>
-</context>
-<context>
     <name>CSVToolsProvider</name>
     <message>
         <location filename="../csv_tools_provider.py" line="78"/>
         <source>CSV Tools</source>
         <translation>Outils CSV</translation>
+    </message>
+</context>
+<context>
+    <name>LoadCSVAlgorithm</name>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="70"/>
+        <source>Input layer</source>
+        <translation type="unfinished">Couche en entrée</translation>
+    </message>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="81"/>
+        <source>Output layer</source>
+        <translation type="unfinished">Couche en sortie</translation>
     </message>
 </context>
 </TS>

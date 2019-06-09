@@ -35,7 +35,7 @@ from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
 
 from .resources import *  # noqa
-from .csv_tools_algorithm import CSVToolsAlgorithm
+from .load_csv_algorithm import LoadCSVAlgorithm
 
 
 class CSVToolsProvider(QgsProcessingProvider):
@@ -44,7 +44,7 @@ class CSVToolsProvider(QgsProcessingProvider):
         QgsProcessingProvider.__init__(self)
 
         # Load algorithms
-        self.alglist = [CSVToolsAlgorithm()]
+        self.alglist = [LoadCSVAlgorithm()]
 
     def unload(self):
         """

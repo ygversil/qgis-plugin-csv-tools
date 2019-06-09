@@ -38,7 +38,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFeatureSink)
 
 
-class CSVToolsAlgorithm(QgsProcessingAlgorithm):
+class LoadCSVAlgorithm(QgsProcessingAlgorithm):
     """
     This is an example algorithm that takes a vector layer and
     creates a new identical one.
@@ -161,4 +161,4 @@ class CSVToolsAlgorithm(QgsProcessingAlgorithm):
         return QCoreApplication.translate('Processing', string)
 
     def createInstance(self):
-        return CSVToolsAlgorithm()
+        return LoadCSVAlgorithm()
