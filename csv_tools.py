@@ -34,7 +34,9 @@ import os
 import sys
 import inspect
 
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from qgis.core import QgsApplication
+
 from .csv_tools_provider import CSVToolsProvider
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
@@ -47,6 +49,17 @@ class CSVToolsPlugin(object):
 
     def __init__(self):
         self.provider = CSVToolsProvider()
+        # initialize locale
+        locale = QSettings().value('locale/userLocale')[0:2]
+        locale_path = os.path.join(
+            os.path.dirname(__file__),
+            'i18n',
+            'csv_tools_{}.qm'.format(locale))
+        if os.path.exists(locale_path):
+            self.translator = QTranslator()
+            self.translator.load(locale_path)
+            if qVersion() > '4.3.3':
+                QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
         QgsApplication.processingRegistry().addProvider(self.provider)
