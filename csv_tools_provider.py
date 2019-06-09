@@ -62,7 +62,7 @@ class CSVToolsProvider(QgsProcessingProvider):
         string should be a unique, short, character only string, eg "qgis" or
         "gdal". This string should not be localised.
         """
-        return ''
+        return 'csvtools'
 
     def name(self):
         """
@@ -71,7 +71,7 @@ class CSVToolsProvider(QgsProcessingProvider):
 
         This string should be short (e.g. "Lastools") and localised.
         """
-        return self.tr('')
+        return self.tr('CSV Tools')
 
     def longName(self):
         """
