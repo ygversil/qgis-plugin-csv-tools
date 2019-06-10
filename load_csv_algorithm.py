@@ -31,10 +31,12 @@ __copyright__ = '(C) 2019 by Yann Voté'
 __revision__ = '$Format:%H$'
 
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterFile)
+from qgis.core import (
+    QgsFeatureSink,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFile,
+)
 
 
 class LoadCSVAlgorithm(QgsProcessingAlgorithm):
