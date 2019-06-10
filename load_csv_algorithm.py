@@ -66,6 +66,30 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+    def name(self):
+        """Algorithm identifier."""
+        return 'loadcsvfile'
+
+    def displayName(self):
+        """Algorithm human name."""
+        return self.tr('Create vector layer from CSV file')
+
+    def group(self):
+        """Algorithm group human name."""
+        return self.tr('Vector creation')
+
+    def groupId(self):
+        """Algorithm group identifier."""
+        return 'vectorcreation'
+
+    def tr(self, string):
+        """Helper method to mark strings for translation."""
+        return QCoreApplication.translate('Processing', string)
+
+    def createInstance(self):
+        """Create an instance of the algorithm."""
+        return LoadCSVAlgorithm()
+
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
         # Retrieve the feature source and sink. The 'dest_id' variable is used
@@ -95,27 +119,3 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
         return {self.OUTPUT: dest_id}
-
-    def name(self):
-        """Algorithm identifier."""
-        return 'loadcsvfile'
-
-    def displayName(self):
-        """Algorithm human name."""
-        return self.tr('Create vector layer from CSV file')
-
-    def group(self):
-        """Algorithm group human name."""
-        return self.tr('Vector creation')
-
-    def groupId(self):
-        """Algorithm group identifier."""
-        return 'vectorcreation'
-
-    def tr(self, string):
-        """Helper method to mark strings for translation."""
-        return QCoreApplication.translate('Processing', string)
-
-    def createInstance(self):
-        """Create an instance of the algorithm."""
-        return LoadCSVAlgorithm()
