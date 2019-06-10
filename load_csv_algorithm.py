@@ -134,7 +134,10 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
                                           context)
         uri = ('file://{path}?delimiter={delimiter}&'
                'quote={quotechar}&'
-               'useHeader={use_header}').format(
+               'useHeader={use_header}&'
+               'trimFields=yes&'
+               'spatialIndex=yes&'
+               'watchFile=no').format(
                    path=csv_path,
                    delimiter=delimiter,
                    quotechar=quotechar,
