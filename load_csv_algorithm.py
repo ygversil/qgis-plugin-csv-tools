@@ -31,11 +31,10 @@ __copyright__ = '(C) 2019 by Yann Voté'
 __revision__ = '$Format:%H$'
 
 from PyQt5.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing,
-                       QgsFeatureSink,
+from qgis.core import (QgsFeatureSink,
                        QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterFile)
 
 
 class LoadCSVAlgorithm(QgsProcessingAlgorithm):
@@ -50,10 +49,10 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
         self.addParameter(
-            QgsProcessingParameterFeatureSource(
+            QgsProcessingParameterFile(
                 self.INPUT,
-                self.tr('Input layer'),
-                [QgsProcessing.TypeVectorAnyGeometry]
+                self.tr('Input CSV file'),
+                extension='csv',
             )
         )
         # We add a feature sink in which to store our processed features (this
@@ -95,7 +94,7 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
-        source = self.parameterAsSource(parameters, self.INPUT, context)
+        source = self.parameterAsFile(parameters, self.INPUT, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
                                                context, source.fields(),
                                                source.wkbType(),
