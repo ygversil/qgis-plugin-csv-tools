@@ -24,14 +24,14 @@
         <translation>Colonne de géométrie (en WKT)</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="158"/>
-        <source>Create vector layer from CSV file (WKT column)</source>
-        <translation>Créer une couche vecteur à partir d&apos;un CSV (colonne WKT)</translation>
-    </message>
-    <message>
         <location filename="../load_csv_algorithm.py" line="146"/>
         <source>WKT CSV</source>
         <translation>CSV WKT</translation>
+    </message>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="158"/>
+        <source>Create vector layer from CSV (WKT column)</source>
+        <translation>Créer une couche vecteur depuis un CSV (colonne WKT)</translation>
     </message>
 </context>
 <context>
@@ -47,14 +47,14 @@
         <translation>Colonne Y ou latitude</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="221"/>
-        <source>Create vector layer from CSV file (X, Y columns)</source>
-        <translation>Créer une couche vecteur à partir d&apos;un CSV (colonnes X, Y)</translation>
-    </message>
-    <message>
         <location filename="../load_csv_algorithm.py" line="209"/>
         <source>XY CSV</source>
         <translation>CSV XY</translation>
+    </message>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="221"/>
+        <source>Create vector layer from CSV (X, Y columns)</source>
+        <translation>Créer une couche vecteur depuis un CSV (colonnes X, Y)</translation>
     </message>
 </context>
 <context>

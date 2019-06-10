@@ -155,7 +155,7 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
 
     def displayName(self):
         """Algorithm human name."""
-        return self.tr('Create vector layer from CSV file (WKT column)')
+        return self.tr('Create vector layer from CSV (WKT column)')
 
     def createInstance(self):
         """Create an instance of the algorithm."""
@@ -218,7 +218,7 @@ class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
 
     def displayName(self):
         """Algorithm human name."""
-        return self.tr('Create vector layer from CSV file (X, Y columns)')
+        return self.tr('Create vector layer from CSV (X, Y columns)')
 
     def createInstance(self):
         """Create an instance of the algorithm."""
