@@ -37,6 +37,7 @@ from qgis.core import (
     QgsProcessingOutputVectorLayer,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFile,
+    QgsProcessingParameterString,
     QgsVectorLayer,
 )
 
@@ -50,6 +51,7 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     DELIMITER = 'DELIMITER'
+    QUOTECHAR = 'QUOTE_CHAR'
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
@@ -72,6 +74,13 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
                 self.tr('Column delimiter'),
                 options=self.delimiters,
                 defaultValue=0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.QUOTECHAR,
+                self.tr('Character used to quote columns'),
+                defaultValue='"',
             )
         )
         self.addOutput(
@@ -111,7 +120,10 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
         csv_path = self.parameterAsFile(parameters, self.INPUT, context)
         delimiter = self.parameterAsEnum(parameters, self.DELIMITER, context)
         delimiter = self.delimiters[delimiter]
-        uri = 'file://{path}?delimiter={delimiter}'.format(path=csv_path,
-                                                           delimiter=delimiter)
+        quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
+        uri = ('file://{path}?delimiter={delimiter}&'
+               'quote={quotechar}').format(path=csv_path,
+                                           delimiter=delimiter,
+                                           quotechar=quotechar)
         vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
         return {self.OUTPUT: vlayer.id()}
