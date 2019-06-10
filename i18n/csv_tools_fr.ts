@@ -19,34 +19,39 @@
 <context>
     <name>LoadCSVAlgorithm</name>
     <message>
-        <location filename="../load_csv_algorithm.py" line="86"/>
+        <location filename="../load_csv_algorithm.py" line="95"/>
         <source>Output layer</source>
         <translation>Couche en sortie</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="104"/>
+        <location filename="../load_csv_algorithm.py" line="113"/>
         <source>Vector creation</source>
         <translation>Création de vecteurs</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="58"/>
+        <location filename="../load_csv_algorithm.py" line="60"/>
         <source>Input CSV file</source>
         <translation>Fichier CSV en entrée</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="100"/>
+        <location filename="../load_csv_algorithm.py" line="109"/>
         <source>Create vector layer from CSV file</source>
         <translation>Créer une couche vecteur à partir d&apos;un CSV</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="71"/>
+        <location filename="../load_csv_algorithm.py" line="73"/>
         <source>Column delimiter</source>
         <translation>Séparateur de colonnes</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="79"/>
+        <location filename="../load_csv_algorithm.py" line="81"/>
         <source>Character used to quote columns</source>
         <translation>Caractrère de délimitation des colonnes</translation>
+    </message>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="88"/>
+        <source>Is the first line headers ?</source>
+        <translation>En-têtes en première ligne ?</translation>
     </message>
 </context>
 </TS>

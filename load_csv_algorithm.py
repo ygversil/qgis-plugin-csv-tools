@@ -35,6 +35,7 @@ from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingOutputVectorLayer,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFile,
     QgsProcessingParameterString,
@@ -52,6 +53,7 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
     OUTPUT = 'OUTPUT'
     DELIMITER = 'DELIMITER'
     QUOTECHAR = 'QUOTE_CHAR'
+    USE_HEADER = 'USE_HEADER'
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
@@ -81,6 +83,13 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
                 self.QUOTECHAR,
                 self.tr('Character used to quote columns'),
                 defaultValue='"',
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.USE_HEADER,
+                self.tr('Is the first line headers ?'),
+                defaultValue=True,
             )
         )
         self.addOutput(
@@ -121,9 +130,15 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
         delimiter = self.parameterAsEnum(parameters, self.DELIMITER, context)
         delimiter = self.delimiters[delimiter]
         quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
+        use_header = self.parameterAsBool(parameters, self.USE_HEADER,
+                                          context)
         uri = ('file://{path}?delimiter={delimiter}&'
-               'quote={quotechar}').format(path=csv_path,
-                                           delimiter=delimiter,
-                                           quotechar=quotechar)
+               'quote={quotechar}&'
+               'useHeader={use_header}').format(
+                   path=csv_path,
+                   delimiter=delimiter,
+                   quotechar=quotechar,
+                   use_header='yes' if use_header else 'no',
+               )
         vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
         return {self.OUTPUT: vlayer.id()}
