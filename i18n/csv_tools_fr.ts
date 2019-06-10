@@ -19,24 +19,29 @@
 <context>
     <name>LoadCSVAlgorithm</name>
     <message>
-        <location filename="../load_csv_algorithm.py" line="61"/>
+        <location filename="../load_csv_algorithm.py" line="77"/>
         <source>Output layer</source>
         <translation>Couche en sortie</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="78"/>
+        <location filename="../load_csv_algorithm.py" line="95"/>
         <source>Vector creation</source>
         <translation>Création de vecteurs</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="51"/>
+        <location filename="../load_csv_algorithm.py" line="56"/>
         <source>Input CSV file</source>
         <translation>Fichier CSV en entrée</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="74"/>
+        <location filename="../load_csv_algorithm.py" line="91"/>
         <source>Create vector layer from CSV file</source>
         <translation>Créer une couche vecteur à partir d&apos;un CSV</translation>
+    </message>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="69"/>
+        <source>Column delimiter</source>
+        <translation>Séparateur de colonnes</translation>
     </message>
 </context>
 </TS>
