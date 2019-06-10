@@ -24,9 +24,9 @@
         <translation>Colonne de géométrie (en WKT)</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="145"/>
-        <source>Output layer</source>
-        <translation>Couche en sortie</translation>
+        <location filename="../load_csv_algorithm.py" line="158"/>
+        <source>Create vector layer from CSV file (WKT column)</source>
+        <translation>Créer une couche vecteur à partir d&apos;un CSV (colonne WKT)</translation>
     </message>
     <message>
         <location filename="../load_csv_algorithm.py" line="157"/>

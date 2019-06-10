@@ -145,7 +145,7 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
         ))
         self.addParameter(QgsProcessingParameterFeatureSink(
             self.OUTPUT,
-            self.tr('Output layer'),
+            self.tr('WKT CSV'),
             QgsProcessing.TypeVectorAnyGeometry
         ))
 
