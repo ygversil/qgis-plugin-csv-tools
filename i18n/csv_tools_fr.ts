@@ -30,8 +30,8 @@
     </message>
     <message>
         <location filename="../load_csv_algorithm.py" line="157"/>
-        <source>Create vector layer from CSV file</source>
-        <translation>Créer une couche vecteur à partir d&apos;un CSV</translation>
+        <source>Create vector layer from CSV file (WKT column)</source>
+        <translation>Créer une couche vecteur à partir d'un CSV (colonne WKT)</translation>
     </message>
 </context>
 <context>

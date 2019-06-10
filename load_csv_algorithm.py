@@ -151,11 +151,11 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
 
     def name(self):
         """Algorithm identifier."""
-        return 'loadcsvfile'
+        return 'loadwktcsvfile'
 
     def displayName(self):
         """Algorithm human name."""
-        return self.tr('Create vector layer from CSV file')
+        return self.tr('Create vector layer from CSV file (WKT column)')
 
     def createInstance(self):
         """Create an instance of the algorithm."""
