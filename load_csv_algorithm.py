@@ -36,6 +36,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingOutputVectorLayer,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFile,
     QgsProcessingParameterString,
@@ -55,6 +56,7 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
     QUOTECHAR = 'QUOTE_CHAR'
     USE_HEADER = 'USE_HEADER'
     WKT_FIELD = 'WKT_FIELD'
+    CRS = 'CRS'
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
@@ -99,6 +101,12 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
                 self.tr('Geometry column (as WKT)'),
             )
         )
+        self.addParameter(
+            QgsProcessingParameterCrs(
+                self.CRS,
+                self.tr('CRS'),
+            )
+        )
         self.addOutput(
             QgsProcessingOutputVectorLayer(
                 self.OUTPUT,
@@ -140,11 +148,13 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
         use_header = self.parameterAsBool(parameters, self.USE_HEADER,
                                           context)
         wkt_field = self.parameterAsString(parameters, self.WKT_FIELD, context)
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
         uri = ('file://{path}?delimiter={delimiter}&'
                'quote={quotechar}&'
                'useHeader={use_header}&'
                'trimFields=yes&'
                'wktField={wkt_field}&'
+               'crs={crs}&'
                'spatialIndex=yes&'
                'watchFile=no').format(
                    path=csv_path,
@@ -152,6 +162,7 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
                    quotechar=quotechar,
                    use_header='yes' if use_header else 'no',
                    wkt_field=wkt_field,
+                   crs=crs.authid(),
                )
         vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
         return {self.OUTPUT: vlayer.id()}

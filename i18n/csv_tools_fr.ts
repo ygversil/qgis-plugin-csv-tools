@@ -19,44 +19,49 @@
 <context>
     <name>LoadCSVAlgorithm</name>
     <message>
-        <location filename="../load_csv_algorithm.py" line="102"/>
+        <location filename="../load_csv_algorithm.py" line="110"/>
         <source>Output layer</source>
         <translation>Couche en sortie</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="120"/>
+        <location filename="../load_csv_algorithm.py" line="128"/>
         <source>Vector creation</source>
         <translation>Création de vecteurs</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="61"/>
+        <location filename="../load_csv_algorithm.py" line="63"/>
         <source>Input CSV file</source>
         <translation>Fichier CSV en entrée</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="116"/>
+        <location filename="../load_csv_algorithm.py" line="124"/>
         <source>Create vector layer from CSV file</source>
         <translation>Créer une couche vecteur à partir d&apos;un CSV</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="74"/>
+        <location filename="../load_csv_algorithm.py" line="76"/>
         <source>Column delimiter</source>
         <translation>Séparateur de colonnes</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="82"/>
+        <location filename="../load_csv_algorithm.py" line="84"/>
         <source>Character used to quote columns</source>
         <translation>Caractrère de délimitation des colonnes</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="89"/>
+        <location filename="../load_csv_algorithm.py" line="91"/>
         <source>Is the first line headers ?</source>
         <translation>En-têtes en première ligne ?</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="96"/>
+        <location filename="../load_csv_algorithm.py" line="98"/>
         <source>Geometry column (as WKT)</source>
         <translation>Colonne de géométrie (en WKT)</translation>
+    </message>
+    <message>
+        <location filename="../load_csv_algorithm.py" line="104"/>
+        <source>CRS</source>
+        <translation>SCR</translation>
     </message>
 </context>
 </TS>
