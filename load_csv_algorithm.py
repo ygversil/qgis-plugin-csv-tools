@@ -35,6 +35,7 @@ from qgis.core import (
     QgsFeatureSink,
     QgsProcessing,
     QgsProcessingAlgorithm,
+    QgsProcessingException,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterCrs,
     QgsProcessingParameterEnum,
@@ -166,11 +167,19 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
                    crs=crs.authid(),
                )
         vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
+        if not vlayer.isValid():
+            raise QgsProcessingException(
+                vlayer.dataProvider().error().message()
+            )
         # We consider that having CSV data loaded is half the way
         feedback.setProgress(50)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
                                                context, vlayer.fields(),
                                                vlayer.wkbType(), crs)
+        if sink is None:
+            raise QgsProcessingException(
+                self.invalidSinkError(parameters, self.OUTPUT)
+            )
         count = vlayer.featureCount()
         total = 100.0 / count if count else 0
         features = vlayer.getFeatures()
