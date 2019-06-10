@@ -46,8 +46,9 @@ from qgis.core import (
 )
 
 
-class LoadCSVAlgorithm(QgsProcessingAlgorithm):
-    """QGIS algorithm that takes a CSV file and loads it as a vector layer."""
+class _AbstractLoadCSVAlgorithm(QgsProcessingAlgorithm):
+    """Abstract QGIS algorithm that takes a CSV file and loads it as a vector
+    layer."""
 
     # Constants used to refer to parameters and outputs. They will be
     # used when calling the algorithm from another algorithm, or when
@@ -57,7 +58,6 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
     DELIMITER = 'DELIMITER'
     QUOTECHAR = 'QUOTE_CHAR'
     USE_HEADER = 'USE_HEADER'
-    WKT_FIELD = 'WKT_FIELD'
     CRS = 'CRS'
 
     def initAlgorithm(self, config):
@@ -84,13 +84,64 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
             self.tr('Is the first line headers ?'),
             defaultValue=True,
         ))
-        self.addParameter(QgsProcessingParameterString(
-            self.WKT_FIELD,
-            self.tr('Geometry column (as WKT)'),
-        ))
         self.addParameter(QgsProcessingParameterCrs(
             self.CRS,
             self.tr('CRS'),
+        ))
+
+    def group(self):
+        """Algorithm group human name."""
+        return self.tr('Vector creation')
+
+    def groupId(self):
+        """Algorithm group identifier."""
+        return 'vectorcreation'
+
+    def tr(self, string):
+        """Helper method to mark strings for translation."""
+        return QCoreApplication.translate('Processing', string)
+
+    def processAlgorithm(self, parameters, context, feedback):
+        """Actual processing steps."""
+        uri = self._buildUri(parameters, context)
+        vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
+        if not vlayer.isValid():
+            raise QgsProcessingException(
+                vlayer.dataProvider().error().message()
+            )
+        # We consider that having CSV data loaded is half the way
+        feedback.setProgress(50)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
+                                               context, vlayer.fields(),
+                                               vlayer.wkbType(), vlayer.crs())
+        if sink is None:
+            raise QgsProcessingException(
+                self.invalidSinkError(parameters, self.OUTPUT)
+            )
+        count = vlayer.featureCount()
+        total = 100.0 / count if count else 0
+        features = vlayer.getFeatures()
+        for i, feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+            sink.addFeature(feature, QgsFeatureSink.FastInsert)
+            # Update the progress bar
+            feedback.setProgress(50 + int(i * total))
+        return {self.OUTPUT: dest_id}
+
+
+class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
+    """QGIS algorithm that takes a CSV file with WKT column and loads it as a
+    vector layer."""
+
+    WKT_FIELD = 'WKT_FIELD'
+
+    def initAlgorithm(self, config):
+        """Initialize algorithm with inputs and output parameters."""
+        super().initAlgorithm(config)
+        self.addParameter(QgsProcessingParameterString(
+            self.WKT_FIELD,
+            self.tr('Geometry column (as WKT)'),
         ))
         self.addParameter(QgsProcessingParameterFeatureSink(
             self.OUTPUT,
@@ -106,24 +157,12 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
         """Algorithm human name."""
         return self.tr('Create vector layer from CSV file')
 
-    def group(self):
-        """Algorithm group human name."""
-        return self.tr('Vector creation')
-
-    def groupId(self):
-        """Algorithm group identifier."""
-        return 'vectorcreation'
-
-    def tr(self, string):
-        """Helper method to mark strings for translation."""
-        return QCoreApplication.translate('Processing', string)
-
     def createInstance(self):
         """Create an instance of the algorithm."""
-        return LoadCSVAlgorithm()
+        return LoadWktCSVAlgorithm()
 
-    def processAlgorithm(self, parameters, context, feedback):
-        """Actual processing steps."""
+    def _buildUri(self, parameters, context):
+        """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
         csv_path = self.parameterAsFile(parameters, self.INPUT, context)
         delimiter = self.parameterAsEnum(parameters, self.DELIMITER, context)
         delimiter = self.delimiters[delimiter]
@@ -132,42 +171,18 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
                                           context)
         wkt_field = self.parameterAsString(parameters, self.WKT_FIELD, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
-        uri = ('file://{path}?delimiter={delimiter}&'
-               'quote={quotechar}&'
-               'useHeader={use_header}&'
-               'trimFields=yes&'
-               'wktField={wkt_field}&'
-               'crs={crs}&'
-               'spatialIndex=yes&'
-               'watchFile=no').format(
-                   path=csv_path,
-                   delimiter=delimiter,
-                   quotechar=quotechar,
-                   use_header='yes' if use_header else 'no',
-                   wkt_field=wkt_field,
-                   crs=crs.authid(),
-               )
-        vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
-        if not vlayer.isValid():
-            raise QgsProcessingException(
-                vlayer.dataProvider().error().message()
-            )
-        # We consider that having CSV data loaded is half the way
-        feedback.setProgress(50)
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
-                                               context, vlayer.fields(),
-                                               vlayer.wkbType(), crs)
-        if sink is None:
-            raise QgsProcessingException(
-                self.invalidSinkError(parameters, self.OUTPUT)
-            )
-        count = vlayer.featureCount()
-        total = 100.0 / count if count else 0
-        features = vlayer.getFeatures()
-        for i, feature in enumerate(features):
-            if feedback.isCanceled():
-                break
-            sink.addFeature(feature, QgsFeatureSink.FastInsert)
-            # Update the progress bar
-            feedback.setProgress(50 + int(i * total))
-        return {self.OUTPUT: dest_id}
+        return ('file://{path}?delimiter={delimiter}&'
+                'quote={quotechar}&'
+                'useHeader={use_header}&'
+                'trimFields=yes&'
+                'wktField={wkt_field}&'
+                'crs={crs}&'
+                'spatialIndex=yes&'
+                'watchFile=no').format(
+                    path=csv_path,
+                    delimiter=delimiter,
+                    quotechar=quotechar,
+                    use_header='yes' if use_header else 'no',
+                    wkt_field=wkt_field,
+                    crs=crs.authid(),
+                )
