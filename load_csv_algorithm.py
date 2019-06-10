@@ -186,3 +186,69 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
                     wkt_field=wkt_field,
                     crs=crs.authid(),
                 )
+
+
+class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
+    """QGIS algorithm that takes a CSV file with X, Y columns and loads it as a
+    vector layer."""
+
+    X_FIELD = 'X_FIELD'
+    Y_FIELD = 'Y_FIELD'
+
+    def initAlgorithm(self, config):
+        """Initialize algorithm with inputs and output parameters."""
+        super().initAlgorithm(config)
+        self.addParameter(QgsProcessingParameterString(
+            self.X_FIELD,
+            self.tr('X/longitude column'),
+        ))
+        self.addParameter(QgsProcessingParameterString(
+            self.Y_FIELD,
+            self.tr('Y/latitude column'),
+        ))
+        self.addParameter(QgsProcessingParameterFeatureSink(
+            self.OUTPUT,
+            self.tr('XY CSV'),
+            QgsProcessing.TypeVectorAnyGeometry
+        ))
+
+    def name(self):
+        """Algorithm identifier."""
+        return 'loadxycsvfile'
+
+    def displayName(self):
+        """Algorithm human name."""
+        return self.tr('Create vector layer from CSV file (X, Y columns)')
+
+    def createInstance(self):
+        """Create an instance of the algorithm."""
+        return LoadXyCSVAlgorithm()
+
+    def _buildUri(self, parameters, context):
+        """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
+        csv_path = self.parameterAsFile(parameters, self.INPUT, context)
+        delimiter = self.parameterAsEnum(parameters, self.DELIMITER, context)
+        delimiter = self.delimiters[delimiter]
+        quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
+        use_header = self.parameterAsBool(parameters, self.USE_HEADER,
+                                          context)
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
+        x_field = self.parameterAsString(parameters, self.X_FIELD, context)
+        y_field = self.parameterAsString(parameters, self.Y_FIELD, context)
+        return ('file://{path}?delimiter={delimiter}&'
+                'quote={quotechar}&'
+                'useHeader={use_header}&'
+                'trimFields=yes&'
+                'xField={x_field}&'
+                'yField={y_field}&'
+                'crs={crs}&'
+                'spatialIndex=yes&'
+                'watchFile=no').format(
+                    path=csv_path,
+                    delimiter=delimiter,
+                    quotechar=quotechar,
+                    use_header='yes' if use_header else 'no',
+                    x_field=x_field,
+                    y_field=y_field,
+                    crs=crs.authid(),
+                )
