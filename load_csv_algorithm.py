@@ -130,6 +130,7 @@ class _AbstractLoadCSVAlgorithm(QgsProcessingAlgorithm):
         return {self.OUTPUT: dest_id}
 
 
+# TODO: write tests
 class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
     """QGIS algorithm that takes a CSV file with WKT column and loads it as a
     vector layer."""
@@ -188,6 +189,7 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
                 )
 
 
+# TODO: write tests
 class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
     """QGIS algorithm that takes a CSV file with X, Y columns and loads it as a
     vector layer."""

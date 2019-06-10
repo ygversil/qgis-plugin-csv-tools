@@ -19,17 +19,17 @@
 <context>
     <name>LoadWktCSVAlgorithm</name>
     <message>
-        <location filename="../load_csv_algorithm.py" line="142"/>
+        <location filename="../load_csv_algorithm.py" line="143"/>
         <source>Geometry column (as WKT)</source>
         <translation>Colonne de géométrie (en WKT)</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="146"/>
+        <location filename="../load_csv_algorithm.py" line="147"/>
         <source>WKT CSV</source>
         <translation>CSV WKT</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="158"/>
+        <location filename="../load_csv_algorithm.py" line="159"/>
         <source>Create vector layer from CSV (WKT column)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonne WKT)</translation>
     </message>
@@ -37,22 +37,22 @@
 <context>
     <name>LoadXyCSVAlgorithm</name>
     <message>
-        <location filename="../load_csv_algorithm.py" line="201"/>
+        <location filename="../load_csv_algorithm.py" line="203"/>
         <source>X/longitude column</source>
         <translation>Colonne X ou longitude</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="205"/>
+        <location filename="../load_csv_algorithm.py" line="207"/>
         <source>Y/latitude column</source>
         <translation>Colonne Y ou latitude</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="209"/>
+        <location filename="../load_csv_algorithm.py" line="211"/>
         <source>XY CSV</source>
         <translation>CSV XY</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="221"/>
+        <location filename="../load_csv_algorithm.py" line="223"/>
         <source>Create vector layer from CSV (X, Y columns)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonnes X, Y)</translation>
     </message>
