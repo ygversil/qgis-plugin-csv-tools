@@ -62,60 +62,41 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
-        self.addParameter(
-            QgsProcessingParameterFile(
-                self.INPUT,
-                self.tr('Input CSV file'),
-                extension='csv',
-            )
-        )
-        self.delimiters = [
-            ',',
-            ';',
-            '|',
-            't',
-        ]
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.DELIMITER,
-                self.tr('Column delimiter'),
-                options=self.delimiters,
-                defaultValue=0,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterString(
-                self.QUOTECHAR,
-                self.tr('Character used to quote columns'),
-                defaultValue='"',
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.USE_HEADER,
-                self.tr('Is the first line headers ?'),
-                defaultValue=True,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterString(
-                self.WKT_FIELD,
-                self.tr('Geometry column (as WKT)'),
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterCrs(
-                self.CRS,
-                self.tr('CRS'),
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterFeatureSink(
-                self.OUTPUT,
-                self.tr('Output layer'),
-                QgsProcessing.TypeVectorAnyGeometry
-            )
-        )
+        self.addParameter(QgsProcessingParameterFile(
+            self.INPUT,
+            self.tr('Input CSV file'),
+            extension='csv',
+        ))
+        self.delimiters = [',', ';', '|', 't']
+        self.addParameter(QgsProcessingParameterEnum(
+            self.DELIMITER,
+            self.tr('Column delimiter'),
+            options=self.delimiters,
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterString(
+            self.QUOTECHAR,
+            self.tr('Character used to quote columns'),
+            defaultValue='"',
+        ))
+        self.addParameter(QgsProcessingParameterBoolean(
+            self.USE_HEADER,
+            self.tr('Is the first line headers ?'),
+            defaultValue=True,
+        ))
+        self.addParameter(QgsProcessingParameterString(
+            self.WKT_FIELD,
+            self.tr('Geometry column (as WKT)'),
+        ))
+        self.addParameter(QgsProcessingParameterCrs(
+            self.CRS,
+            self.tr('CRS'),
+        ))
+        self.addParameter(QgsProcessingParameterFeatureSink(
+            self.OUTPUT,
+            self.tr('Output layer'),
+            QgsProcessing.TypeVectorAnyGeometry
+        ))
 
     def name(self):
         """Algorithm identifier."""

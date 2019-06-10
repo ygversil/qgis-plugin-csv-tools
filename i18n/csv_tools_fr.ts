@@ -19,12 +19,12 @@
 <context>
     <name>LoadCSVAlgorithm</name>
     <message>
-        <location filename="../load_csv_algorithm.py" line="112"/>
+        <location filename="../load_csv_algorithm.py" line="95"/>
         <source>Output layer</source>
         <translation>Couche en sortie</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="130"/>
+        <location filename="../load_csv_algorithm.py" line="111"/>
         <source>Vector creation</source>
         <translation>Création de vecteurs</translation>
     </message>
@@ -34,32 +34,32 @@
         <translation>Fichier CSV en entrée</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="126"/>
+        <location filename="../load_csv_algorithm.py" line="107"/>
         <source>Create vector layer from CSV file</source>
         <translation>Créer une couche vecteur à partir d&apos;un CSV</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="78"/>
+        <location filename="../load_csv_algorithm.py" line="71"/>
         <source>Column delimiter</source>
         <translation>Séparateur de colonnes</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="86"/>
+        <location filename="../load_csv_algorithm.py" line="77"/>
         <source>Character used to quote columns</source>
         <translation>Caractrère de délimitation des colonnes</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="93"/>
+        <location filename="../load_csv_algorithm.py" line="82"/>
         <source>Is the first line headers ?</source>
         <translation>En-têtes en première ligne ?</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="100"/>
+        <location filename="../load_csv_algorithm.py" line="87"/>
         <source>Geometry column (as WKT)</source>
         <translation>Colonne de géométrie (en WKT)</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="106"/>
+        <location filename="../load_csv_algorithm.py" line="91"/>
         <source>CRS</source>
         <translation>SCR</translation>
     </message>
