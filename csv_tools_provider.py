@@ -36,6 +36,7 @@ from qgis.core import QgsProcessingProvider
 
 from .resources import *  # noqa
 from .load_csv_algorithm import LoadWktCSVAlgorithm, LoadXyCSVAlgorithm
+from .feature_diff_algorithm import FeatureDiffAlgorithm
 
 
 class CSVToolsProvider(QgsProcessingProvider):
@@ -44,7 +45,11 @@ class CSVToolsProvider(QgsProcessingProvider):
         QgsProcessingProvider.__init__(self)
 
         # Load algorithms
-        self.alglist = [LoadWktCSVAlgorithm(), LoadXyCSVAlgorithm()]
+        self.alglist = [
+            FeatureDiffAlgorithm(),
+            LoadWktCSVAlgorithm(),
+            LoadXyCSVAlgorithm(),
+        ]
 
     def unload(self):
         """
