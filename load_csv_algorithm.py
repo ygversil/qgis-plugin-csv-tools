@@ -54,6 +54,7 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
     DELIMITER = 'DELIMITER'
     QUOTECHAR = 'QUOTE_CHAR'
     USE_HEADER = 'USE_HEADER'
+    WKT_FIELD = 'WKT_FIELD'
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
@@ -90,6 +91,12 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
                 self.USE_HEADER,
                 self.tr('Is the first line headers ?'),
                 defaultValue=True,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.WKT_FIELD,
+                self.tr('Geometry column (as WKT)'),
             )
         )
         self.addOutput(
@@ -132,16 +139,19 @@ class LoadCSVAlgorithm(QgsProcessingAlgorithm):
         quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
         use_header = self.parameterAsBool(parameters, self.USE_HEADER,
                                           context)
+        wkt_field = self.parameterAsString(parameters, self.WKT_FIELD, context)
         uri = ('file://{path}?delimiter={delimiter}&'
                'quote={quotechar}&'
                'useHeader={use_header}&'
                'trimFields=yes&'
+               'wktField={wkt_field}&'
                'spatialIndex=yes&'
                'watchFile=no').format(
                    path=csv_path,
                    delimiter=delimiter,
                    quotechar=quotechar,
                    use_header='yes' if use_header else 'no',
+                   wkt_field=wkt_field,
                )
         vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
         return {self.OUTPUT: vlayer.id()}
