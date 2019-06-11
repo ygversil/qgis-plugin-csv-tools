@@ -35,6 +35,7 @@ from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingException,
+    QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterVectorLayer,
 )
@@ -50,6 +51,7 @@ class FeatureDiffAlgorithm(QgsProcessingAlgorithm):
     # calling from the QGIS console.
     ORIG_INPUT = 'ORIG_INPUT'
     NEW_INPUT = 'NEW_INPUT'
+    FIELDS_TO_COMPARE = 'FIELDS_TO_COMPARE'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
     def initAlgorithm(self, config):
@@ -63,6 +65,13 @@ class FeatureDiffAlgorithm(QgsProcessingAlgorithm):
             self.NEW_INPUT,
             self.tr('New layer'),
             types=[QgsProcessing.TypeVector],
+        ))
+        self.addParameter(QgsProcessingParameterField(
+            self.FIELDS_TO_COMPARE,
+            self.tr('Fields to compare'),
+            None,
+            self.ORIG_INPUT,
+            allowMultiple=True,
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT_HTML_FILE,
@@ -115,6 +124,16 @@ class FeatureDiffAlgorithm(QgsProcessingAlgorithm):
             raise QgsProcessingException(self.tr(
                 'Can only compare SQLite (GeoPackage, Spatialite) or '
                 'PostgreSQL layers.'
+            ))
+        # Check that fields are the same
+        fields_to_compare = self.parameterAsFields(parameters,
+                                                   self.FIELDS_TO_COMPARE,
+                                                   context)
+        new_layer_fields = [field.name() for field in new_layer.fields()
+                            if field.name() in fields_to_compare]
+        if new_layer_fields != fields_to_compare:
+            raise QgsProcessingException(self.tr(
+                'Unable to compare layers with different fields or field order'
             ))
         results = dict()
         output_file = self.parameterAsFileOutput(parameters,

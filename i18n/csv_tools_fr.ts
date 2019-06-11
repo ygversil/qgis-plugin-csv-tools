@@ -19,34 +19,44 @@
 <context>
     <name>FeatureDiffAlgorithm</name>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="57"/>
+        <location filename="../feature_diff_algorithm.py" line="59"/>
         <source>Original layer</source>
         <translation>Couche originale</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="62"/>
+        <location filename="../feature_diff_algorithm.py" line="64"/>
         <source>New layer</source>
         <translation>Nouvelle couche</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="67"/>
+        <location filename="../feature_diff_algorithm.py" line="76"/>
         <source>HTML report</source>
         <translation>Rapport HTML</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="67"/>
+        <location filename="../feature_diff_algorithm.py" line="76"/>
         <source>HTML files (*.html)</source>
         <translation>Fichiers HTML (*.html)</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="84"/>
+        <location filename="../feature_diff_algorithm.py" line="93"/>
         <source>Vector general</source>
         <translation>Outils généraux pour les vecteurs</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="80"/>
+        <location filename="../feature_diff_algorithm.py" line="89"/>
         <source>Differences between features</source>
         <translation>Différences entres les entités</translation>
+    </message>
+    <message>
+        <location filename="../feature_diff_algorithm.py" line="69"/>
+        <source>Fields to compare</source>
+        <translation>Champs à comparer</translation>
+    </message>
+    <message>
+        <location filename="../feature_diff_algorithm.py" line="134"/>
+        <source>Unable to compare layers with different fields or field order</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../feature_diff_algorithm.py" line="124"/>
