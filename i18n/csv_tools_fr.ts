@@ -19,34 +19,39 @@
 <context>
     <name>FeatureDiffAlgorithm</name>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="56"/>
+        <location filename="../feature_diff_algorithm.py" line="57"/>
         <source>Original layer</source>
         <translation>Couche originale</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="61"/>
+        <location filename="../feature_diff_algorithm.py" line="62"/>
         <source>New layer</source>
         <translation>Nouvelle couche</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="66"/>
+        <location filename="../feature_diff_algorithm.py" line="67"/>
         <source>HTML report</source>
         <translation>Rapport HTML</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="66"/>
+        <location filename="../feature_diff_algorithm.py" line="67"/>
         <source>HTML files (*.html)</source>
         <translation>Fichiers HTML (*.html)</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="83"/>
+        <location filename="../feature_diff_algorithm.py" line="84"/>
         <source>Vector general</source>
         <translation>Outils généraux pour les vecteurs</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="79"/>
+        <location filename="../feature_diff_algorithm.py" line="80"/>
         <source>Differences between features</source>
         <translation>Différences entres les entités</translation>
+    </message>
+    <message>
+        <location filename="../feature_diff_algorithm.py" line="124"/>
+        <source>Can only compare SQLite (GeoPackage, Spatialite) or PostgreSQL layers.</source>
+        <translation>Ne peut comparer que des couches SQLite (GeoPackage, Spatialite) ou PostgreSQL.</translation>
     </message>
 </context>
 <context>

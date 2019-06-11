@@ -34,6 +34,7 @@ from PyQt5.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
+    QgsProcessingException,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterVectorLayer,
 )
@@ -96,6 +97,25 @@ class FeatureDiffAlgorithm(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
+        orig_layer = self.parameterAsVectorLayer(parameters,
+                                                 self.ORIG_INPUT,
+                                                 context)
+        new_layer = self.parameterAsVectorLayer(parameters,
+                                                self.NEW_INPUT,
+                                                context)
+        # Check for SQLite or PostgreSQL or CSV type
+        orig_layer_type = orig_layer.storageType()
+        new_layer_type = new_layer.storageType()
+        if not all(
+                any(substr in type for substr in ('GPKG',
+                                                  'SQLite',
+                                                  'PostgreSQL'))
+                for type in (orig_layer_type, new_layer_type)
+        ):
+            raise QgsProcessingException(self.tr(
+                'Can only compare SQLite (GeoPackage, Spatialite) or '
+                'PostgreSQL layers.'
+            ))
         results = dict()
         output_file = self.parameterAsFileOutput(parameters,
                                                  self.OUTPUT_HTML_FILE,
