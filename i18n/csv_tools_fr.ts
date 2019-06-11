@@ -19,47 +19,47 @@
 <context>
     <name>FeatureDiffAlgorithm</name>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="59"/>
+        <location filename="../feature_diff_algorithm.py" line="68"/>
         <source>Original layer</source>
         <translation>Couche originale</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="64"/>
+        <location filename="../feature_diff_algorithm.py" line="73"/>
         <source>New layer</source>
         <translation>Nouvelle couche</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="76"/>
+        <location filename="../feature_diff_algorithm.py" line="85"/>
         <source>HTML report</source>
         <translation>Rapport HTML</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="76"/>
+        <location filename="../feature_diff_algorithm.py" line="85"/>
         <source>HTML files (*.html)</source>
         <translation>Fichiers HTML (*.html)</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="93"/>
+        <location filename="../feature_diff_algorithm.py" line="102"/>
         <source>Vector general</source>
         <translation>Outils généraux pour les vecteurs</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="89"/>
+        <location filename="../feature_diff_algorithm.py" line="98"/>
         <source>Differences between features</source>
         <translation>Différences entres les entités</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="69"/>
+        <location filename="../feature_diff_algorithm.py" line="78"/>
         <source>Fields to compare</source>
         <translation>Champs à comparer</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="134"/>
+        <location filename="../feature_diff_algorithm.py" line="144"/>
         <source>Unable to compare layers with different fields or field order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="124"/>
+        <location filename="../feature_diff_algorithm.py" line="133"/>
         <source>Can only compare SQLite (GeoPackage, Spatialite) or PostgreSQL layers.</source>
         <translation>Ne peut comparer que des couches SQLite (GeoPackage, Spatialite) ou PostgreSQL.</translation>
     </message>

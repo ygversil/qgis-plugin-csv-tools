@@ -30,7 +30,14 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
+import difflib
+import io
+import tempfile
+
 from PyQt5.QtCore import QCoreApplication
+from pygments import highlight
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import DiffLexer
 from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
@@ -39,6 +46,8 @@ from qgis.core import (
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterVectorLayer,
 )
+
+from .utils import dump_layer_to_csv
 
 
 # TODO: write tests
@@ -135,9 +144,31 @@ class FeatureDiffAlgorithm(QgsProcessingAlgorithm):
             raise QgsProcessingException(self.tr(
                 'Unable to compare layers with different fields or field order'
             ))
+        with tempfile.TemporaryFile() as orig_f, \
+                io.TextIOWrapper(orig_f, encoding='utf-8',
+                                 newline='') as orig_csvf, \
+                tempfile.TemporaryFile() as new_f, \
+                io.TextIOWrapper(new_f, encoding='utf-8',
+                                 newline='') as new_csvf:
+            for layer, csvf in ((orig_layer, orig_csvf),
+                                (new_layer, new_csvf)):
+                dump_layer_to_csv(layer, fields_to_compare, csvf)
+            orig_csvf.seek(0)
+            new_csvf.seek(0)
+            diff_output = difflib.unified_diff(
+                orig_csvf.readlines(),
+                new_csvf.readlines(),
+                fromfile=orig_layer.name(),
+                tofile=new_layer.name(),
+            )
         results = dict()
         output_file = self.parameterAsFileOutput(parameters,
                                                  self.OUTPUT_HTML_FILE,
                                                  context)
-        results[self.OUTPUT_HTML_FILE] = output_file
+        if output_file:
+            with open(output_file, 'w') as f, io.StringIO() as diff_f:
+                diff_f.writelines(diff_output)
+                f.write(highlight(diff_f.getvalue(), DiffLexer(),
+                                  HtmlFormatter(full=True)))
+            results[self.OUTPUT_HTML_FILE] = output_file
         return results
