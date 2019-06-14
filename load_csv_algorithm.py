@@ -30,11 +30,10 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
-from PyQt5.QtCore import QCoreApplication
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsFeatureSink,
     QgsProcessing,
-    QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterCrs,
@@ -46,7 +45,7 @@ from qgis.core import (
 )
 
 
-class _AbstractLoadCSVAlgorithm(QgsProcessingAlgorithm):
+class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
     """Abstract QGIS algorithm that takes a CSV file and loads it as a vector
     layer."""
 
@@ -96,10 +95,6 @@ class _AbstractLoadCSVAlgorithm(QgsProcessingAlgorithm):
     def groupId(self):
         """Algorithm group identifier."""
         return 'vectorcreation'
-
-    def tr(self, string):
-        """Helper method to mark strings for translation."""
-        return QCoreApplication.translate('Processing', string)
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
@@ -157,10 +152,6 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
     def displayName(self):
         """Algorithm human name."""
         return self.tr('Create vector layer from CSV (WKT column)')
-
-    def createInstance(self):
-        """Create an instance of the algorithm."""
-        return LoadWktCSVAlgorithm()
 
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
@@ -221,10 +212,6 @@ class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
     def displayName(self):
         """Algorithm human name."""
         return self.tr('Create vector layer from CSV (X, Y columns)')
-
-    def createInstance(self):
-        """Create an instance of the algorithm."""
-        return LoadXyCSVAlgorithm()
 
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""

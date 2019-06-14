@@ -34,13 +34,12 @@ import difflib
 import io
 import tempfile
 
-from PyQt5.QtCore import QCoreApplication
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import DiffLexer
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsProcessing,
-    QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
@@ -51,7 +50,7 @@ from .utils import dump_layer_to_csv
 
 
 # TODO: write tests
-class FeatureDiffAlgorithm(QgsProcessingAlgorithm):
+class FeatureDiffAlgorithm(QgisAlgorithm):
     """QGIS algorithm that takes two vector layers with identical columns
     and show differences between features of these two layers."""
 
@@ -104,14 +103,6 @@ class FeatureDiffAlgorithm(QgsProcessingAlgorithm):
     def groupId(self):
         """Algorithm group identifier."""
         return 'vectorgeneral'
-
-    def tr(self, string):
-        """Helper method to mark strings for translation."""
-        return QCoreApplication.translate('Processing', string)
-
-    def createInstance(self):
-        """Create an instance of the algorithm."""
-        return FeatureDiffAlgorithm()
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
