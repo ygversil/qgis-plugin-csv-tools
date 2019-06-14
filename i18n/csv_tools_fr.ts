@@ -19,47 +19,47 @@
 <context>
     <name>FeatureDiffAlgorithm</name>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="68"/>
+        <location filename="../feature_diff_algorithm.py" line="67"/>
         <source>Original layer</source>
         <translation>Couche originale</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="73"/>
+        <location filename="../feature_diff_algorithm.py" line="72"/>
         <source>New layer</source>
         <translation>Nouvelle couche</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="85"/>
+        <location filename="../feature_diff_algorithm.py" line="84"/>
         <source>HTML report</source>
         <translation>Rapport HTML</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="85"/>
+        <location filename="../feature_diff_algorithm.py" line="84"/>
         <source>HTML files (*.html)</source>
         <translation>Fichiers HTML (*.html)</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="102"/>
+        <location filename="../feature_diff_algorithm.py" line="101"/>
         <source>Vector general</source>
         <translation>Outils généraux pour les vecteurs</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="98"/>
+        <location filename="../feature_diff_algorithm.py" line="97"/>
         <source>Differences between features</source>
         <translation>Différences entres les entités</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="78"/>
+        <location filename="../feature_diff_algorithm.py" line="77"/>
         <source>Fields to compare</source>
         <translation>Champs à comparer</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="144"/>
+        <location filename="../feature_diff_algorithm.py" line="135"/>
         <source>Unable to compare layers with different fields or field order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="133"/>
+        <location filename="../feature_diff_algorithm.py" line="124"/>
         <source>Can only compare SQLite (GeoPackage, Spatialite) or PostgreSQL layers.</source>
         <translation>Ne peut comparer que des couches SQLite (GeoPackage, Spatialite) ou PostgreSQL.</translation>
     </message>
@@ -67,17 +67,17 @@
 <context>
     <name>LoadWktCSVAlgorithm</name>
     <message>
-        <location filename="../load_csv_algorithm.py" line="143"/>
+        <location filename="../load_csv_algorithm.py" line="139"/>
         <source>Geometry column (as WKT)</source>
         <translation>Colonne de géométrie (en WKT)</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="147"/>
+        <location filename="../load_csv_algorithm.py" line="143"/>
         <source>WKT CSV</source>
         <translation>CSV WKT</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="159"/>
+        <location filename="../load_csv_algorithm.py" line="155"/>
         <source>Create vector layer from CSV (WKT column)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonne WKT)</translation>
     </message>
@@ -85,22 +85,22 @@
 <context>
     <name>LoadXyCSVAlgorithm</name>
     <message>
-        <location filename="../load_csv_algorithm.py" line="203"/>
+        <location filename="../load_csv_algorithm.py" line="195"/>
         <source>X/longitude column</source>
         <translation>Colonne X ou longitude</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="207"/>
+        <location filename="../load_csv_algorithm.py" line="199"/>
         <source>Y/latitude column</source>
         <translation>Colonne Y ou latitude</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="211"/>
+        <location filename="../load_csv_algorithm.py" line="203"/>
         <source>XY CSV</source>
         <translation>CSV XY</translation>
     </message>
     <message>
-        <location filename="../load_csv_algorithm.py" line="223"/>
+        <location filename="../load_csv_algorithm.py" line="215"/>
         <source>Create vector layer from CSV (X, Y columns)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonnes X, Y)</translation>
     </message>
