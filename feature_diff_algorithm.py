@@ -30,23 +30,27 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
+from itertools import starmap
 import difflib
 import io
+import os
 import tempfile
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import DiffLexer
+from processing import run as run_algorithm
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools.postgis import uri_from_name as uri_from_db_conn_name
 from qgis.core import (
+    QgsDataSourceUri,
     QgsProcessing,
     QgsProcessingException,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterVectorLayer,
+    QgsSettings,
 )
-
-from .utils import dump_layer_to_csv
 
 
 # TODO: write tests
@@ -135,17 +139,42 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
             raise QgsProcessingException(self.tr(
                 'Unable to compare layers with different fields or field order'
             ))
-        with tempfile.TemporaryFile() as orig_f, \
-                io.TextIOWrapper(orig_f, encoding='utf-8',
-                                 newline='') as orig_csvf, \
-                tempfile.TemporaryFile() as new_f, \
-                io.TextIOWrapper(new_f, encoding='utf-8',
-                                 newline='') as new_csvf:
-            for layer, csvf in ((orig_layer, orig_csvf),
-                                (new_layer, new_csvf)):
-                dump_layer_to_csv(layer, fields_to_compare, csvf)
-            orig_csvf.seek(0)
-            new_csvf.seek(0)
+        with tempfile.NamedTemporaryFile('w', delete=False) as orig_csvf, \
+                tempfile.NamedTemporaryFile('w', delete=False) as new_csvf:
+            for layer, layer_type, csvf in (
+                (orig_layer, orig_layer_type, orig_csvf),
+                (new_layer, new_layer_type, new_csvf),
+            ):
+                if 'GPKG' in layer_type or 'SQLite' in layer_type:
+                    qgis_conn, table = (layer.dataProvider().dataSourceUri()
+                                        .split('|'))
+                    _, table = table.split('=')
+                    alg = 'exportsqlitequerytocsv'
+                elif 'PostgreSQL' in layer_type:
+                    uri = QgsDataSourceUri(
+                        layer.dataProvider().dataSourceUri()
+                    )
+                    qgis_conn = _connection_name_from_info(
+                        uri.connectionInfo()
+                    )
+                    if qgis_conn is None:
+                        raise QgsProcessingException(self.tr(
+                            'No database connection have been created for '
+                            'PostgreSQL layer {0}.'.format(layer.name)
+                        ))
+                    table = '{schema}.{table}'.format(schema=uri.schema(),
+                                                      table=uri.table())
+                    alg = 'exportpostgresqlquerytocsv'
+                select_sql = 'select {cols} from {table}'.format(
+                    cols=', '.join(fields_to_compare), table=table
+                )
+                run_algorithm('csvtools:{alg}'.format(alg=alg), {
+                    'DATABASE': qgis_conn,
+                    'SELECT_SQL': select_sql,
+                    'OUTPUT': csvf.name,
+                })
+        with open(orig_csvf.name) as orig_csvf, \
+                open(new_csvf.name) as new_csvf:
             diff_output = difflib.unified_diff(
                 orig_csvf.readlines(),
                 new_csvf.readlines(),
@@ -162,4 +191,27 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
                 f.write(highlight(diff_f.getvalue(), DiffLexer(),
                                   HtmlFormatter(full=True)))
             results[self.OUTPUT_HTML_FILE] = output_file
+        os.unlink(orig_csvf.name)
+        os.unlink(new_csvf.name)
         return results
+
+
+def _connection_name_from_info(conn_info):
+    settings = QgsSettings()
+    settings.beginGroup('/PostgreSQL/connections/')
+    for group in settings.childGroups():
+        if all(starmap(
+                lambda x, y: x == y,
+                zip(
+                    filter(
+                        lambda v: not v.startswith('sslrootcert'),
+                        conn_info.split()
+                    ),
+                    filter(
+                        lambda v: not v.startswith('sslrootcert'),
+                        uri_from_db_conn_name(group).connectionInfo().split()
+                    )
+                )
+        )):
+            return group
+    return None

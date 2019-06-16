@@ -30,87 +30,33 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
-import csv
-import io
-import re
-import sqlite3
-import tempfile
 
-from qgis.core import QgsDataSourceUri
+from processing.tools import postgis
+from qgis.core import QgsProcessingException
 import psycopg2
 
 
-_DATETIME_REGEXP = re.compile(r'(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)'
-                              r'[T\s]+'
-                              r'(?P<hour>\d+):(?P<minute>\d+):(?P<second>\d+)'
-                              r'(?P<microseconds>.\d+)?Z?')
+class CopyGeoDB(postgis.GeoDB):
+    """Util class to work with a Postgis database, adding copy method."""
 
-
-def dump_layer_to_csv(layer, fields, csvf):
-    """Copy the layer into the given file-object using given fields."""
-    select_stmt = ', '.join(fields)
-    layer_type = layer.storageType()
-    if 'GPKG' in layer_type or 'SQLite' in layer_type:
-        dbpath, table = layer.dataProvider().dataSourceUri().split('|')
-        _, table = table.split('=')
-        rows = _sqlite_rows(dbpath, table, select_stmt)
-    elif 'PostgreSQL' in layer_type:
-        uri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
-        table = '{schema}.{table}'.format(schema=uri.schema(),
-                                          table=uri.table())
-        rows = _postgresql_rows(uri.connectionInfo(), table, select_stmt)
-    writer = csv.writer(csvf, delimiter='|', quotechar='"',
-                        quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(fields)
-    for row in rows:
-        row = map(lambda v: str(v).strip() if v is not None else '', row)
-        row = map(_normalize_boolean, row)
-        row = map(_normalize_datetime, row)
-        writer.writerow(row)
-
-
-def _normalize_boolean(v):
-    return {'t': '1', 'f': '0'}.get(v, v)
-
-
-def _normalize_datetime(v):
-    m = _DATETIME_REGEXP.match(v)
-    if not m:
-        return v
-    else:
-        return ('{year}-{month}-{day}'
-                'T'
-                '{hour}:{minute}:{second}'
-                'Z'.format(**m.groupdict()))
-
-
-def _postgresql_rows(connection_info, table, select_stmt):
-    """Yield each row from the given PostgreSQL table as a tuple."""
-    with tempfile.TemporaryFile() as fb, \
-            io.TextIOWrapper(fb, encoding='utf-8', newline='') as f, \
-            psycopg2.connect(connection_info) as conn, \
-            conn.cursor() as cur:
-        cur.copy_expert(
-            'copy (select {select_stmt} from {table}) to stdout '
-            'with (format csv, '
-            "delimiter '|', "
-            "null '', "
-            "header false, "
-            "quote '\"')".format(select_stmt=select_stmt,
-                                 table=table),
-            f
-        )
-        f.seek(0)
-        reader = csv.reader(f, delimiter='|', quotechar='"')
-        yield from reader
-
-
-def _sqlite_rows(dbpath, table, select_stmt):
-    """Yield each row from the given SQLite table as a tuple."""
-    with sqlite3.connect(dbpath) as conn:
-        cur = conn.cursor()
-        cur.execute(
-            'select {select_stmt} from {table}'.format(select_stmt=select_stmt,
-                                                       table=table)
-        )
-        yield from cur
+    def copy(self, cursor, select_sql, dstf):
+        """Copy the given ``SELECT`` query to the given destination file."""
+        try:
+            cursor.copy_expert(
+                'copy ({select_sql}) to stdout '
+                'with (format csv, '
+                "delimiter '|', "
+                "null '', "
+                "header false, "
+                "quote '\"')".format(select_sql=select_sql),
+                dstf
+            )
+        except psycopg2.Error as e:
+            raise QgsProcessingException(
+                '{e} QUERY: {query}'.format(
+                    e=str(e),
+                    query=e.cursor.query.decode(
+                        e.cursor.connection.encoding
+                    )
+                )
+            )
