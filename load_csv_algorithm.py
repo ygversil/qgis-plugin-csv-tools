@@ -90,11 +90,11 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
 
     def group(self):
         """Algorithm group human name."""
-        return self.tr('Vector creation')
+        return self.tr('Import from CSV')
 
     def groupId(self):
         """Algorithm group identifier."""
-        return 'vectorcreation'
+        return 'importfromcsv'
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""

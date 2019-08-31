@@ -203,8 +203,8 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
     </message>
     <message>
         <location filename="../load_csv_algorithm.py" line="93"/>
-        <source>Vector creation</source>
-        <translation>Création de vecteurs</translation>
+        <source>Import from CSV</source>
+        <translation>Import depuis CSV</translation>
     </message>
 </context>
 </TS>
