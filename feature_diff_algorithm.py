@@ -102,11 +102,11 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
 
     def group(self):
         """Algorithm group human name."""
-        return self.tr('Vector general')
+        return self.tr('Other CSV tools')
 
     def groupId(self):
         """Algorithm group identifier."""
-        return 'vectorgeneral'
+        return 'othercsvtools'
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""

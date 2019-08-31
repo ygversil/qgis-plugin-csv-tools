@@ -65,11 +65,6 @@
         <translation>Fichiers HTML (*.html)</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="105"/>
-        <source>Vector general</source>
-        <translation>Outils généraux pour les vecteurs</translation>
-    </message>
-    <message>
         <location filename="../feature_diff_algorithm.py" line="81"/>
         <source>Fields to compare</source>
         <translation>Champs à comparer</translation>
@@ -106,6 +101,11 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
         <location filename="../feature_diff_algorithm.py" line="101"/>
         <source>Attribute difference</source>
         <translation>Différences attributaires</translation>
+    </message>
+    <message>
+        <location filename="../feature_diff_algorithm.py" line="105"/>
+        <source>Other CSV tools</source>
+        <translation>Autres outils CSV</translation>
     </message>
 </context>
 <context>
