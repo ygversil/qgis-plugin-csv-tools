@@ -25,8 +25,8 @@
     </message>
     <message>
         <location filename="../export_to_csv_algorithm.py" line="136"/>
-        <source>Export (COPY) PostgreSQL query to CSV</source>
-        <translation>Export d&apos;une requête PotgreSQL en CSV (COPY)</translation>
+        <source>Export PostgreSQL query to CSV (COPY)</source>
+        <translation>Export d&apos;une requête PostgreSQL en CSV (COPY)</translation>
     </message>
 </context>
 <context>

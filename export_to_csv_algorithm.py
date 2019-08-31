@@ -133,7 +133,7 @@ class ExportPostgreSQLQueryToCsv(_AbstractExportQueryToCsv):
 
     def displayName(self):
         """Algorithm human name."""
-        return self.tr('Export (COPY) PostgreSQL query to CSV')
+        return self.tr('Export PostgreSQL query to CSV (COPY)')
 
     def _db_rows(self, qgis_conn, select_sql):
         with tempfile.TemporaryFile() as fb, \
