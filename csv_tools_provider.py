@@ -35,12 +35,12 @@ from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
 
 from .resources import *  # noqa
-from .load_csv_algorithm import LoadWktCSVAlgorithm, LoadXyCSVAlgorithm
-from .export_to_csv_algorithm import (
+from .import_from_csv_algorithms import LoadWktCSVAlgorithm, LoadXyCSVAlgorithm
+from .export_to_csv_algorithms import (
     ExportPostgreSQLQueryToCsv,
     ExportSQLiteQueryToCsv,
 )
-from .feature_diff_algorithm import FeatureDiffAlgorithm
+from .other_csv_algorithms import FeatureDiffAlgorithm
 
 
 class CSVToolsProvider(QgsProcessingProvider):

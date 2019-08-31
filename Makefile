@@ -47,9 +47,9 @@ PY_FILES = \
 	__init__.py \
 	csv_tools.py \
 	csv_tools_provider.py \
-	export_to_csv_algorithm.py \
-	feature_diff_algorithm.py \
-	load_csv_algorithm.py \
+	export_to_csv_algorithms.py \
+	import_from_csv_algorithms.py \
+	other_csv_algorithms.py \
 	utils.py
 
 EXTRAS = metadata.txt
