@@ -80,11 +80,11 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
 
     def group(self):
         """Algorithm group human name."""
-        return self.tr('Database')
+        return self.tr('Export to CSV')
 
     def groupId(self):
         """Algorithm group identifier."""
-        return 'database'
+        return 'exporttocsv'
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""

@@ -162,16 +162,16 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
         <translation>Fichier CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithm.py" line="83"/>
-        <source>Database</source>
-        <translation>Base de données</translation>
-    </message>
-    <message>
         <location filename="../export_to_csv_algorithm.py" line="95"/>
         <source>Not a SELECT query:
 {0}</source>
         <translation>Pas une requête SELECT:
 {0}</translation>
+    </message>
+    <message>
+        <location filename="../export_to_csv_algorithm.py" line="83"/>
+        <source>Export to CSV</source>
+        <translation>Export vers CSV</translation>
     </message>
 </context>
 <context>
