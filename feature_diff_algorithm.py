@@ -195,6 +195,17 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
         os.unlink(new_csvf.name)
         return results
 
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm takes two vector layers (SQLite or PostgreSQL) "
+            "with common fields (those common fields being in the same order) "
+            "and shows differences between features attributes in an HTML "
+            "report.\n\n"
+            "This can be useful to compare two versions of the same layer.\n\n"
+            "Under the hood, each attribute table is converted to CSV and the "
+            "two CSV files are diffed."
+        )
+
 
 def _connection_name_from_info(conn_info):
     settings = QgsSettings()

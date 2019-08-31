@@ -94,6 +94,19 @@
         <source>No database connection have been created for PostgreSQL layer {0}.</source>
         <translation>Aucune connexion n&apos;a été créée pour la couche PostgreSQL {0}.</translation>
     </message>
+    <message>
+        <location filename="../feature_diff_algorithm.py" line="199"/>
+        <source>This algorithm takes two vector layers (SQLite or PostgreSQL) with common fields (those common fields being in the same order) and shows differences between features attributes in an HTML report.
+
+This can be useful to compare two versions of the same layer.
+
+Under the hood, each attribute table is converted to CSV and the two CSV files are diffed.</source>
+        <translation>Cet algorithme prend deux couches vectorielles (SQLite ou PostgreSQL) avec des champs en commun (ces champs en commun étant dans le même ordre) et montre les différences entre les valeurs des attributs des entités dans un rapport HTML.
+
+Cela est utile pour comparer deux versions d''une même couche.
+
+Il fonctionne en convertissant chaque table attributaire dans un fichier CSV puis en comparant les lignes de chaque fichier CSV.</translation>
+    </message>
 </context>
 <context>
     <name>LoadWktCSVAlgorithm</name>
