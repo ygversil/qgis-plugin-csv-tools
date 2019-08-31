@@ -94,11 +94,11 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
 
     def name(self):
         """Algorithm identifier."""
-        return 'featurediff'
+        return 'attributediff'
 
     def displayName(self):
         """Algorithm human name."""
-        return self.tr('Differences between features')
+        return self.tr('Attribute difference')
 
     def group(self):
         """Algorithm group human name."""

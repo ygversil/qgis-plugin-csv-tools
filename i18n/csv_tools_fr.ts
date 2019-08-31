@@ -70,11 +70,6 @@
         <translation>Outils généraux pour les vecteurs</translation>
     </message>
     <message>
-        <location filename="../feature_diff_algorithm.py" line="101"/>
-        <source>Differences between features</source>
-        <translation>Différences entres les entités</translation>
-    </message>
-    <message>
         <location filename="../feature_diff_algorithm.py" line="81"/>
         <source>Fields to compare</source>
         <translation>Champs à comparer</translation>
@@ -106,6 +101,11 @@ Under the hood, each attribute table is converted to CSV and the two CSV files a
 Cela est utile pour comparer deux versions d&apos;une même couche.
 
 Il fonctionne en convertissant chaque table attributaire dans un fichier CSV puis en comparant les lignes de chaque fichier CSV.</translation>
+    </message>
+    <message>
+        <location filename="../feature_diff_algorithm.py" line="101"/>
+        <source>Attribute difference</source>
+        <translation>Différences attributaires</translation>
     </message>
 </context>
 <context>
