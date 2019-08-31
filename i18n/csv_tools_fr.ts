@@ -19,14 +19,19 @@
 <context>
     <name>ExportPostgreSQLQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="117"/>
+        <location filename="../export_to_csv_algorithms.py" line="113"/>
         <source>Database (connection name)</source>
         <translation>Base de données (nom de la connexion)</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="136"/>
+        <location filename="../export_to_csv_algorithms.py" line="132"/>
         <source>Export PostgreSQL query to CSV (COPY)</source>
         <translation>Export d&apos;une requête PostgreSQL en CSV (COPY)</translation>
+    </message>
+    <message>
+        <location filename="../export_to_csv_algorithms.py" line="136"/>
+        <source>Export to CSV</source>
+        <translation>Export vers CSV</translation>
     </message>
 </context>
 <context>
@@ -40,6 +45,11 @@
         <location filename="../export_to_csv_algorithms.py" line="168"/>
         <source>Export SQLite query to CSV</source>
         <translation>Export d&apos;une requête SQLite en CSV</translation>
+    </message>
+    <message>
+        <location filename="../export_to_csv_algorithms.py" line="172"/>
+        <source>Export to CSV</source>
+        <translation>Export vers CSV</translation>
     </message>
 </context>
 <context>
@@ -111,19 +121,24 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
 <context>
     <name>LoadWktCSVAlgorithm</name>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="138"/>
+        <location filename="../import_from_csv_algorithms.py" line="134"/>
         <source>Geometry column (as WKT)</source>
         <translation>Colonne de géométrie (en WKT)</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="142"/>
+        <location filename="../import_from_csv_algorithms.py" line="138"/>
         <source>WKT CSV</source>
         <translation>CSV WKT</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="154"/>
+        <location filename="../import_from_csv_algorithms.py" line="150"/>
         <source>Create vector layer from CSV (WKT column)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonne WKT)</translation>
+    </message>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="154"/>
+        <source>Import from CSV</source>
+        <translation>Import depuis CSV</translation>
     </message>
 </context>
 <context>
@@ -148,6 +163,11 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
         <source>Create vector layer from CSV (X, Y columns)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonnes X, Y)</translation>
     </message>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="218"/>
+        <source>Import from CSV</source>
+        <translation>Import depuis CSV</translation>
+    </message>
 </context>
 <context>
     <name>_AbstractExportQueryToCsv</name>
@@ -162,16 +182,11 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
         <translation>Fichier CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="95"/>
+        <location filename="../export_to_csv_algorithms.py" line="91"/>
         <source>Not a SELECT query:
 {0}</source>
         <translation>Pas une requête SELECT:
 {0}</translation>
-    </message>
-    <message>
-        <location filename="../export_to_csv_algorithms.py" line="83"/>
-        <source>Export to CSV</source>
-        <translation>Export vers CSV</translation>
     </message>
 </context>
 <context>
@@ -200,11 +215,6 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
         <location filename="../import_from_csv_algorithms.py" line="86"/>
         <source>CRS</source>
         <translation>SCR</translation>
-    </message>
-    <message>
-        <location filename="../import_from_csv_algorithms.py" line="93"/>
-        <source>Import from CSV</source>
-        <translation>Import depuis CSV</translation>
     </message>
 </context>
 </TS>

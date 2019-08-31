@@ -78,10 +78,6 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
             'CSV files (*.csv)',
         ))
 
-    def group(self):
-        """Algorithm group human name."""
-        return self.tr('Export to CSV')
-
     def groupId(self):
         """Algorithm group identifier."""
         return 'exporttocsv'
@@ -135,6 +131,10 @@ class ExportPostgreSQLQueryToCsv(_AbstractExportQueryToCsv):
         """Algorithm human name."""
         return self.tr('Export PostgreSQL query to CSV (COPY)')
 
+    def group(self):  # Cannot be factored in abstract class because of i18n
+        """Algorithm group human name."""
+        return self.tr('Export to CSV')
+
     def _db_rows(self, qgis_conn, select_sql):
         with tempfile.TemporaryFile() as fb, \
                 io.TextIOWrapper(fb, encoding='utf-8', newline='') as f:
@@ -166,6 +166,10 @@ class ExportSQLiteQueryToCsv(_AbstractExportQueryToCsv):
     def displayName(self):
         """Algorithm human name."""
         return self.tr('Export SQLite query to CSV')
+
+    def group(self):  # Cannot be factored in abstract class because of i18n
+        """Algorithm group human name."""
+        return self.tr('Export to CSV')
 
     def _db_rows(self, qgis_conn, select_sql):
         with sqlite3.connect(qgis_conn) as conn:

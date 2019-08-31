@@ -88,10 +88,6 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
             self.tr('CRS'),
         ))
 
-    def group(self):
-        """Algorithm group human name."""
-        return self.tr('Import from CSV')
-
     def groupId(self):
         """Algorithm group identifier."""
         return 'importfromcsv'
@@ -153,6 +149,10 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
         """Algorithm human name."""
         return self.tr('Create vector layer from CSV (WKT column)')
 
+    def group(self):  # Cannot be factored in abstract class because of i18n
+        """Algorithm group human name."""
+        return self.tr('Import from CSV')
+
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
         csv_path = self.parameterAsFile(parameters, self.INPUT, context)
@@ -212,6 +212,10 @@ class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
     def displayName(self):
         """Algorithm human name."""
         return self.tr('Create vector layer from CSV (X, Y columns)')
+
+    def group(self):  # Cannot be factored in abstract class because of i18n
+        """Algorithm group human name."""
+        return self.tr('Import from CSV')
 
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
