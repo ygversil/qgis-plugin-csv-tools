@@ -135,6 +135,15 @@ class ExportPostgreSQLQueryToCsv(_AbstractExportQueryToCsv):
         """Algorithm group human name."""
         return self.tr('Export to CSV')
 
+    def shortHelpString(self):
+        """Algorithm help message displayed in the right panel."""
+        return self.tr(
+            "This algorithm creates a CSV file from an SQL SELECT query. The "
+            "query is ran against a PostgreSQL/Postgis database, then the "
+            "result table is exported as CSV using the PostgreSQL COPY "
+            "command."
+        )
+
     def _db_rows(self, qgis_conn, select_sql):
         with tempfile.TemporaryFile() as fb, \
                 io.TextIOWrapper(fb, encoding='utf-8', newline='') as f:
@@ -170,6 +179,14 @@ class ExportSQLiteQueryToCsv(_AbstractExportQueryToCsv):
     def group(self):  # Cannot be factored in abstract class because of i18n
         """Algorithm group human name."""
         return self.tr('Export to CSV')
+
+    def shortHelpString(self):
+        """Algorithm help message displayed in the right panel."""
+        return self.tr(
+            "This algorithm creates a CSV file from an SQL SELECT query. The "
+            "query is ran against an SQLite database (Geopackage or "
+            "Spatialite), then the result table is exported as CSV."
+        )
 
     def _db_rows(self, qgis_conn, select_sql):
         with sqlite3.connect(qgis_conn) as conn:

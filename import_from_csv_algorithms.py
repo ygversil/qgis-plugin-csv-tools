@@ -153,6 +153,13 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
         """Algorithm group human name."""
         return self.tr('Import from CSV')
 
+    def shortHelpString(self):
+        """Algorithm help message displayed in the right panel."""
+        return self.tr(
+            "This algorithm loads a CSV file as a vector layer. Geometry is "
+            "given as a WKT column."
+        )
+
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
         csv_path = self.parameterAsFile(parameters, self.INPUT, context)
@@ -216,6 +223,13 @@ class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
     def group(self):  # Cannot be factored in abstract class because of i18n
         """Algorithm group human name."""
         return self.tr('Import from CSV')
+
+    def shortHelpString(self):
+        """Algorithm help message displayed in the right panel."""
+        return self.tr(
+            "This algorithm loads a CSV file as a point layer. Geometry is "
+            "given as two columns for X and Y coordinates."
+        )
 
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""

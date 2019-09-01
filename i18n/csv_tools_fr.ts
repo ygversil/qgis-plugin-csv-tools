@@ -33,23 +33,33 @@
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
+    <message>
+        <location filename="../export_to_csv_algorithms.py" line="140"/>
+        <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against a PostgreSQL/Postgis database, then the result table is exported as CSV using the PostgreSQL COPY command.</source>
+        <translation>Cet algorithme crée un fichier CSV à partir d&apos;une requête SQL de type SELECT. La requête est exécutée dans une base de données PostgreSQL (éventuellement avec l&apos;extension Postgis), et la table de résultats est ensuite exportée en CSV grâce à la commande COPY de PostgreSQL.</translation>
+    </message>
 </context>
 <context>
     <name>ExportSQLiteQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="156"/>
+        <location filename="../export_to_csv_algorithms.py" line="165"/>
         <source>GeoPackage or Spatialite database</source>
         <translation>Base de données GeoPackage ou Spatialite</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="168"/>
+        <location filename="../export_to_csv_algorithms.py" line="177"/>
         <source>Export SQLite query to CSV</source>
         <translation>Export d&apos;une requête SQLite en CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="172"/>
+        <location filename="../export_to_csv_algorithms.py" line="181"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
+    </message>
+    <message>
+        <location filename="../export_to_csv_algorithms.py" line="185"/>
+        <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against an SQLite database (Geopackage or Spatialite), then the result table is exported as CSV.</source>
+        <translation>Cet algorithme crée un fichier CSV à partir d&apos; requête SQL de type SELECT. La requête est exécutée dans une base de données SQLite (Geopackage ou Spatialite), et la table de résultats est ensuite exportée en CSV.</translation>
     </message>
 </context>
 <context>
@@ -140,33 +150,43 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
         <source>Import from CSV</source>
         <translation>Import depuis CSV</translation>
     </message>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="158"/>
+        <source>This algorithm loads a CSV file as a vector layer. Geometry is given as a WKT column.</source>
+        <translation>Cet algorithme charge une couche vectorielle depuis un fichier CSV dans lequel les géométries sont données au format WKT dans une colonne.</translation>
+    </message>
 </context>
 <context>
     <name>LoadXyCSVAlgorithm</name>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="194"/>
+        <location filename="../import_from_csv_algorithms.py" line="201"/>
         <source>X/longitude column</source>
         <translation>Colonne X ou longitude</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="198"/>
+        <location filename="../import_from_csv_algorithms.py" line="205"/>
         <source>Y/latitude column</source>
         <translation>Colonne Y ou latitude</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="202"/>
+        <location filename="../import_from_csv_algorithms.py" line="209"/>
         <source>XY CSV</source>
         <translation>CSV XY</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="214"/>
+        <location filename="../import_from_csv_algorithms.py" line="221"/>
         <source>Create vector layer from CSV (X, Y columns)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonnes X, Y)</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="218"/>
+        <location filename="../import_from_csv_algorithms.py" line="225"/>
         <source>Import from CSV</source>
         <translation>Import depuis CSV</translation>
+    </message>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="229"/>
+        <source>This algorithm loads a CSV file as a point layer. Geometry is given as two columns for X and Y coordinates.</source>
+        <translation>Cet algorithme charge une couche ponctuelle depuis un fichier CSV dans lequel les coordonnées X et Y sont indiquées dans deux colonnes.</translation>
     </message>
 </context>
 <context>
