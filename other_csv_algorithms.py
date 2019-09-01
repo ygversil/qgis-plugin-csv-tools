@@ -36,6 +36,7 @@ import io
 import os
 import tempfile
 
+from PyQt5.QtGui import QIcon
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import DiffLexer
@@ -107,6 +108,10 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
     def groupId(self):
         """Algorithm group identifier."""
         return 'othercsvtools'
+
+    def icon(self):
+        """Algorithm's icon (SVG)."""
+        return QIcon(':/plugins/csv_tools/diff_files.png')
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""

@@ -30,6 +30,7 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
+from PyQt5.QtGui import QIcon
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsFeatureSink,
@@ -160,6 +161,10 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
             "given as a WKT column."
         )
 
+    def icon(self):
+        """Algorithm's icon."""
+        return QIcon(':/plugins/csv_tools/load_csv_wkt.png')
+
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
         csv_path = self.parameterAsFile(parameters, self.INPUT, context)
@@ -230,6 +235,10 @@ class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
             "This algorithm loads a CSV file as a point layer. Geometry is "
             "given as two columns for X and Y coordinates."
         )
+
+    def icon(self):
+        """Algorithm's icon."""
+        return QIcon(':/plugins/csv_tools/load_csv_xy.png')
 
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""

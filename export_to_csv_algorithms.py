@@ -37,6 +37,7 @@ import re
 import sqlite3
 import tempfile
 
+from PyQt5.QtGui import QIcon
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsProcessingException,
@@ -144,6 +145,10 @@ class ExportPostgreSQLQueryToCsv(_AbstractExportQueryToCsv):
             "command."
         )
 
+    def icon(self):
+        """Algorithm's icon."""
+        return QIcon(':/plugins/csv_tools/pg2csv.png')
+
     def _db_rows(self, qgis_conn, select_sql):
         with tempfile.TemporaryFile() as fb, \
                 io.TextIOWrapper(fb, encoding='utf-8', newline='') as f:
@@ -187,6 +192,10 @@ class ExportSQLiteQueryToCsv(_AbstractExportQueryToCsv):
             "query is ran against an SQLite database (Geopackage or "
             "Spatialite), then the result table is exported as CSV."
         )
+
+    def icon(self):
+        """Algorithm's icon."""
+        return QIcon(':/plugins/csv_tools/gpkg2csv.png')
 
     def _db_rows(self, qgis_conn, select_sql):
         with sqlite3.connect(qgis_conn) as conn:
