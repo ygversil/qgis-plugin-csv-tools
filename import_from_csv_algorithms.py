@@ -36,7 +36,9 @@ import urllib
 from PyQt5.QtGui import QIcon
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
+    Qgis,
     QgsFeatureSink,
+    QgsMessageLog,
     QgsProcessing,
     QgsProcessingException,
     QgsProcessingParameterBoolean,
@@ -101,8 +103,25 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
         uri = self._buildUri(parameters, context)
         vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
         if not vlayer.isValid():
+            QgsMessageLog.logMessage(
+                'CSV Tools: Cannot add layer with URI {}'.format(
+                    vlayer.dataProvider().dataSourceUri()
+                ),
+                'Processing',
+                Qgis.Critical
+            )
+            QgsMessageLog.logMessage(
+                'CSV Tools: {}'.format(
+                    vlayer.dataProvider().error().message()
+                ),
+                'Processing',
+                Qgis.Critical
+            )
             raise QgsProcessingException(
-                vlayer.dataProvider().error().message()
+                '{}: {}'.format(
+                    vlayer.dataProvider().dataSourceUri(),
+                    vlayer.dataProvider().error().message()
+                )
             )
         # We consider that having CSV data loaded is half the way
         feedback.setProgress(50)
