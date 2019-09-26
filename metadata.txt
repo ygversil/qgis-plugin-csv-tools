@@ -10,7 +10,7 @@
 name=CSV Tools
 qgisMinimumVersion=3.0
 description=Adds new processing algorithms and models that deal with CSV files
-version=0.1.0
+version=0.1.1-dev1
 author=Yann Voté
 email=ygversil@lilo.org
 
