@@ -30,6 +30,9 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
+import pathlib
+import urllib
+
 from PyQt5.QtGui import QIcon
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
@@ -175,21 +178,19 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
                                           context)
         wkt_field = self.parameterAsString(parameters, self.WKT_FIELD, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
-        return ('file://{path}?delimiter={delimiter}&'
-                'quote={quotechar}&'
-                'useHeader={use_header}&'
-                'trimFields=yes&'
-                'wktField={wkt_field}&'
-                'crs={crs}&'
-                'spatialIndex=yes&'
-                'watchFile=no').format(
-                    path=csv_path,
-                    delimiter=delimiter,
-                    quotechar=quotechar,
-                    use_header='yes' if use_header else 'no',
-                    wkt_field=wkt_field,
-                    crs=crs.authid(),
-                )
+        return '{base_uri}?{params}'.format(
+            base_uri=pathlib.Path(csv_path).as_uri(),
+            params=urllib.parse.urlencode((
+                ('delimiter', delimiter),
+                ('quote', quotechar),
+                ('useHeader', 'Yes' if use_header else 'No'),
+                ('trimFields', 'Yes'),
+                ('wktField', wkt_field),
+                ('crs', crs.authid()),
+                ('spatialIndex', 'yes'),
+                ('watchFile', 'no'),
+            ), safe=r'\:')
+        )
 
 
 # TODO: write tests
@@ -251,20 +252,17 @@ class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         x_field = self.parameterAsString(parameters, self.X_FIELD, context)
         y_field = self.parameterAsString(parameters, self.Y_FIELD, context)
-        return ('file://{path}?delimiter={delimiter}&'
-                'quote={quotechar}&'
-                'useHeader={use_header}&'
-                'trimFields=yes&'
-                'xField={x_field}&'
-                'yField={y_field}&'
-                'crs={crs}&'
-                'spatialIndex=yes&'
-                'watchFile=no').format(
-                    path=csv_path,
-                    delimiter=delimiter,
-                    quotechar=quotechar,
-                    use_header='yes' if use_header else 'no',
-                    x_field=x_field,
-                    y_field=y_field,
-                    crs=crs.authid(),
-                )
+        return '{base_uri}?{params}'.format(
+            base_uri=pathlib.Path(csv_path).as_uri(),
+            params=urllib.parse.urlencode((
+                ('delimiter', delimiter),
+                ('quote', quotechar),
+                ('useHeader', 'Yes' if use_header else 'No'),
+                ('trimFields', 'Yes'),
+                ('xField', x_field),
+                ('yField', y_field),
+                ('crs', crs.authid()),
+                ('spatialIndex', 'yes'),
+                ('watchFile', 'no'),
+            ), safe=r'\:')
+        )
