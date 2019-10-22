@@ -64,7 +64,6 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
     QUOTECHAR = 'QUOTE_CHAR'
     USE_HEADER = 'USE_HEADER'
     DECIMAL_POINT = 'DECIMAL_POINT'
-    CRS = 'CRS'
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
@@ -96,10 +95,6 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
             self.tr('Decimal point'),
             options=self.decimal_points,
             defaultValue=0,
-        ))
-        self.addParameter(QgsProcessingParameterCrs(
-            self.CRS,
-            self.tr('CRS'),
         ))
 
     def groupId(self):
@@ -152,8 +147,23 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
         return {self.OUTPUT: dest_id}
 
 
+class _AbstractLoadCSVGeometryAlgorithm(_AbstractLoadCSVAlgorithm):
+    """Abstract QGIS algorithm that takes a CSV file and loads it as a vector
+    layer with geometry."""
+
+    CRS = 'CRS'
+
+    def initAlgorithm(self, config):
+        """Initialize algorithm with inputs and output parameters."""
+        super().initAlgorithm(config)
+        self.addParameter(QgsProcessingParameterCrs(
+            self.CRS,
+            self.tr('CRS'),
+        ))
+
+
 # TODO: write tests
-class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
+class LoadWktCSVAlgorithm(_AbstractLoadCSVGeometryAlgorithm):
     """QGIS algorithm that takes a CSV file with WKT column and loads it as a
     vector layer."""
 
@@ -224,7 +234,7 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
 
 
 # TODO: write tests
-class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
+class LoadXyCSVAlgorithm(_AbstractLoadCSVGeometryAlgorithm):
     """QGIS algorithm that takes a CSV file with X, Y columns and loads it as a
     vector layer."""
 

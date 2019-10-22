@@ -131,27 +131,27 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
 <context>
     <name>LoadWktCSVAlgorithm</name>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="165"/>
+        <location filename="../import_from_csv_algorithms.py" line="175"/>
         <source>Geometry column (as WKT)</source>
         <translation>Colonne de géométrie (en WKT)</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="169"/>
+        <location filename="../import_from_csv_algorithms.py" line="179"/>
         <source>WKT CSV</source>
         <translation>CSV WKT</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="181"/>
+        <location filename="../import_from_csv_algorithms.py" line="191"/>
         <source>Create vector layer from CSV (WKT column)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonne WKT)</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="185"/>
+        <location filename="../import_from_csv_algorithms.py" line="195"/>
         <source>Import from CSV</source>
         <translation>Import depuis CSV</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="189"/>
+        <location filename="../import_from_csv_algorithms.py" line="199"/>
         <source>This algorithm loads a CSV file as a vector layer. Geometry is given as a WKT column.</source>
         <translation>Cet algorithme charge une couche vectorielle depuis un fichier CSV dans lequel les géométries sont données au format WKT dans une colonne.</translation>
     </message>
@@ -159,32 +159,32 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
 <context>
     <name>LoadXyCSVAlgorithm</name>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="237"/>
+        <location filename="../import_from_csv_algorithms.py" line="247"/>
         <source>X/longitude column</source>
         <translation>Colonne X ou longitude</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="241"/>
+        <location filename="../import_from_csv_algorithms.py" line="251"/>
         <source>Y/latitude column</source>
         <translation>Colonne Y ou latitude</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="245"/>
+        <location filename="../import_from_csv_algorithms.py" line="255"/>
         <source>XY CSV</source>
         <translation>CSV XY</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="257"/>
+        <location filename="../import_from_csv_algorithms.py" line="267"/>
         <source>Create vector layer from CSV (X, Y columns)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonnes X, Y)</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="261"/>
+        <location filename="../import_from_csv_algorithms.py" line="271"/>
         <source>Import from CSV</source>
         <translation>Import depuis CSV</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="265"/>
+        <location filename="../import_from_csv_algorithms.py" line="275"/>
         <source>This algorithm loads a CSV file as a point layer. Geometry is given as two columns for X and Y coordinates.</source>
         <translation>Cet algorithme charge une couche ponctuelle depuis un fichier CSV dans lequel les coordonnées X et Y sont indiquées dans deux colonnes.</translation>
     </message>
@@ -212,34 +212,37 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
 <context>
     <name>_AbstractLoadCSVAlgorithm</name>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="71"/>
+        <location filename="../import_from_csv_algorithms.py" line="70"/>
         <source>Input CSV file</source>
         <translation>Fichier CSV en entrée</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="77"/>
+        <location filename="../import_from_csv_algorithms.py" line="76"/>
         <source>Column delimiter</source>
         <translation>Séparateur de colonnes</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="83"/>
+        <location filename="../import_from_csv_algorithms.py" line="82"/>
         <source>Character used to quote columns</source>
         <translation>Caractrère de délimitation des colonnes</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="88"/>
+        <location filename="../import_from_csv_algorithms.py" line="87"/>
         <source>Is the first line headers ?</source>
         <translation>En-têtes en première ligne ?</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="100"/>
-        <source>CRS</source>
-        <translation>SCR</translation>
-    </message>
-    <message>
-        <location filename="../import_from_csv_algorithms.py" line="94"/>
+        <location filename="../import_from_csv_algorithms.py" line="93"/>
         <source>Decimal point</source>
         <translation>Séparateur décimal</translation>
+    </message>
+</context>
+<context>
+    <name>_AbstractLoadCSVGeometryAlgorithm</name>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="159"/>
+        <source>CRS</source>
+        <translation>SCR</translation>
     </message>
 </context>
 </TS>
