@@ -93,7 +93,7 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
         self.decimal_points = ['.', ',']
         self.addParameter(QgsProcessingParameterEnum(
             self.DECIMAL_POINT,
-            self.tr('Séparateur décimal'),
+            self.tr('Decimal point'),
             options=self.decimal_points,
             defaultValue=0,
         ))
