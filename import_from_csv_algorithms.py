@@ -63,6 +63,7 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
     DELIMITER = 'DELIMITER'
     QUOTECHAR = 'QUOTE_CHAR'
     USE_HEADER = 'USE_HEADER'
+    DECIMAL_POINT = 'DECIMAL_POINT'
     CRS = 'CRS'
 
     def initAlgorithm(self, config):
@@ -88,6 +89,13 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
             self.USE_HEADER,
             self.tr('Is the first line headers ?'),
             defaultValue=True,
+        ))
+        self.decimal_points = ['.', ',']
+        self.addParameter(QgsProcessingParameterEnum(
+            self.DECIMAL_POINT,
+            self.tr('Séparateur décimal'),
+            options=self.decimal_points,
+            defaultValue=0,
         ))
         self.addParameter(QgsProcessingParameterCrs(
             self.CRS,
@@ -195,6 +203,8 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
         quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
         use_header = self.parameterAsBool(parameters, self.USE_HEADER,
                                           context)
+        decimal_point = self.parameterAsEnum(parameters, self.DECIMAL_POINT,
+                                             context)
         wkt_field = self.parameterAsString(parameters, self.WKT_FIELD, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         return '{base_uri}?{params}'.format(
@@ -203,6 +213,7 @@ class LoadWktCSVAlgorithm(_AbstractLoadCSVAlgorithm):
                 ('delimiter', delimiter),
                 ('quote', quotechar),
                 ('useHeader', 'Yes' if use_header else 'No'),
+                ('decimalPoint', decimal_point),
                 ('trimFields', 'Yes'),
                 ('wktField', wkt_field),
                 ('crs', crs.authid()),
@@ -268,6 +279,8 @@ class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
         quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
         use_header = self.parameterAsBool(parameters, self.USE_HEADER,
                                           context)
+        decimal_point = self.parameterAsEnum(parameters, self.DECIMAL_POINT,
+                                             context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         x_field = self.parameterAsString(parameters, self.X_FIELD, context)
         y_field = self.parameterAsString(parameters, self.Y_FIELD, context)
@@ -277,6 +290,7 @@ class LoadXyCSVAlgorithm(_AbstractLoadCSVAlgorithm):
                 ('delimiter', delimiter),
                 ('quote', quotechar),
                 ('useHeader', 'Yes' if use_header else 'No'),
+                ('decimalPoint', decimal_point),
                 ('trimFields', 'Yes'),
                 ('xField', x_field),
                 ('yField', y_field),
