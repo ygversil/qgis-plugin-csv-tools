@@ -11,7 +11,7 @@
 <context>
     <name>CSVToolsProvider</name>
     <message>
-        <location filename="../csv_tools_provider.py" line="89"/>
+        <location filename="../csv_tools_provider.py" line="94"/>
         <source>CSV Tools</source>
         <translation>Outils CSV</translation>
     </message>
@@ -129,29 +129,52 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
     </message>
 </context>
 <context>
+    <name>LoadNoGeomCSVAlgorithm</name>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="173"/>
+        <source>CSV</source>
+        <translation>CSV</translation>
+    </message>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="185"/>
+        <source>Create vector layer from CSV (no geometry)</source>
+        <translation>Créer une couche depuis un CSV (sans géometrie)</translation>
+    </message>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="189"/>
+        <source>Import from CSV</source>
+        <translation>Importer depuis un CSV</translation>
+    </message>
+    <message>
+        <location filename="../import_from_csv_algorithms.py" line="193"/>
+        <source>This algorithm loads a CSV file as a vector layer with no geometry.</source>
+        <translation>Cet algorithme charge une couche vectorielle depuis un fichier CSV dans lequel il n&apos;y a pas de géométrie.</translation>
+    </message>
+</context>
+<context>
     <name>LoadWktCSVAlgorithm</name>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="175"/>
+        <location filename="../import_from_csv_algorithms.py" line="239"/>
         <source>Geometry column (as WKT)</source>
         <translation>Colonne de géométrie (en WKT)</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="179"/>
+        <location filename="../import_from_csv_algorithms.py" line="243"/>
         <source>WKT CSV</source>
         <translation>CSV WKT</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="191"/>
+        <location filename="../import_from_csv_algorithms.py" line="255"/>
         <source>Create vector layer from CSV (WKT column)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonne WKT)</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="195"/>
+        <location filename="../import_from_csv_algorithms.py" line="259"/>
         <source>Import from CSV</source>
         <translation>Import depuis CSV</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="199"/>
+        <location filename="../import_from_csv_algorithms.py" line="263"/>
         <source>This algorithm loads a CSV file as a vector layer. Geometry is given as a WKT column.</source>
         <translation>Cet algorithme charge une couche vectorielle depuis un fichier CSV dans lequel les géométries sont données au format WKT dans une colonne.</translation>
     </message>
@@ -159,32 +182,32 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
 <context>
     <name>LoadXyCSVAlgorithm</name>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="247"/>
+        <location filename="../import_from_csv_algorithms.py" line="311"/>
         <source>X/longitude column</source>
         <translation>Colonne X ou longitude</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="251"/>
+        <location filename="../import_from_csv_algorithms.py" line="315"/>
         <source>Y/latitude column</source>
         <translation>Colonne Y ou latitude</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="255"/>
+        <location filename="../import_from_csv_algorithms.py" line="319"/>
         <source>XY CSV</source>
         <translation>CSV XY</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="267"/>
+        <location filename="../import_from_csv_algorithms.py" line="331"/>
         <source>Create vector layer from CSV (X, Y columns)</source>
         <translation>Créer une couche vecteur depuis un CSV (colonnes X, Y)</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="271"/>
+        <location filename="../import_from_csv_algorithms.py" line="335"/>
         <source>Import from CSV</source>
         <translation>Import depuis CSV</translation>
     </message>
     <message>
-        <location filename="../import_from_csv_algorithms.py" line="275"/>
+        <location filename="../import_from_csv_algorithms.py" line="339"/>
         <source>This algorithm loads a CSV file as a point layer. Geometry is given as two columns for X and Y coordinates.</source>
         <translation>Cet algorithme charge une couche ponctuelle depuis un fichier CSV dans lequel les coordonnées X et Y sont indiquées dans deux colonnes.</translation>
     </message>

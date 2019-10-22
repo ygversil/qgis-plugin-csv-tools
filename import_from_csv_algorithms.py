@@ -163,6 +163,70 @@ class _AbstractLoadCSVGeometryAlgorithm(_AbstractLoadCSVAlgorithm):
 
 
 # TODO: write tests
+class LoadNoGeomCSVAlgorithm(_AbstractLoadCSVAlgorithm):
+    """QGIS algorithm that takes a CSV file with no geometry and loads it as a
+    vector layer."""
+
+    def initAlgorithm(self, config):
+        """Initialize algorithm with inputs and output parameters."""
+        super().initAlgorithm(config)
+        self.addParameter(QgsProcessingParameterFeatureSink(
+            self.OUTPUT,
+            self.tr('CSV'),
+            QgsProcessing.TypeVector
+        ))
+
+    def name(self):
+        """Algorithm identifier."""
+        return 'loadnogeomcsvfile'
+
+    def displayName(self):
+        """Algorithm human name."""
+        return self.tr('Create vector layer from CSV (no geometry)')
+
+    def group(self):  # Cannot be factored in abstract class because of i18n
+        """Algorithm group human name."""
+        return self.tr('Import from CSV')
+
+    def shortHelpString(self):
+        """Algorithm help message displayed in the right panel."""
+        return self.tr(
+            "This algorithm loads a CSV file as a vector layer with no "
+            "geometry."
+        )
+
+    def icon(self):
+        """Algorithm's icon."""
+        return QIcon(':/plugins/csv_tools/load_csv_wkt.png')
+
+    def _buildUri(self, parameters, context):
+        """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
+        csv_path = self.parameterAsFile(parameters, self.INPUT, context)
+        delimiter = self.parameterAsEnum(parameters, self.DELIMITER, context)
+        delimiter = self.delimiters[delimiter]
+        quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
+        use_header = self.parameterAsBool(parameters, self.USE_HEADER,
+                                          context)
+        decimal_point = self.parameterAsEnum(parameters, self.DECIMAL_POINT,
+                                             context)
+        wkt_field = self.parameterAsString(parameters, self.WKT_FIELD, context)
+        return '{base_uri}?{params}'.format(
+            base_uri=pathlib.Path(csv_path).as_uri(),
+            params=urllib.parse.urlencode((
+                ('delimiter', delimiter),
+                ('quote', quotechar),
+                ('useHeader', 'Yes' if use_header else 'No'),
+                ('decimalPoint', decimal_point),
+                ('trimFields', 'Yes'),
+                ('wktField', wkt_field),
+                ('geomType', 'none'),
+                ('spatialIndex', 'no'),
+                ('watchFile', 'no'),
+            ), safe=r'\:')
+        )
+
+
+# TODO: write tests
 class LoadWktCSVAlgorithm(_AbstractLoadCSVGeometryAlgorithm):
     """QGIS algorithm that takes a CSV file with WKT column and loads it as a
     vector layer."""
