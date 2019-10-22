@@ -51,9 +51,8 @@ from qgis.core import (
 )
 
 
-class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
-    """Abstract QGIS algorithm that takes a CSV file and loads it as a vector
-    layer."""
+class LoadCSVAlgorithm(QgisAlgorithm):
+    """QGIS algorithm that takes a CSV file and loads it as a vector layer."""
 
     # Constants used to refer to parameters and outputs. They will be
     # used when calling the algorithm from another algorithm, or when
@@ -64,6 +63,11 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
     QUOTECHAR = 'QUOTE_CHAR'
     USE_HEADER = 'USE_HEADER'
     DECIMAL_POINT = 'DECIMAL_POINT'
+    GEOMETRY_DATA = 'GEOMETRY_DATA'
+    WKT_FIELD = 'WKT_FIELD'
+    X_FIELD = 'X_FIELD'
+    Y_FIELD = 'Y_FIELD'
+    CRS = 'CRS'
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
@@ -96,14 +100,75 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
             options=self.decimal_points,
             defaultValue=0,
         ))
+        self.geometry_data = [
+            self.tr('WKT column'),
+            self.tr('X/Y (or longitude/latitude) columns'),
+            self.tr('No Geometry'),
+        ]
+        self.addParameter(QgsProcessingParameterEnum(
+            self.GEOMETRY_DATA,
+            self.tr('How geometry is given ?'),
+            options=self.geometry_data,
+            defaultValue=2,
+        ))
+        self.addParameter(QgsProcessingParameterString(
+            self.WKT_FIELD,
+            self.tr('Geometry column, as WKT (if WKT column selected)'),
+            optional=True,
+        ))
+        self.addParameter(QgsProcessingParameterString(
+            self.X_FIELD,
+            self.tr('X/longitude column (if X/Y column selected)'),
+            optional=True,
+        ))
+        self.addParameter(QgsProcessingParameterString(
+            self.Y_FIELD,
+            self.tr('Y/latitude column (if X/Y column selected)'),
+            optional=True,
+        ))
+        self.addParameter(QgsProcessingParameterCrs(
+            self.CRS,
+            self.tr('CRS (if geometry given)'),
+            optional=True,
+        ))
+        self.addParameter(QgsProcessingParameterFeatureSink(
+            self.OUTPUT,
+            self.tr('CSV layer'),
+            QgsProcessing.TypeVector
+        ))
+
+    def name(self):
+        """Algorithm identifier."""
+        return 'loadcsvfile'
+
+    def displayName(self):
+        """Algorithm human name."""
+        return self.tr('Create vector layer from CSV file')
 
     def groupId(self):
         """Algorithm group identifier."""
         return 'importfromcsv'
 
+    def group(self):  # Cannot be factored in abstract class because of i18n
+        """Algorithm group human name."""
+        return self.tr('Import from CSV')
+
+    def shortHelpString(self):
+        """Algorithm help message displayed in the right panel."""
+        return self.tr(
+            "This algorithm loads a CSV file as a vector layer, with or "
+            "without geometry. If present, geometry may be given as one WKT "
+            "column or as two X/Y columns."
+        )
+
+    def icon(self):
+        """Algorithm's icon."""
+        return QIcon(':/plugins/csv_tools/load_csv.png')
+
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
         uri = self._buildUri(parameters, context)
+        print(uri)
         vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
         if not vlayer.isValid():
             QgsMessageLog.logMessage(
@@ -146,59 +211,6 @@ class _AbstractLoadCSVAlgorithm(QgisAlgorithm):
             feedback.setProgress(50 + int(i * total))
         return {self.OUTPUT: dest_id}
 
-
-class _AbstractLoadCSVGeometryAlgorithm(_AbstractLoadCSVAlgorithm):
-    """Abstract QGIS algorithm that takes a CSV file and loads it as a vector
-    layer with geometry."""
-
-    CRS = 'CRS'
-
-    def initAlgorithm(self, config):
-        """Initialize algorithm with inputs and output parameters."""
-        super().initAlgorithm(config)
-        self.addParameter(QgsProcessingParameterCrs(
-            self.CRS,
-            self.tr('CRS'),
-        ))
-
-
-# TODO: write tests
-class LoadNoGeomCSVAlgorithm(_AbstractLoadCSVAlgorithm):
-    """QGIS algorithm that takes a CSV file with no geometry and loads it as a
-    vector layer."""
-
-    def initAlgorithm(self, config):
-        """Initialize algorithm with inputs and output parameters."""
-        super().initAlgorithm(config)
-        self.addParameter(QgsProcessingParameterFeatureSink(
-            self.OUTPUT,
-            self.tr('CSV'),
-            QgsProcessing.TypeVector
-        ))
-
-    def name(self):
-        """Algorithm identifier."""
-        return 'loadnogeomcsvfile'
-
-    def displayName(self):
-        """Algorithm human name."""
-        return self.tr('Create vector layer from CSV (no geometry)')
-
-    def group(self):  # Cannot be factored in abstract class because of i18n
-        """Algorithm group human name."""
-        return self.tr('Import from CSV')
-
-    def shortHelpString(self):
-        """Algorithm help message displayed in the right panel."""
-        return self.tr(
-            "This algorithm loads a CSV file as a vector layer with no "
-            "geometry."
-        )
-
-    def icon(self):
-        """Algorithm's icon."""
-        return QIcon(':/plugins/csv_tools/load_csv_wkt.png')
-
     def _buildUri(self, parameters, context):
         """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
         csv_path = self.parameterAsFile(parameters, self.INPUT, context)
@@ -209,167 +221,57 @@ class LoadNoGeomCSVAlgorithm(_AbstractLoadCSVAlgorithm):
                                           context)
         decimal_point = self.parameterAsEnum(parameters, self.DECIMAL_POINT,
                                              context)
-        wkt_field = self.parameterAsString(parameters, self.WKT_FIELD, context)
-        return '{base_uri}?{params}'.format(
-            base_uri=pathlib.Path(csv_path).as_uri(),
-            params=urllib.parse.urlencode((
-                ('delimiter', delimiter),
-                ('quote', quotechar),
-                ('useHeader', 'Yes' if use_header else 'No'),
-                ('decimalPoint', decimal_point),
-                ('trimFields', 'Yes'),
-                ('wktField', wkt_field),
-                ('geomType', 'none'),
-                ('spatialIndex', 'no'),
-                ('watchFile', 'no'),
-            ), safe=r'\:')
-        )
-
-
-# TODO: write tests
-class LoadWktCSVAlgorithm(_AbstractLoadCSVGeometryAlgorithm):
-    """QGIS algorithm that takes a CSV file with WKT column and loads it as a
-    vector layer."""
-
-    WKT_FIELD = 'WKT_FIELD'
-
-    def initAlgorithm(self, config):
-        """Initialize algorithm with inputs and output parameters."""
-        super().initAlgorithm(config)
-        self.addParameter(QgsProcessingParameterString(
-            self.WKT_FIELD,
-            self.tr('Geometry column (as WKT)'),
-        ))
-        self.addParameter(QgsProcessingParameterFeatureSink(
-            self.OUTPUT,
-            self.tr('WKT CSV'),
-            QgsProcessing.TypeVectorAnyGeometry
-        ))
-
-    def name(self):
-        """Algorithm identifier."""
-        return 'loadwktcsvfile'
-
-    def displayName(self):
-        """Algorithm human name."""
-        return self.tr('Create vector layer from CSV (WKT column)')
-
-    def group(self):  # Cannot be factored in abstract class because of i18n
-        """Algorithm group human name."""
-        return self.tr('Import from CSV')
-
-    def shortHelpString(self):
-        """Algorithm help message displayed in the right panel."""
-        return self.tr(
-            "This algorithm loads a CSV file as a vector layer. Geometry is "
-            "given as a WKT column."
-        )
-
-    def icon(self):
-        """Algorithm's icon."""
-        return QIcon(':/plugins/csv_tools/load_csv_wkt.png')
-
-    def _buildUri(self, parameters, context):
-        """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
-        csv_path = self.parameterAsFile(parameters, self.INPUT, context)
-        delimiter = self.parameterAsEnum(parameters, self.DELIMITER, context)
-        delimiter = self.delimiters[delimiter]
-        quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
-        use_header = self.parameterAsBool(parameters, self.USE_HEADER,
-                                          context)
-        decimal_point = self.parameterAsEnum(parameters, self.DECIMAL_POINT,
+        decimal_point = self.decimal_points[decimal_point]
+        geometry_data = self.parameterAsEnum(parameters, self.GEOMETRY_DATA,
                                              context)
         wkt_field = self.parameterAsString(parameters, self.WKT_FIELD, context)
+        x_field = self.parameterAsString(parameters, self.X_FIELD, context)
+        y_field = self.parameterAsString(parameters, self.Y_FIELD, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
-        return '{base_uri}?{params}'.format(
-            base_uri=pathlib.Path(csv_path).as_uri(),
-            params=urllib.parse.urlencode((
-                ('delimiter', delimiter),
-                ('quote', quotechar),
-                ('useHeader', 'Yes' if use_header else 'No'),
-                ('decimalPoint', decimal_point),
-                ('trimFields', 'Yes'),
+        print(delimiter)
+        print(decimal_point)
+        print(geometry_data)
+        base_uri = pathlib.Path(csv_path).as_uri()
+        params = (
+            ('type', 'csv'),
+            ('useHeader', 'Yes' if use_header else 'No'),
+            ('decimalPoint', decimal_point),
+            ('trimFields', 'Yes'),
+            ('detectTypes', 'yes'),
+            ('subsetIndex', 'no'),
+            ('watchFile', 'no'),
+        )
+        if delimiter != ',':
+            params += (('delimiter', delimiter),)
+        if quotechar != '"':
+            params += (('quote', quotechar),)
+        if geometry_data == 0:
+            params += (
                 ('wktField', wkt_field),
                 ('crs', crs.authid()),
                 ('spatialIndex', 'yes'),
-                ('watchFile', 'no'),
-            ), safe=r'\:')
-        )
-
-
-# TODO: write tests
-class LoadXyCSVAlgorithm(_AbstractLoadCSVGeometryAlgorithm):
-    """QGIS algorithm that takes a CSV file with X, Y columns and loads it as a
-    vector layer."""
-
-    X_FIELD = 'X_FIELD'
-    Y_FIELD = 'Y_FIELD'
-
-    def initAlgorithm(self, config):
-        """Initialize algorithm with inputs and output parameters."""
-        super().initAlgorithm(config)
-        self.addParameter(QgsProcessingParameterString(
-            self.X_FIELD,
-            self.tr('X/longitude column'),
-        ))
-        self.addParameter(QgsProcessingParameterString(
-            self.Y_FIELD,
-            self.tr('Y/latitude column'),
-        ))
-        self.addParameter(QgsProcessingParameterFeatureSink(
-            self.OUTPUT,
-            self.tr('XY CSV'),
-            QgsProcessing.TypeVectorAnyGeometry
-        ))
-
-    def name(self):
-        """Algorithm identifier."""
-        return 'loadxycsvfile'
-
-    def displayName(self):
-        """Algorithm human name."""
-        return self.tr('Create vector layer from CSV (X, Y columns)')
-
-    def group(self):  # Cannot be factored in abstract class because of i18n
-        """Algorithm group human name."""
-        return self.tr('Import from CSV')
-
-    def shortHelpString(self):
-        """Algorithm help message displayed in the right panel."""
-        return self.tr(
-            "This algorithm loads a CSV file as a point layer. Geometry is "
-            "given as two columns for X and Y coordinates."
-        )
-
-    def icon(self):
-        """Algorithm's icon."""
-        return QIcon(':/plugins/csv_tools/load_csv_xy.png')
-
-    def _buildUri(self, parameters, context):
-        """Build URI to pass to ``qgis.core.QgsVectorLayer`` from params."""
-        csv_path = self.parameterAsFile(parameters, self.INPUT, context)
-        delimiter = self.parameterAsEnum(parameters, self.DELIMITER, context)
-        delimiter = self.delimiters[delimiter]
-        quotechar = self.parameterAsString(parameters, self.QUOTECHAR, context)
-        use_header = self.parameterAsBool(parameters, self.USE_HEADER,
-                                          context)
-        decimal_point = self.parameterAsEnum(parameters, self.DECIMAL_POINT,
-                                             context)
-        crs = self.parameterAsCrs(parameters, self.CRS, context)
-        x_field = self.parameterAsString(parameters, self.X_FIELD, context)
-        y_field = self.parameterAsString(parameters, self.Y_FIELD, context)
-        return '{base_uri}?{params}'.format(
-            base_uri=pathlib.Path(csv_path).as_uri(),
-            params=urllib.parse.urlencode((
-                ('delimiter', delimiter),
-                ('quote', quotechar),
-                ('useHeader', 'Yes' if use_header else 'No'),
-                ('decimalPoint', decimal_point),
-                ('trimFields', 'Yes'),
+            )
+            return '{base_uri}?{params}'.format(
+                base_uri=base_uri,
+                params=urllib.parse.urlencode(params, safe=r'\:')
+            )
+        elif geometry_data == 1:
+            params += (
                 ('xField', x_field),
                 ('yField', y_field),
                 ('crs', crs.authid()),
                 ('spatialIndex', 'yes'),
-                ('watchFile', 'no'),
-            ), safe=r'\:')
-        )
+            )
+            return '{base_uri}?{params}'.format(
+                base_uri=base_uri,
+                params=urllib.parse.urlencode(params, safe=r'\:')
+            )
+        else:
+            params += (
+                ('geomType', 'none'),
+                ('spatialIndex', 'no'),
+            )
+            return '{base_uri}?{params}'.format(
+                base_uri=base_uri,
+                params=urllib.parse.urlencode(params, safe=r'\:')
+            )

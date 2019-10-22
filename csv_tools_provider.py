@@ -35,11 +35,7 @@ from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
 
 from .resources import *  # noqa
-from .import_from_csv_algorithms import (
-    LoadNoGeomCSVAlgorithm,
-    LoadWktCSVAlgorithm,
-    LoadXyCSVAlgorithm,
-)
+from .import_from_csv_algorithms import LoadCSVAlgorithm
 from .export_to_csv_algorithms import (
     ExportPostgreSQLQueryToCsv,
     ExportSQLiteQueryToCsv,
@@ -57,9 +53,7 @@ class CSVToolsProvider(QgsProcessingProvider):
             ExportPostgreSQLQueryToCsv(),
             ExportSQLiteQueryToCsv(),
             FeatureDiffAlgorithm(),
-            LoadNoGeomCSVAlgorithm(),
-            LoadWktCSVAlgorithm(),
-            LoadXyCSVAlgorithm(),
+            LoadCSVAlgorithm(),
         ]
 
     def unload(self):
