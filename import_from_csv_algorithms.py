@@ -168,7 +168,6 @@ class LoadCSVAlgorithm(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
         uri = self._buildUri(parameters, context)
-        print(uri)
         vlayer = QgsVectorLayer(uri, "layername", "delimitedtext")
         if not vlayer.isValid():
             QgsMessageLog.logMessage(
@@ -228,9 +227,6 @@ class LoadCSVAlgorithm(QgisAlgorithm):
         x_field = self.parameterAsString(parameters, self.X_FIELD, context)
         y_field = self.parameterAsString(parameters, self.Y_FIELD, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
-        print(delimiter)
-        print(decimal_point)
-        print(geometry_data)
         base_uri = pathlib.Path(csv_path).as_uri()
         params = (
             ('type', 'csv'),
