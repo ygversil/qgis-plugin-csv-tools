@@ -30,8 +30,17 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
+
+from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
-from .csv_tools_algorithm import CSVToolsAlgorithm
+
+from .resources import *  # noqa
+from .import_from_csv_algorithms import LoadCSVAlgorithm
+from .export_to_csv_algorithms import (
+    ExportPostgreSQLQueryToCsv,
+    ExportSQLiteQueryToCsv,
+)
+from .other_csv_algorithms import FeatureDiffAlgorithm
 
 
 class CSVToolsProvider(QgsProcessingProvider):
@@ -40,7 +49,12 @@ class CSVToolsProvider(QgsProcessingProvider):
         QgsProcessingProvider.__init__(self)
 
         # Load algorithms
-        self.alglist = [CSVToolsAlgorithm()]
+        self.alglist = [
+            ExportPostgreSQLQueryToCsv(),
+            ExportSQLiteQueryToCsv(),
+            FeatureDiffAlgorithm(),
+            LoadCSVAlgorithm(),
+        ]
 
     def unload(self):
         """
@@ -62,7 +76,7 @@ class CSVToolsProvider(QgsProcessingProvider):
         string should be a unique, short, character only string, eg "qgis" or
         "gdal". This string should not be localised.
         """
-        return ''
+        return 'csvtools'
 
     def name(self):
         """
@@ -71,7 +85,7 @@ class CSVToolsProvider(QgsProcessingProvider):
 
         This string should be short (e.g. "Lastools") and localised.
         """
-        return self.tr('')
+        return self.tr('CSV Tools')
 
     def longName(self):
         """
@@ -81,3 +95,11 @@ class CSVToolsProvider(QgsProcessingProvider):
         implementation returns the same string as name().
         """
         return self.name()
+
+    def icon(self):
+        """The provider's icon."""
+        return QIcon(':/plugins/csv_tools/csv.svg')
+
+    def svgIconPath(self):
+        """The provider's icon."""
+        return QIcon(':/plugins/csv_tools/csv.svg')

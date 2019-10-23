@@ -70,6 +70,16 @@ QGIS 3.X.
 
     source <path/to/your/source/folder>/qgis-processing-csv-tools/scripts/run-env-linux.sh </path/to/folder/containing/QGIS/lib>
 
+* Find the path to the ``plugins`` folder where you will test your changes. You
+  are advised to use a specific QGIS profile for development purposes. Keep it
+  separate from the default profile. The path may looks like::
+
+    /home/<username>/.local/share/QGIS/QGIS3/profiles/dev/python/plugins/
+
+  Then create the file ``pb_tool.cfg`` copying the provided template
+  ``pb_tool.cfg.tmpl`` and replace the line starting with ``plugin_path:`` with
+  the aforementioned path.
+
 * Finally, make sure that tests are passing::
 
     (venv)$ make test

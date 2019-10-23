@@ -1,3 +1,6 @@
+pb_tool
+sphinx
 pytest
 pytest-cov
 flake8
+bumpversion

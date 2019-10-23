@@ -30,39 +30,33 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
-import os
-import sys
-import inspect
 
-from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from qgis.core import QgsApplication
-
-from .csv_tools_provider import CSVToolsProvider
-
-cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
-
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
+from processing.tools import postgis
+from qgis.core import QgsProcessingException
+import psycopg2
 
 
-class CSVToolsPlugin(object):
+class CopyGeoDB(postgis.GeoDB):
+    """Util class to work with a Postgis database, adding copy method."""
 
-    def __init__(self):
-        self.provider = CSVToolsProvider()
-        # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            os.path.dirname(__file__),
-            'i18n',
-            'csv_tools_{}.qm'.format(locale))
-        if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
-            if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
-
-    def initGui(self):
-        QgsApplication.processingRegistry().addProvider(self.provider)
-
-    def unload(self):
-        QgsApplication.processingRegistry().removeProvider(self.provider)
+    def copy(self, cursor, select_sql, dstf):
+        """Copy the given ``SELECT`` query to the given destination file."""
+        try:
+            cursor.copy_expert(
+                'copy ({select_sql}) to stdout '
+                'with (format csv, '
+                "delimiter '|', "
+                "null '', "
+                "header false, "
+                "quote '\"')".format(select_sql=select_sql),
+                dstf
+            )
+        except psycopg2.Error as e:
+            raise QgsProcessingException(
+                '{e} QUERY: {query}'.format(
+                    e=str(e),
+                    query=e.cursor.query.decode(
+                        e.cursor.connection.encoding
+                    )
+                )
+            )
