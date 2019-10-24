@@ -47,7 +47,7 @@ class CopyGeoDB(postgis.GeoDB):
                 'with (format csv, '
                 "delimiter '|', "
                 "null '', "
-                "header false, "
+                "header true, "
                 "quote '\"')".format(select_sql=select_sql),
                 dstf
             )

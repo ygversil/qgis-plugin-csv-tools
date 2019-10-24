@@ -201,6 +201,7 @@ class ExportSQLiteQueryToCsv(_AbstractExportQueryToCsv):
         with sqlite3.connect(qgis_conn) as conn:
             cur = conn.cursor()
             cur.execute(select_sql)
+            yield tuple(item[0] for item in cur.description)
             yield from cur
 
 
