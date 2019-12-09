@@ -33,7 +33,7 @@ homepage=https://framagit.org/ygversil/qgis-processing-csv-tools
 category=Analysis
 icon=icons/csv.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
