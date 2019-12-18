@@ -46,7 +46,7 @@ class QGISTest(unittest.TestCase):
             'AUTHORITY["EPSG","6326"]],'
             'PRIMEM["Greenwich",0,'
             'AUTHORITY["EPSG","8901"]],'
-            'UNIT["degree",0.01745329251994328,'
+            'UNIT["degree",0.0174532925199433,'
             'AUTHORITY["EPSG","9122"]],'
             'AUTHORITY["EPSG","4326"]]'
         )
