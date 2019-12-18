@@ -6,8 +6,8 @@ Writing code
 ============
 
 Writing code is one obvious way to help us. For example, you can either fix a
-bug or develop a new functionality. To do so, you must have a Framagit_
-account (powered by GitLab_).
+bug or develop a new functionality. To do so, you must have a GitHub_
+account.
 
 Preliminary steps
 -----------------
@@ -21,17 +21,17 @@ distribution.  You must have previously installed git, Python 3, and of course
 QGIS 3.X.
 
 * Web browse to the project repository on Framagit interface:
-  https://framagit.org/ygversil/qgis-processing-csv-tools/. Then click on the
+  https://github.com/ygversil/qgis-plugin-csv-tools. Then click on the
   ``Fork`` button to clone the repository into your own account.
 
 * On your computer, clone your forked repository in a suitable folder::
 
     $ cd <path/to/your/source/folder>
-    $ git clone git@framagit.org:<your_framagit_username>/qgis-processing-csv-tools/
+    $ git clone git@github.com:<your_github_username>/qgis-plugin-csv-tools/
 
   Of course, replace ``<path/to/your/source/folder>`` with the path to a folder
-  where you keep source code, and ``<your_framagit_username>`` with your
-  Framagit username (you should have set up SSH *key-based authentication*
+  where you keep source code, and ``<your_github_username>`` with your
+  GitHub username (you should have set up SSH *key-based authentication*
   previously for this to work flawlessly. See https://docs.gitlab.com/ee/ssh/
   for details).
 
@@ -84,6 +84,4 @@ QGIS 3.X.
 
     (venv)$ make test
 
-.. _Framagit: https://framagit.org/
-
-.. _GitLab: https://about.gitlab.com/
+.. _GitHub: https://github.com/

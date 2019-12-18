@@ -16,8 +16,8 @@ email=ygversil@lilo.org
 
 about=This plugin adds new processing algorithms and models to help working with CSV files. Added algorithms include, among others: load a CSV file as a vector layer, export a vector layer as a CSV file, compute differences between two version of the same layer, and so on...
 
-tracker=https://framagit.org/ygversil/qgis-processing-csv-tools/issues
-repository=https://framagit.org/ygversil/qgis-processing-csv-tools
+tracker=https://github.com/ygversil/qgis-plugin-csv-tools/issues
+repository=https://github.com/ygversil/qgis-plugin-csv-tools
 # End of mandatory metadata
 
 # Recommended items:
@@ -29,7 +29,7 @@ changelog=
 # Tags are comma separated with spaces allowed
 tags=python,csv,postgresql,import,export,vector
 
-homepage=https://framagit.org/ygversil/qgis-processing-csv-tools
+homepage=https://github.com/ygversil/qgis-plugin-csv-tools
 category=Analysis
 icon=icons/csv.png
 # experimental flag
