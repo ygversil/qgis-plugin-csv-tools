@@ -48,14 +48,6 @@ class CSVToolsProvider(QgsProcessingProvider):
     def __init__(self):
         QgsProcessingProvider.__init__(self)
 
-        # Load algorithms
-        self.alglist = [
-            ExportPostgreSQLQueryToCsv(),
-            ExportSQLiteQueryToCsv(),
-            FeatureDiffAlgorithm(),
-            LoadCSVAlgorithm(),
-        ]
-
     def unload(self):
         """
         Unloads the provider. Any tear-down steps required by the provider
@@ -67,8 +59,10 @@ class CSVToolsProvider(QgsProcessingProvider):
         """
         Loads all algorithms belonging to this provider.
         """
-        for alg in self.alglist:
-            self.addAlgorithm(alg)
+        self.addAlgorithm(ExportPostgreSQLQueryToCsv())
+        self.addAlgorithm(ExportSQLiteQueryToCsv())
+        self.addAlgorithm(FeatureDiffAlgorithm())
+        self.addAlgorithm(LoadCSVAlgorithm())
 
     def id(self):
         """

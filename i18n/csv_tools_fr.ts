@@ -11,7 +11,7 @@
 <context>
     <name>CSVToolsProvider</name>
     <message>
-        <location filename="../csv_tools_provider.py" line="88"/>
+        <location filename="../csv_tools_provider.py" line="82"/>
         <source>CSV Tools</source>
         <translation>Outils CSV</translation>
     </message>
