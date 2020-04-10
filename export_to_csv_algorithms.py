@@ -88,10 +88,7 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
         select_sql = self.parameterAsString(parameters, self.SELECT_SQL,
                                             context)
         select_sql = str(select_sql).strip().replace('\n', ' ')
-        if not select_sql.lower().startswith('select'):
-            raise QgsProcessingException(
-                self.tr('Not a SELECT query:\n{0}').format(select_sql)
-            )
+        # XXX: check if this a SELECT query
         qgis_conn = self.parameterAsString(parameters, self.DATABASE, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT,
                                                context)
