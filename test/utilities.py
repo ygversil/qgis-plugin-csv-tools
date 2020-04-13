@@ -26,6 +26,12 @@ def _init_processing():
     Processing.initialize()
 
 
+def _add_plugin_paths_to_qgis(*paths):
+    """Make given paths known to QGIS as plugin paths."""
+    for path in paths:
+        qgis.utils.plugin_paths.append(path.as_posix())
+
+
 class singleton:
     """Class decorator ensuring that only one instance of the given class is ever created.
 
@@ -75,8 +81,7 @@ class QgisAppMgr:
         _init_processing()
         sys_plugin_path = pathlib.Path(QgsApplication.pkgDataPath()) / 'python' / 'plugins'
         home_plugin_path = pathlib.Path(QgsApplication.qgisSettingsDirPath()) / 'python' / 'plugins'
-        qgis.utils.plugin_paths.append(sys_plugin_path.as_posix())
-        qgis.utils.plugin_paths.append(home_plugin_path.as_posix())
+        _add_plugin_paths_to_qgis(sys_plugin_path, home_plugin_path)
         pb_tool.deploy_files(
             config_file=(pathlib.Path(__file__).parents[1] / 'pb_tool.cfg').as_posix(),
             plugin_path='{}/'.format(home_plugin_path.as_posix()),
