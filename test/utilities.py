@@ -15,6 +15,12 @@ def _debug_log_message(message, tag, level):
     print('{}({}): {}'.format(tag, level, message))
 
 
+def _init_qgis_app():
+    """Initialize a QGIS application and set signals to print debug messages."""
+    QgsApplication.initQgis()
+    QgsApplication.instance().messageLog().messageReceived.connect(_debug_log_message)
+
+
 class singleton:
     """Class decorator ensuring that only one instance of the given class is ever created.
 
@@ -59,9 +65,8 @@ class QgisAppMgr:
         self.profile_folder = tempfile.TemporaryDirectory(prefix='QGIS-PythonTestConfigPath')
         os.environ['QGIS_CUSTOM_CONFIG_PATH'] = self.profile_folder.name
         self.app = QgsApplication([b''], False)
-        QgsApplication.initQgis()
+        _init_qgis_app()
         print(QgsApplication.showSettings())
-        QgsApplication.instance().messageLog().messageReceived.connect(_debug_log_message)
         Processing.initialize()
         sys_plugin_path = pathlib.Path(QgsApplication.pkgDataPath()) / 'python' / 'plugins'
         home_plugin_path = pathlib.Path(QgsApplication.qgisSettingsDirPath()) / 'python' / 'plugins'
