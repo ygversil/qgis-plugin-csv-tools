@@ -3,6 +3,7 @@
 import os
 import tempfile
 
+from processing.core.Processing import Processing
 from qgis.core import QgsApplication
 
 
@@ -58,6 +59,7 @@ class QgisAppMgr:
         QgsApplication.initQgis()
         print(QgsApplication.showSettings())
         QgsApplication.instance().messageLog().messageReceived.connect(_debug_log_message)
+        Processing.initialize()
 
     def stop_qgis(self):
         """Stop the started QGIS application properly."""
