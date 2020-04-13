@@ -50,7 +50,11 @@ class CSVToolsPlugin(object):
     def __init__(self):
         self.provider = CSVToolsProvider()
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = QSettings().value('locale/userLocale')
+        if locale:
+            locale = locale[0:2]
+        else:
+            locale = 'en'
         locale_path = os.path.join(
             os.path.dirname(__file__),
             'i18n',
