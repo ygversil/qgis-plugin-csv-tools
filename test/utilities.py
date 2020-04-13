@@ -4,6 +4,7 @@ import os
 import pathlib
 import tempfile
 
+from pb_tool import pb_tool
 from processing.core.Processing import Processing
 from qgis.core import QgsApplication
 import qgis.utils
@@ -66,6 +67,13 @@ class QgisAppMgr:
         home_plugin_path = pathlib.Path(QgsApplication.qgisSettingsDirPath()) / 'python' / 'plugins'
         qgis.utils.plugin_paths.append(sys_plugin_path.as_posix())
         qgis.utils.plugin_paths.append(home_plugin_path.as_posix())
+        pb_tool.deploy_files(
+            config_file=(pathlib.Path(__file__).parents[1] / 'pb_tool.cfg').as_posix(),
+            plugin_path='{}/'.format(home_plugin_path.as_posix()),
+            user_profile=None,
+            confirm=False,
+        )
+        qgis.utils.updateAvailablePlugins()
 
     def stop_qgis(self):
         """Stop the started QGIS application properly."""
