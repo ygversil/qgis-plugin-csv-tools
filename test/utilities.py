@@ -21,6 +21,11 @@ def _init_qgis_app():
     QgsApplication.instance().messageLog().messageReceived.connect(_debug_log_message)
 
 
+def _init_processing():
+    """Initialize Processing plugin within a QGIS application."""
+    Processing.initialize()
+
+
 class singleton:
     """Class decorator ensuring that only one instance of the given class is ever created.
 
@@ -67,7 +72,7 @@ class QgisAppMgr:
         self.app = QgsApplication([b''], False)
         _init_qgis_app()
         print(QgsApplication.showSettings())
-        Processing.initialize()
+        _init_processing()
         sys_plugin_path = pathlib.Path(QgsApplication.pkgDataPath()) / 'python' / 'plugins'
         home_plugin_path = pathlib.Path(QgsApplication.qgisSettingsDirPath()) / 'python' / 'plugins'
         qgis.utils.plugin_paths.append(sys_plugin_path.as_posix())
