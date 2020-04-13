@@ -10,7 +10,7 @@
 name=CSV Tools
 qgisMinimumVersion=3.0
 description=Adds new processing algorithms and models that deal with CSV files
-version=0.5.0-dev1
+version=0.5.0-dev2
 author=Yann Voté
 email=ygversil@lilo.org
 
@@ -24,7 +24,7 @@ repository=https://github.com/ygversil/qgis-plugin-csv-tools
 
 # Uncomment the following line and add your changelog:
 changelog=
-  Version 0.5.0-dev1 - bugfix
+  Version 0.5.0-dev2 - bugfix
   * Fix bug: Wrong SELECT query check [#1]
   ====
   version 0.4 - First public release
