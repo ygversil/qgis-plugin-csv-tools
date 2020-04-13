@@ -1,10 +1,12 @@
 """Common functionality used by regression tests."""
 
 import os
+import pathlib
 import tempfile
 
 from processing.core.Processing import Processing
 from qgis.core import QgsApplication
+import qgis.utils
 
 
 def _debug_log_message(message, tag, level):
@@ -60,6 +62,10 @@ class QgisAppMgr:
         print(QgsApplication.showSettings())
         QgsApplication.instance().messageLog().messageReceived.connect(_debug_log_message)
         Processing.initialize()
+        sys_plugin_path = pathlib.Path(QgsApplication.pkgDataPath()) / 'python' / 'plugins'
+        home_plugin_path = pathlib.Path(QgsApplication.qgisSettingsDirPath()) / 'python' / 'plugins'
+        qgis.utils.plugin_paths.append(sys_plugin_path.as_posix())
+        qgis.utils.plugin_paths.append(home_plugin_path.as_posix())
 
     def stop_qgis(self):
         """Stop the started QGIS application properly."""
