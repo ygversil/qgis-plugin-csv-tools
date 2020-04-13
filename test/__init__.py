@@ -5,6 +5,8 @@ import atexit
 
 from .utilities import QgisAppMgr
 
+PLUGIN_NAME = 'csv_tools'
+
 
 def setUpModule():
     qgis_mgr = QgisAppMgr.instance()
