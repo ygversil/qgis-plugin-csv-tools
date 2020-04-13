@@ -6,6 +6,7 @@ import atexit
 from .utilities import QgisAppMgr
 
 PLUGIN_NAME = 'csv_tools'
+PROVIDER_ID = 'csvtools'
 
 
 def setUpModule():
