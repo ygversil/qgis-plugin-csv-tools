@@ -1,6 +1,5 @@
 """Common functionality used by regression tests."""
 
-
 import os
 import tempfile
 
