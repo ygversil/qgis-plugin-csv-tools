@@ -35,7 +35,7 @@ def _add_plugin_paths_to_qgis(*paths):
 def _deploy_plugin_to_qgis(dest_plugin_path):
     """Deploy current plugin to test into QGIS testing default profile folder."""
     pb_tool.deploy_files(
-        config_file=(pathlib.Path(__file__).parents[1] / 'pb_tool.cfg').as_posix(),
+        config_file=(pathlib.Path(__file__).parents[1] / 'pb_tool.cfg.tmpl').as_posix(),
         plugin_path='{}/'.format(dest_plugin_path.as_posix()),
         user_profile=None,
         confirm=False,
