@@ -1,62 +1,69 @@
-# coding=utf-8
 """Common functionality used by regression tests."""
 
-import sys
-import logging
+
+import os
+import tempfile
+
+from qgis.core import QgsApplication
 
 
-LOGGER = logging.getLogger('QGIS')
-QGIS_APP = None  # Static variable used to hold hand to running QGIS app
-CANVAS = None
-PARENT = None
-IFACE = None
+def _debug_log_message(message, tag, level):
+    """Print the given log message to STDOUT."""
+    print('{}({}): {}'.format(tag, level, message))
 
 
-def get_qgis_app():
-    """ Start one QGIS application to test against.
+class singleton:
+    """Class decorator ensuring that only one instance of the given class is ever created.
 
-    :returns: Handle to QGIS app, canvas, iface and parent. If there are any
-        errors the tuple members will be returned as None.
-    :rtype: (QgsApplication, CANVAS, IFACE, PARENT)
-
-    If QGIS is already running the handle to that app will be returned.
+    This instance is accessed through the ``.instance()`` method of the given class.
     """
 
-    try:
-        from PyQt5 import QtCore, QtWidgets
-        from qgis.core import QgsApplication
-        from qgis.gui import QgsMapCanvas
-        from .qgis_interface import QgisInterface
-    except ImportError:
-        return None, None, None, None
+    def __init__(self, cls):
+        self._cls = cls
 
-    global QGIS_APP  # pylint: disable=W0603
+    def instance(self):
+        try:
+            return self._instance
+        except AttributeError:
+            self._instance = self._cls()
+            return self._instance
 
-    if QGIS_APP is None:
-        gui_flag = True  # All test will run qgis in gui mode
-        # noinspection PyPep8Naming
-        QGIS_APP = QgsApplication([bytes(arg, 'utf-8') for arg in sys.argv],
-                                  gui_flag)
-        # Make sure QGIS_PREFIX_PATH is set in your env if needed!
-        QGIS_APP.initQgis()
-        s = QGIS_APP.showSettings()
-        LOGGER.debug(s)
+    def __call__(self):
+        raise TypeError('Singletons must be accessed through the `instance()` method.')
 
-    global PARENT  # pylint: disable=W0603
-    if PARENT is None:
-        # noinspection PyPep8Naming
-        PARENT = QtWidgets.QWidget()
 
-    global CANVAS  # pylint: disable=W0603
-    if CANVAS is None:
-        # noinspection PyPep8Naming
-        CANVAS = QgsMapCanvas(PARENT)
-        CANVAS.resize(QtCore.QSize(400, 400))
+@singleton
+class QgisAppMgr:
+    """Start and stop a QGIS application for testing."""
 
-    global IFACE  # pylint: disable=W0603
-    if IFACE is None:
-        # QgisInterface is a stub implementation of the QGIS plugin interface
-        # noinspection PyPep8Naming
-        IFACE = QgisInterface(CANVAS)
+    def __init__(self):
+        self._init_attrs()
 
-    return QGIS_APP, CANVAS, IFACE, PARENT
+    def _init_attrs(self):
+        self.app = None
+        self.profile_folder = None
+
+    def start_qgis(self):
+        """Start a QgsApplication without any arguments and with *GUI mode turned off*. Also call
+        its initialization method.
+
+        It will not load any plugins.
+
+        The initialization will only happen once, so it is safe to call this method repeatedly.
+        """
+        if isinstance(self.app, QgsApplication):
+            return
+        self.profile_folder = tempfile.TemporaryDirectory(prefix='QGIS-PythonTestConfigPath')
+        os.environ['QGIS_CUSTOM_CONFIG_PATH'] = self.profile_folder.name
+        self.app = QgsApplication([b''], False)
+        QgsApplication.initQgis()
+        print(QgsApplication.showSettings())
+        QgsApplication.instance().messageLog().messageReceived.connect(_debug_log_message)
+
+    def stop_qgis(self):
+        """Stop the started QGIS application properly."""
+        if self.app is None:
+            return
+        QgsApplication.exitQgis()
+        self.profile_folder.cleanup()
+        self._init_attrs()
