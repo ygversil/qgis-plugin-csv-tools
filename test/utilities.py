@@ -32,6 +32,16 @@ def _add_plugin_paths_to_qgis(*paths):
         qgis.utils.plugin_paths.append(path.as_posix())
 
 
+def _deploy_plugin_to_qgis(dest_plugin_path):
+    """Deploy current plugin to test into QGIS testing default profile folder."""
+    pb_tool.deploy_files(
+        config_file=(pathlib.Path(__file__).parents[1] / 'pb_tool.cfg').as_posix(),
+        plugin_path='{}/'.format(dest_plugin_path.as_posix()),
+        user_profile=None,
+        confirm=False,
+    )
+
+
 class singleton:
     """Class decorator ensuring that only one instance of the given class is ever created.
 
@@ -67,8 +77,6 @@ class QgisAppMgr:
         """Start a QgsApplication without any arguments and with *GUI mode turned off*. Also call
         its initialization method.
 
-        It will not load any plugins.
-
         The initialization will only happen once, so it is safe to call this method repeatedly.
         """
         if isinstance(self.app, QgsApplication):
@@ -82,12 +90,7 @@ class QgisAppMgr:
         sys_plugin_path = pathlib.Path(QgsApplication.pkgDataPath()) / 'python' / 'plugins'
         home_plugin_path = pathlib.Path(QgsApplication.qgisSettingsDirPath()) / 'python' / 'plugins'
         _add_plugin_paths_to_qgis(sys_plugin_path, home_plugin_path)
-        pb_tool.deploy_files(
-            config_file=(pathlib.Path(__file__).parents[1] / 'pb_tool.cfg').as_posix(),
-            plugin_path='{}/'.format(home_plugin_path.as_posix()),
-            user_profile=None,
-            confirm=False,
-        )
+        _deploy_plugin_to_qgis(home_plugin_path)
         qgis.utils.updateAvailablePlugins()
 
     def stop_qgis(self):
