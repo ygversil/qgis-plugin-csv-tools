@@ -17,6 +17,15 @@ import importlib
 import pathlib
 import unittest
 
+from processing import run as run_alg
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsProcessingException,
+    QgsVectorLayer
+)
+import qgis.testing
+import qgis.utils
+
 from . import PLUGIN_NAME
 
 
@@ -137,6 +146,72 @@ class QgisCsvUriTest(unittest.TestCase):
             with self.subTest(msg=msg), \
                     self.assertRaises(error):
                 self.alg_module._qgis_csv_uri(csv_path, **params),
+
+
+class LoadCSVAlgorithmTest(qgis.testing.TestCase):
+    """Test for the ``loadcsvfile`` processing algorithm."""
+
+    @classmethod
+    def setUpClass(cls):
+        qgis.utils.loadPlugin(PLUGIN_NAME)
+        qgis.utils.startPlugin(PLUGIN_NAME)
+
+    @classmethod
+    def tearDownClass(cls):
+        qgis.utils.unloadPlugin(PLUGIN_NAME)
+
+    def test_layer_from_csv(self):
+        """Check that ``loadcsvfile`` algorithm produces correct layer."""
+        params = {
+            'INPUT': (pathlib.Path(__file__).parent / 'load_comma_header_geometry.csv').as_posix(),
+            'CRS': QgsCoordinateReferenceSystem('EPSG:2154'),
+            'DECIMAL_POINT': 0,
+            'DELIMITER': 0,
+            'GEOMETRY_DATA': 0,
+            'QUOTE_CHAR': '\"',
+            'USE_HEADER': True,
+            'WKT_FIELD': 'wkt',
+            'X_FIELD': '',
+            'Y_FIELD': '',
+            'OUTPUT': 'memory:',
+        }
+        r = run_alg('csvtools:loadcsvfile', params)
+        expected_layer = QgsVectorLayer('{gpkg_path}|layername={layername}'.format(
+            gpkg_path=(pathlib.Path(__file__).parent / 'expected_after_load_csv.gpkg').as_posix(),
+            layername='expected_after_load_csv'
+        ), 'expected_after_load_csv', 'ogr')
+        self.assertLayersEqual(layer_result=r['OUTPUT'], layer_expected=expected_layer, pk='fid')
+
+
+class LoadCSVAlgorithmErrorTest(unittest.TestCase):
+    """Test for errors when running the ``loadcsvfile`` processing algorithm."""
+
+    @classmethod
+    def setUpClass(cls):
+        qgis.utils.loadPlugin(PLUGIN_NAME)
+        qgis.utils.startPlugin(PLUGIN_NAME)
+
+    @classmethod
+    def tearDownClass(cls):
+        qgis.utils.unloadPlugin(PLUGIN_NAME)
+
+    def test_cannot_load_layer_from_inexistant_file(self):
+        """Check that ``loadcsvfile`` algorithm raises an error if called with non existent file."""
+        with self.assertRaises(QgsProcessingException):
+            params = {
+                'INPUT': '/file_that_do_no_exists.csv',
+                'CRS': QgsCoordinateReferenceSystem('EPSG:2154'),
+                'DECIMAL_POINT': 0,
+                'DELIMITER': 0,
+                'GEOMETRY_DATA': 0,
+                'QUOTE_CHAR': '\"',
+                'USE_HEADER': True,
+                'WKT_FIELD': 'wkt',
+                'X_FIELD': '',
+                'Y_FIELD': '',
+                'OUTPUT': 'memory:',
+            }
+            run_alg('csvtools:loadcsvfile', params)
 
 
 if __name__ == '__main__':
