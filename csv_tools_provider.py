@@ -37,6 +37,7 @@ from qgis.core import QgsProcessingProvider
 from .resources import *  # noqa
 from .import_from_csv_algorithms import LoadCSVAlgorithm
 from .export_to_csv_algorithms import (
+    ExportLayerToCsv,
     ExportPostgreSQLQueryToCsv,
     ExportSQLiteQueryToCsv,
 )
@@ -59,6 +60,7 @@ class CSVToolsProvider(QgsProcessingProvider):
         """
         Loads all algorithms belonging to this provider.
         """
+        self.addAlgorithm(ExportLayerToCsv())
         self.addAlgorithm(ExportPostgreSQLQueryToCsv())
         self.addAlgorithm(ExportSQLiteQueryToCsv())
         self.addAlgorithm(FeatureDiffAlgorithm())

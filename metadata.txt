@@ -24,6 +24,10 @@ repository=https://github.com/ygversil/qgis-plugin-csv-tools
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 0.5.0
+  * Refactoring and more tests added,
+  * add algorithm to export layer to CSV.
+  ====
   Version 0.4.4 - bugfix
   * Fix bug: Wrong SELECT query check [#1]
   ====
