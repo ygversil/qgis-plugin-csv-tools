@@ -38,11 +38,14 @@ import sqlite3
 import tempfile
 
 from PyQt5.QtGui import QIcon
+from processing import run as run_alg
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
+    QgsProcessing,
     QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
+    QgsProcessingParameterVectorLayer,
 )
 
 from .utils import CopyGeoDB
@@ -199,6 +202,66 @@ class ExportSQLiteQueryToCsv(_AbstractExportQueryToCsv):
             cur.execute(select_sql)
             yield tuple(item[0] for item in cur.description)
             yield from cur
+
+
+# TODO: write tests
+class ExportLayerToCsv(QgisAlgorithm):
+    """QGIS algorithm that takes a vector layer and converts it to a CSV file with WKT Geometry."""
+
+    INPUT = 'INPUT'
+    OPTIONS = 'OPTIONS'
+    OUTPUT = 'OUTPUT'
+
+    def name(self):
+        """Algorithm identifier."""
+        return 'exportlayertocsv'
+
+    def displayName(self):
+        """Algorithm human name."""
+        return self.tr('Export layer to CSV')
+
+    def groupId(self):
+        """Algorithm group identifier."""
+        return 'exporttocsv'
+
+    def group(self):
+        """Algorithm group human name."""
+        return self.tr('Export to CSV')
+
+    def icon(self):
+        """Algorithm's icon."""
+        return QIcon(':/plugins/csv_tools/layer2csv.png')
+
+    def shortHelpString(self):
+        """Algorithm help message displayed in the right panel."""
+        return self.tr(
+            "This algorithm creates a CSV file from a vector layer. Geometries are converted to "
+            "WKT strings."
+        )
+
+    def initAlgorithm(self, config):
+        """Initialize algorithm with inputs and output parameters."""
+        self.addParameter(QgsProcessingParameterVectorLayer(
+            self.INPUT,
+            self.tr('Input vector layer'),
+            types=[QgsProcessing.TypeVector],
+        ))
+        self.addParameter(QgsProcessingParameterFileDestination(
+            self.OUTPUT,
+            self.tr('CSV file'),
+            'CSV files (*.csv)',
+        ))
+
+    def processAlgorithm(self, parameters, context, feedback):
+        """Actual processing steps."""
+        input_layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+        alg_params = {
+            'INPUT': input_layer,
+            'OPTIONS': '-lco GEOMETRY=AS_WKT -lco SEPARATOR=COMMA -lco STRING_QUOTING=IF_AMBIGUOUS',
+            'OUTPUT': csv_fpath,
+        }
+        return run_alg('gdal:convertformat', alg_params, context=context, feedback=feedback)
 
 
 def _normalize_boolean(v):
