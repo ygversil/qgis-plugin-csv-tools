@@ -9,8 +9,9 @@
 [general]
 name=CSV Tools
 qgisMinimumVersion=3.0
+qgisMaximumVersion=3.12
 description=Adds new processing algorithms and models that deal with CSV files
-version=0.4.4
+version=0.5.0
 author=Yann Voté
 email=ygversil@lilo.org
 
@@ -24,6 +25,11 @@ repository=https://github.com/ygversil/qgis-plugin-csv-tools
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 0.5.0
+  * Refactoring and more tests added,
+  * QGIS maximum version is 3.12 (since 3.14 breaks API),
+  * add algorithm to export layer to CSV.
+  ====
   Version 0.4.4 - bugfix
   * Fix bug: Wrong SELECT query check [#1]
   ====

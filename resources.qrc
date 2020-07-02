@@ -7,5 +7,6 @@
         <file alias="load_csv_wkt.png">icons/load_csv_wkt.png</file>
         <file alias="load_csv_xy.png">icons/load_csv_xy.png</file>
         <file alias="pg2csv.png">icons/pg2csv.png</file>
+        <file alias="layer2csv.png">icons/layer2csv.png</file>
     </qresource>
 </RCC>

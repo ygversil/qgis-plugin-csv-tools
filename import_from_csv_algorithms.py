@@ -51,6 +51,71 @@ from qgis.core import (
 )
 
 
+def _qgis_csv_uri(csv_path, **kwargs):
+    """Return a URI for QGIS to open given CSV file with given parameters.
+
+    See https://qgis.org/pyqgis/master/core/QgsVectorLayer.html for reference on how to build
+    such URIs and available parameters: look at section *delimietedText*.
+    """
+    base_uri = pathlib.Path(csv_path).as_uri()
+    delimiter = kwargs.get('delimiter', ',').strip()
+    quotechar = kwargs.get('quotechar', '"').strip()
+    use_header = bool(kwargs.get('use_header', True))
+    decimal_point = kwargs.get('decimal_point', '.').strip()
+    geometry_data = int(kwargs.get('geometry_data', 2))
+    wkt_field = kwargs.get('wkt_field')
+    x_field = kwargs.get('x_field')
+    y_field = kwargs.get('y_field')
+    crs = kwargs.get('crs')
+    params = (
+        ('type', 'csv'),
+        ('useHeader', 'Yes' if use_header else 'No'),
+        ('decimalPoint', decimal_point),
+        ('trimFields', 'Yes'),
+        ('detectTypes', 'yes'),
+        ('subsetIndex', 'no'),
+        ('watchFile', 'no'),
+    )
+    if delimiter != ',':
+        params += (('delimiter', delimiter),)
+    if quotechar != '"':
+        params += (('quote', quotechar),)
+    if geometry_data == 0:
+        if not wkt_field:
+            raise ValueError('while parsing parameters to load CSV file {}: geometry type is WKT '
+                             'but wkt_field not provided'.format(csv_path))
+        if not crs:
+            raise ValueError('while parsing parameters to load CSV file {}: geometry type is WKT '
+                             'but crs not provided'.format(csv_path))
+        params += (
+            ('wktField', wkt_field),
+            ('crs', crs),
+            ('spatialIndex', 'yes'),
+        )
+    elif geometry_data == 1:
+        if not x_field or not y_field:
+            raise ValueError('while parsing parameters to load CSV file {}: geometry type is XY '
+                             'but x_field or y_field not provided'.format(csv_path))
+        if not crs:
+            raise ValueError('while parsing parameters to load CSV file {}: geometry type is XY '
+                             'but crs not provided'.format(csv_path))
+        params += (
+            ('xField', x_field),
+            ('yField', y_field),
+            ('crs', crs),
+            ('spatialIndex', 'yes'),
+        )
+    else:
+        params += (
+            ('geomType', 'none'),
+            ('spatialIndex', 'no'),
+        )
+    return '{base_uri}?{params}'.format(
+        base_uri=base_uri,
+        params=urllib.parse.urlencode(params, safe=r'\:')
+    )
+
+
 class LoadCSVAlgorithm(QgisAlgorithm):
     """QGIS algorithm that takes a CSV file and loads it as a vector layer."""
 
@@ -227,47 +292,15 @@ class LoadCSVAlgorithm(QgisAlgorithm):
         x_field = self.parameterAsString(parameters, self.X_FIELD, context)
         y_field = self.parameterAsString(parameters, self.Y_FIELD, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
-        base_uri = pathlib.Path(csv_path).as_uri()
-        params = (
-            ('type', 'csv'),
-            ('useHeader', 'Yes' if use_header else 'No'),
-            ('decimalPoint', decimal_point),
-            ('trimFields', 'Yes'),
-            ('detectTypes', 'yes'),
-            ('subsetIndex', 'no'),
-            ('watchFile', 'no'),
-        )
-        if delimiter != ',':
-            params += (('delimiter', delimiter),)
-        if quotechar != '"':
-            params += (('quote', quotechar),)
-        if geometry_data == 0:
-            params += (
-                ('wktField', wkt_field),
-                ('crs', crs.authid()),
-                ('spatialIndex', 'yes'),
-            )
-            return '{base_uri}?{params}'.format(
-                base_uri=base_uri,
-                params=urllib.parse.urlencode(params, safe=r'\:')
-            )
-        elif geometry_data == 1:
-            params += (
-                ('xField', x_field),
-                ('yField', y_field),
-                ('crs', crs.authid()),
-                ('spatialIndex', 'yes'),
-            )
-            return '{base_uri}?{params}'.format(
-                base_uri=base_uri,
-                params=urllib.parse.urlencode(params, safe=r'\:')
-            )
-        else:
-            params += (
-                ('geomType', 'none'),
-                ('spatialIndex', 'no'),
-            )
-            return '{base_uri}?{params}'.format(
-                base_uri=base_uri,
-                params=urllib.parse.urlencode(params, safe=r'\:')
-            )
+        csv_uri_params = {
+            'delimiter': delimiter,
+            'quotechar': quotechar,
+            'use_header': use_header,
+            'decimal_point': decimal_point,
+            'geometry_data': geometry_data,
+            'wkt_field': wkt_field,
+            'x_field': x_field,
+            'y_field': y_field,
+            'crs': crs.authid(),
+        }
+        return _qgis_csv_uri(csv_path, **csv_uri_params)

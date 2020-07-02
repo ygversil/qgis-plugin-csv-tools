@@ -109,9 +109,6 @@ report.html
 output.xml
 selenium-*.png
 
-# Config files
-*.ini
-
 # JS stuff
 flexfield/flexfieldjs/node_modules/
 
