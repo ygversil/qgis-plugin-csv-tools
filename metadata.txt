@@ -9,7 +9,6 @@
 [general]
 name=CSV Tools
 qgisMinimumVersion=3.0
-qgisMaximumVersion=3.12
 description=Adds new processing algorithms and models that deal with CSV files
 version=0.6.0-dev1
 author=Yann Voté
