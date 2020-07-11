@@ -19,27 +19,27 @@
 <context>
     <name>ExportLayerToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="221"/>
+        <location filename="../export_to_csv_algorithms.py" line="250"/>
         <source>Export layer to CSV</source>
         <translation>Exporter une couche en CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="229"/>
+        <location filename="../export_to_csv_algorithms.py" line="258"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="237"/>
+        <location filename="../export_to_csv_algorithms.py" line="266"/>
         <source>This algorithm creates a CSV file from a vector layer. Geometries are converted to WKT strings.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos;une couche vectorielle. Les géométries sont converties en chaînes de caractères WKT.</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="244"/>
+        <location filename="../export_to_csv_algorithms.py" line="273"/>
         <source>Input vector layer</source>
         <translation>Couche vectorielle en entrée</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="249"/>
+        <location filename="../export_to_csv_algorithms.py" line="278"/>
         <source>CSV file</source>
         <translation>Fichier CSV</translation>
     </message>
@@ -47,22 +47,22 @@
 <context>
     <name>ExportPostgreSQLQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="113"/>
+        <location filename="../export_to_csv_algorithms.py" line="128"/>
         <source>Database (connection name)</source>
         <translation>Base de données (nom de la connexion)</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="132"/>
+        <location filename="../export_to_csv_algorithms.py" line="147"/>
         <source>Export PostgreSQL query to CSV (COPY)</source>
         <translation>Export d&apos;une requête PostgreSQL en CSV (COPY)</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="136"/>
+        <location filename="../export_to_csv_algorithms.py" line="151"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="140"/>
+        <location filename="../export_to_csv_algorithms.py" line="155"/>
         <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against a PostgreSQL/Postgis database, then the result table is exported as CSV using the PostgreSQL COPY command.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos;une requête SQL de type SELECT. La requête est exécutée dans une base de données PostgreSQL (éventuellement avec l&apos;extension Postgis), et la table de résultats est ensuite exportée en CSV grâce à la commande COPY de PostgreSQL.</translation>
     </message>
@@ -70,22 +70,22 @@
 <context>
     <name>ExportSQLiteQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="169"/>
+        <location filename="../export_to_csv_algorithms.py" line="195"/>
         <source>GeoPackage or Spatialite database</source>
         <translation>Base de données GeoPackage ou Spatialite</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="181"/>
+        <location filename="../export_to_csv_algorithms.py" line="207"/>
         <source>Export SQLite query to CSV</source>
         <translation>Export d&apos;une requête SQLite en CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="185"/>
+        <location filename="../export_to_csv_algorithms.py" line="211"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="189"/>
+        <location filename="../export_to_csv_algorithms.py" line="215"/>
         <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against an SQLite database (Geopackage or Spatialite), then the result table is exported as CSV.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos; requête SQL de type SELECT. La requête est exécutée dans une base de données SQLite (Geopackage ou Spatialite), et la table de résultats est ensuite exportée en CSV.</translation>
     </message>
@@ -93,47 +93,47 @@
 <context>
     <name>FeatureDiffAlgorithm</name>
     <message>
-        <location filename="../other_csv_algorithms.py" line="72"/>
+        <location filename="../other_csv_algorithms.py" line="77"/>
         <source>Original layer</source>
         <translation>Couche originale</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="77"/>
+        <location filename="../other_csv_algorithms.py" line="82"/>
         <source>New layer</source>
         <translation>Nouvelle couche</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="89"/>
+        <location filename="../other_csv_algorithms.py" line="94"/>
         <source>HTML report</source>
         <translation>Rapport HTML</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="89"/>
+        <location filename="../other_csv_algorithms.py" line="94"/>
         <source>HTML files (*.html)</source>
         <translation>Fichiers HTML (*.html)</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="82"/>
+        <location filename="../other_csv_algorithms.py" line="87"/>
         <source>Fields to compare</source>
         <translation>Champs à comparer</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="144"/>
+        <location filename="../other_csv_algorithms.py" line="149"/>
         <source>Unable to compare layers with different fields or field order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="133"/>
+        <location filename="../other_csv_algorithms.py" line="138"/>
         <source>Can only compare SQLite (GeoPackage, Spatialite) or PostgreSQL layers.</source>
         <translation>Ne peut comparer que des couches SQLite (GeoPackage, Spatialite) ou PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="166"/>
+        <location filename="../other_csv_algorithms.py" line="171"/>
         <source>No database connection have been created for PostgreSQL layer {0}.</source>
         <translation>Aucune connexion n&apos;a été créée pour la couche PostgreSQL {0}.</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="204"/>
+        <location filename="../other_csv_algorithms.py" line="209"/>
         <source>This algorithm takes two vector layers (SQLite or PostgreSQL) with common fields (those common fields being in the same order) and shows differences between features attributes in an HTML report.
 
 This can be useful to compare two versions of the same layer.
@@ -146,12 +146,12 @@ Cela est utile pour comparer deux versions d&apos;une même couche.
 Il fonctionne en convertissant chaque table attributaire dans un fichier CSV puis en comparant les lignes de chaque fichier CSV.</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="102"/>
+        <location filename="../other_csv_algorithms.py" line="107"/>
         <source>Attribute difference</source>
         <translation>Différences attributaires</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="106"/>
+        <location filename="../other_csv_algorithms.py" line="111"/>
         <source>Other CSV tools</source>
         <translation>Autres outils CSV</translation>
     </message>
@@ -247,12 +247,12 @@ Il fonctionne en convertissant chaque table attributaire dans un fichier CSV pui
 <context>
     <name>_AbstractExportQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="73"/>
+        <location filename="../export_to_csv_algorithms.py" line="80"/>
         <source>SELECT SQL query</source>
         <translation>Requête SQL SELECT</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="78"/>
+        <location filename="../export_to_csv_algorithms.py" line="85"/>
         <source>CSV file</source>
         <translation>Fichier CSV</translation>
     </message>
