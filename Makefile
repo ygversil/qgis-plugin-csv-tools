@@ -50,6 +50,7 @@ PY_FILES = \
 	export_to_csv_algorithms.py \
 	import_from_csv_algorithms.py \
 	other_csv_algorithms.py \
+	qgis_version.py \
 	utils.py
 
 EXTRAS = metadata.txt
