@@ -24,6 +24,9 @@ repository=https://github.com/ygversil/qgis-plugin-csv-tools
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 0.6.0
+  * QGIS 3.14 compatibility
+  ====
   Version 0.5.0
   * Refactoring and more tests added,
   * QGIS maximum version is 3.12 (since 3.14 breaks API),
