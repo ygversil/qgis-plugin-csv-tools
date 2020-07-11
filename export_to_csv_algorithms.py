@@ -47,14 +47,21 @@ from qgis.core import (
     QgsProcessingParameterString,
     QgsProcessingParameterVectorLayer,
 )
+from .qgis_version import HAS_DB_PROCESSING_PARAMETER
+from .utils import pg_conn, pg_copy
 
-from .utils import CopyGeoDB
 
 
 _DATETIME_REGEXP = re.compile(r'(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)'
                               r'[T\s]+'
                               r'(?P<hour>\d+):(?P<minute>\d+):(?P<second>\d+)'
                               r'(?P<microseconds>.\d+)?Z?')
+
+
+if HAS_DB_PROCESSING_PARAMETER:
+    from qgis.core import QgsProcessingParameterProviderConnection
+else:
+    from processing.tools.postgis import GeoDB
 
 
 class _AbstractExportQueryToCsv(QgisAlgorithm):
@@ -91,6 +98,7 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
                                             context)
         select_sql = str(select_sql).strip().replace('\n', ' ')
         # XXX: check if this a SELECT query
+        qgis_conn = self._get_connection(parameters, self.DATABASE, context)
         qgis_conn = self.parameterAsString(parameters, self.DATABASE, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT,
                                                context)
@@ -110,16 +118,23 @@ class ExportPostgreSQLQueryToCsv(_AbstractExportQueryToCsv):
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
-        db_param = QgsProcessingParameterString(
-            self.DATABASE,
-            self.tr('Database (connection name)')
-        )
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': ('processing.gui.wrappers_postgis'
-                          '.ConnectionWidgetWrapper')
-            }
-        })
+        if HAS_DB_PROCESSING_PARAMETER:
+            db_param = QgsProcessingParameterProviderConnection(
+                self.DATABASE,
+                self.tr('Database (connection name)'),
+                'postgres',
+            )
+        else:
+            db_param = QgsProcessingParameterString(
+                self.DATABASE,
+                self.tr('Database (connection name)'),
+            )
+            db_param.setMetadata({
+                'widget_wrapper': {
+                    'class': ('processing.gui.wrappers_postgis'
+                              '.ConnectionWidgetWrapper')
+                }
+            })
         self.addParameter(db_param)
         super().initAlgorithm(config)
 
@@ -148,12 +163,23 @@ class ExportPostgreSQLQueryToCsv(_AbstractExportQueryToCsv):
         """Algorithm's icon."""
         return QIcon(':/plugins/csv_tools/pg2csv.png')
 
+    def _get_connection(self, parameters, param, context):
+        if HAS_DB_PROCESSING_PARAMETER:
+            return self.parameterAsConnectionName(parameters, self.DATABASE, context)
+        else:
+            return self.parameterAsString(parameters, self.DATABASE, context)
+
     def _db_rows(self, qgis_conn, select_sql):
         with tempfile.TemporaryFile() as fb, \
                 io.TextIOWrapper(fb, encoding='utf-8', newline='') as f:
-            db = CopyGeoDB.from_name(qgis_conn)
-            cur = db.con.cursor()
-            db.copy(cur, select_sql, f)
+            if HAS_DB_PROCESSING_PARAMETER:
+                with pg_conn(qgis_conn) as conn, \
+                        conn.cursor() as cur:
+                    pg_copy(cur, select_sql, f)
+            else:
+                db = GeoDB.from_name(qgis_conn)
+                cur = db.con.cursor()
+                pg_copy(cur, select_sql, f)
             f.seek(0)
             reader = csv.reader(f, delimiter='|', quotechar='"')
             yield from reader
@@ -195,6 +221,9 @@ class ExportSQLiteQueryToCsv(_AbstractExportQueryToCsv):
     def icon(self):
         """Algorithm's icon."""
         return QIcon(':/plugins/csv_tools/gpkg2csv.png')
+
+    def _get_connection(self, parameters, param, context):
+        return self.parameterAsString(parameters, self.DATABASE, context)
 
     def _db_rows(self, qgis_conn, select_sql):
         with sqlite3.connect(qgis_conn) as conn:
