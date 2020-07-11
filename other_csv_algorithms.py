@@ -42,7 +42,6 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import DiffLexer
 from processing import run as run_algorithm
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools.postgis import uri_from_name as uri_from_db_conn_name
 from qgis.core import (
     QgsDataSourceUri,
     QgsProcessing,
@@ -52,6 +51,12 @@ from qgis.core import (
     QgsProcessingParameterVectorLayer,
     QgsSettings,
 )
+
+from .qgis_version import HAS_DB_PROCESSING_PARAMETER
+
+
+if not HAS_DB_PROCESSING_PARAMETER:
+    from processing.tools.postgis import uri_from_name as uri_from_db_conn_name
 
 
 # TODO: write tests
