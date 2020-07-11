@@ -31,32 +31,42 @@ __copyright__ = '(C) 2019 by Yann Voté'
 __revision__ = '$Format:%H$'
 
 
-from processing.tools import postgis
-from qgis.core import QgsProcessingException
+from qgis.core import (
+    QgsDataSourceUri,
+    QgsProcessingException,
+    QgsProviderRegistry,
+)
 import psycopg2
 
 
-class CopyGeoDB(postgis.GeoDB):
-    """Util class to work with a Postgis database, adding copy method."""
+def pg_conn(qgis_conn_name):
+    return psycopg2.connect(
+        QgsDataSourceUri(
+            QgsProviderRegistry.instance().providerMetadata('postgres').createConnection(
+                qgis_conn_name
+            ).uri()
+        ).connectionInfo()
+    )
 
-    def copy(self, cursor, select_sql, dstf):
-        """Copy the given ``SELECT`` query to the given destination file."""
-        try:
-            cursor.copy_expert(
-                'copy ({select_sql}) to stdout '
-                'with (format csv, '
-                "delimiter '|', "
-                "null '', "
-                "header true, "
-                "quote '\"')".format(select_sql=select_sql),
-                dstf
-            )
-        except psycopg2.Error as e:
-            raise QgsProcessingException(
-                '{e} QUERY: {query}'.format(
-                    e=str(e),
-                    query=e.cursor.query.decode(
-                        e.cursor.connection.encoding
-                    )
+
+def pg_copy(cursor, select_sql, dstf):
+    """Copy the given ``SELECT`` query to the given destination file."""
+    try:
+        cursor.copy_expert(
+            'copy ({select_sql}) to stdout '
+            'with (format csv, '
+            "delimiter '|', "
+            "null '', "
+            "header true, "
+            "quote '\"')".format(select_sql=select_sql),
+            dstf
+        )
+    except psycopg2.Error as e:
+        raise QgsProcessingException(
+            '{e} QUERY: {query}'.format(
+                e=str(e),
+                query=e.cursor.query.decode(
+                    e.cursor.connection.encoding
                 )
             )
+        )
