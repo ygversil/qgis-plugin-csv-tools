@@ -36,6 +36,7 @@ import io
 import re
 import sqlite3
 import tempfile
+import sys
 
 from PyQt5.QtGui import QIcon
 from processing import run as run_alg
@@ -50,6 +51,8 @@ from qgis.core import (
 from .qgis_version import HAS_DB_PROCESSING_PARAMETER
 from .utils import pg_conn, pg_copy
 
+
+csv.field_size_limit(int(sys.maxsize / 1000))
 
 
 _DATETIME_REGEXP = re.compile(r'(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)'

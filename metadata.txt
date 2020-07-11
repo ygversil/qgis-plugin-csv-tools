@@ -10,7 +10,7 @@
 name=CSV Tools
 qgisMinimumVersion=3.0
 description=Adds new processing algorithms and models that deal with CSV files
-version=0.6.0-dev1
+version=0.6.0-dev2
 author=Yann Voté
 email=ygversil@lilo.org
 
@@ -25,6 +25,7 @@ repository=https://github.com/ygversil/qgis-plugin-csv-tools
 # Uncomment the following line and add your changelog:
 changelog=
   Version 0.6.0
+  * bugfix: error message about too large columns,
   * QGIS 3.14 compatibility
   ====
   Version 0.5.0
