@@ -33,6 +33,3 @@ from qgis.core import Qgis
 
 
 HAS_DB_PROCESSING_PARAMETER = (Qgis.QGIS_VERSION_INT >= 31400)
-
-
-print(HAS_DB_PROCESSING_PARAMETER)
