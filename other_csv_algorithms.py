@@ -43,15 +43,17 @@ from pygments.lexers import DiffLexer
 from processing import run as run_algorithm
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
-    QgsDataSourceUri,
     QgsProcessing,
     QgsProcessingException,
+    QgsProcessingMultiStepFeedback,
+    QgsProcessingParameterExpression,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
-    QgsProcessingParameterVectorLayer,
     QgsSettings,
 )
 
+from .context_managers import QgisStepManager
 from .qgis_version import HAS_DB_PROCESSING_PARAMETER
 
 
@@ -60,7 +62,7 @@ if not HAS_DB_PROCESSING_PARAMETER:
 
 
 # TODO: write tests
-class FeatureDiffAlgorithm(QgisAlgorithm):
+class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
     """QGIS algorithm that takes two vector layers with identical columns
     and show differences between features of these two layers."""
 
@@ -70,16 +72,17 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
     ORIG_INPUT = 'ORIG_INPUT'
     NEW_INPUT = 'NEW_INPUT'
     FIELDS_TO_COMPARE = 'FIELDS_TO_COMPARE'
+    SORT_EXPRESSION = 'SORT_EXPRESSION'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
-        self.addParameter(QgsProcessingParameterVectorLayer(
+        self.addParameter(QgsProcessingParameterFeatureSource(
             self.ORIG_INPUT,
             self.tr('Original layer'),
             types=[QgsProcessing.TypeVector],
         ))
-        self.addParameter(QgsProcessingParameterVectorLayer(
+        self.addParameter(QgsProcessingParameterFeatureSource(
             self.NEW_INPUT,
             self.tr('New layer'),
             types=[QgsProcessing.TypeVector],
@@ -91,6 +94,12 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
             self.ORIG_INPUT,
             allowMultiple=True,
         ))
+        self.addParameter(QgsProcessingParameterExpression(
+            self.SORT_EXPRESSION,
+            self.tr('Sort expression'),
+            parentLayerParameterName=self.ORIG_INPUT,
+            defaultValue='',
+        ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT_HTML_FILE,
             self.tr('HTML report'),
@@ -100,11 +109,11 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
 
     def name(self):
         """Algorithm identifier."""
-        return 'attributediff'
+        return 'attributediffbetweenlayers'
 
     def displayName(self):
         """Algorithm human name."""
-        return self.tr('Attribute difference')
+        return self.tr('Attribute difference between layers')
 
     def group(self):
         """Algorithm group human name."""
@@ -120,25 +129,15 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
+        multi_feedback = QgsProcessingMultiStepFeedback(9, feedback)
+        run_next_step = QgisStepManager(multi_feedback)
         orig_layer = self.parameterAsVectorLayer(parameters,
                                                  self.ORIG_INPUT,
                                                  context)
+        sort_expression = self.parameterAsExpression(parameters, self.SORT_EXPRESSION, context)
         new_layer = self.parameterAsVectorLayer(parameters,
                                                 self.NEW_INPUT,
                                                 context)
-        # Check for SQLite or PostgreSQL or CSV type
-        orig_layer_type = orig_layer.storageType()
-        new_layer_type = new_layer.storageType()
-        if not all(
-                any(substr in type for substr in ('GPKG',
-                                                  'SQLite',
-                                                  'PostgreSQL'))
-                for type in (orig_layer_type, new_layer_type)
-        ):
-            raise QgsProcessingException(self.tr(
-                'Can only compare SQLite (GeoPackage, Spatialite) or '
-                'PostgreSQL layers.'
-            ))
         # Check that fields are the same
         fields_to_compare = self.parameterAsFields(parameters,
                                                    self.FIELDS_TO_COMPARE,
@@ -149,42 +148,43 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
             raise QgsProcessingException(self.tr(
                 'Unable to compare layers with different fields or field order'
             ))
-        with tempfile.NamedTemporaryFile('w', delete=False) as orig_csvf, \
-                tempfile.NamedTemporaryFile('w', delete=False) as new_csvf:
-            for layer, layer_type, csvf in (
-                (orig_layer, orig_layer_type, orig_csvf),
-                (new_layer, new_layer_type, new_csvf),
-            ):
-                if 'GPKG' in layer_type or 'SQLite' in layer_type:
-                    qgis_conn, table = (layer.dataProvider().dataSourceUri()
-                                        .split('|'))
-                    _, table = table.split('=')
-                    alg = 'exportsqlitequerytocsv'
-                elif 'PostgreSQL' in layer_type:
-                    uri = QgsDataSourceUri(
-                        layer.dataProvider().dataSourceUri()
-                    )
-                    qgis_conn = _connection_name_from_info(
-                        uri.connectionInfo()
-                    )
-                    if qgis_conn is None:
-                        raise QgsProcessingException(self.tr(
-                            'No database connection have been created for '
-                            'PostgreSQL layer {0}.'.format(layer.name)
-                        ))
-                    table = '{schema}.{table}'.format(schema=uri.schema(),
-                                                      table=uri.table())
-                    alg = 'exportpostgresqlquerytocsv'
-                select_sql = 'select {cols} from {table}'.format(
-                    cols=', '.join(fields_to_compare), table=table
-                )
-                run_algorithm('csvtools:{alg}'.format(alg=alg), {
-                    'DATABASE': qgis_conn,
-                    'SELECT_SQL': select_sql,
-                    'OUTPUT': csvf.name,
-                })
+        outputs = dict()
+        with tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as orig_csvf, \
+                tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as new_csvf:
+            for layer, csvf in ((orig_layer, orig_csvf), (new_layer, new_csvf)):
+                with run_next_step:
+                    outputs['droppedgeometries'] = run_algorithm('native:dropgeometries', {
+                        'INPUT': layer,
+                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
+                with run_next_step:
+                    outputs['refactored'] = run_algorithm('native:refactorfields', {
+                        'INPUT': outputs['droppedgeometries']['OUTPUT'],
+                        'FIELDS_MAPPING': [{
+                            'expression': field_name,
+                            'name': field_name,
+                            'type': 10,
+                            'length': 0,
+                            'precision': 0,
+                        } for field_name in fields_to_compare],
+                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
+                with run_next_step:
+                    outputs['ordered'] = run_algorithm('native:orderbyexpression', {
+                        'INPUT': outputs['refactored']['OUTPUT'],
+                        'EXPRESSION': sort_expression,
+                        'ASCENDING': True,
+                        'NULLS_FIRST': True,
+                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
+                with run_next_step:
+                    run_algorithm('csvtools:exportlayertocsv', {
+                        'INPUT': outputs['ordered']['OUTPUT'],
+                        'OUTPUT': csvf.name
+                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
         with open(orig_csvf.name) as orig_csvf, \
-                open(new_csvf.name) as new_csvf:
+                open(new_csvf.name) as new_csvf, \
+                run_next_step:
             diff_output = difflib.unified_diff(
                 orig_csvf.readlines(),
                 new_csvf.readlines(),
@@ -207,13 +207,15 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "This algorithm takes two vector layers (SQLite or PostgreSQL) "
-            "with common fields (those common fields being in the same order) "
-            "and shows differences between features attributes in an HTML "
-            "report.\n\n"
+            "This algorithm takes two vector layers  with common fields (those common fields "
+            "being in the same order or the result will be unreadable) and shows differences "
+            "between attributes in an HTML report.\n\n"
             "This can be useful to compare two versions of the same layer.\n\n"
             "Under the hood, each attribute table is converted to CSV and the "
-            "two CSV files are diffed."
+            "two CSV files are diffed.\n\n"
+            "For the output to be correct, all lines in each CSV file must be written in the same "
+            "order. Thus, a sort expression must be given. For example, it can be a key field that "
+            "identifies features in each layer."
         )
 
 

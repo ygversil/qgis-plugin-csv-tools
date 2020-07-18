@@ -9,6 +9,71 @@
     </message>
 </context>
 <context>
+    <name>AttributeDiffBetweenLayersAlgorithm</name>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="80"/>
+        <source>Original layer</source>
+        <translation>Couche originale</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="85"/>
+        <source>New layer</source>
+        <translation>Nouvelle couche</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="90"/>
+        <source>Fields to compare</source>
+        <translation>Champs à comparer</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="97"/>
+        <source>Sort expression</source>
+        <translation>Expression de tri</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="103"/>
+        <source>HTML report</source>
+        <translation>Rapport HTML</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="103"/>
+        <source>HTML files (*.html)</source>
+        <translation>Fichiers HTML (*.html)</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="116"/>
+        <source>Attribute difference between layers</source>
+        <translation>Différences attributaires entre couches</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="120"/>
+        <source>Other CSV tools</source>
+        <translation>Autres outils CSV</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="148"/>
+        <source>Unable to compare layers with different fields or field order</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="209"/>
+        <source>This algorithm takes two vector layers  with common fields (those common fields being in the same order or the result will be unreadable) and shows differences between attributes in an HTML report.
+
+This can be useful to compare two versions of the same layer.
+
+Under the hood, each attribute table is converted to CSV and the two CSV files are diffed.
+
+For the output to be correct, all lines in each CSV file must be written in the same order. Thus, a sort expression must be given. For example, it can be a key field that identifies features in each layer.</source>
+        <translation>Cet algorithme prend deux couches vectorielles avec des champs en commun (ces champs en commun étant dans le même ordre sinon le résultat sera illisible) et montre les différences entre les attributs dans un rapport HTML.
+
+Cela est utile pour comparer deux versions d&apos;une même couche.
+
+Il fonctionne en convertissant chaque table attributaire en un fichier CSV puis en comparant les lignes de chaque fichier CSV.
+
+Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent être générées dans le même ordre. C&apos;est pourquoi une expression de tri doit être indiquée. Elle peut être par exemple un champ clé qui permet d&apos;identifier les entités dans chaque couche.</translation>
+    </message>
+</context>
+<context>
     <name>CSVToolsProvider</name>
     <message>
         <location filename="../csv_tools_provider.py" line="84"/>
@@ -88,72 +153,6 @@
         <location filename="../export_to_csv_algorithms.py" line="218"/>
         <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against an SQLite database (Geopackage or Spatialite), then the result table is exported as CSV.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos; requête SQL de type SELECT. La requête est exécutée dans une base de données SQLite (Geopackage ou Spatialite), et la table de résultats est ensuite exportée en CSV.</translation>
-    </message>
-</context>
-<context>
-    <name>FeatureDiffAlgorithm</name>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="77"/>
-        <source>Original layer</source>
-        <translation>Couche originale</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="82"/>
-        <source>New layer</source>
-        <translation>Nouvelle couche</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="94"/>
-        <source>HTML report</source>
-        <translation>Rapport HTML</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="94"/>
-        <source>HTML files (*.html)</source>
-        <translation>Fichiers HTML (*.html)</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="87"/>
-        <source>Fields to compare</source>
-        <translation>Champs à comparer</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="149"/>
-        <source>Unable to compare layers with different fields or field order</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="138"/>
-        <source>Can only compare SQLite (GeoPackage, Spatialite) or PostgreSQL layers.</source>
-        <translation>Ne peut comparer que des couches SQLite (GeoPackage, Spatialite) ou PostgreSQL.</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="171"/>
-        <source>No database connection have been created for PostgreSQL layer {0}.</source>
-        <translation>Aucune connexion n&apos;a été créée pour la couche PostgreSQL {0}.</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="209"/>
-        <source>This algorithm takes two vector layers (SQLite or PostgreSQL) with common fields (those common fields being in the same order) and shows differences between features attributes in an HTML report.
-
-This can be useful to compare two versions of the same layer.
-
-Under the hood, each attribute table is converted to CSV and the two CSV files are diffed.</source>
-        <translation>Cet algorithme prend deux couches vectorielles (SQLite ou PostgreSQL) avec des champs en commun (ces champs en commun étant dans le même ordre) et montre les différences entre les valeurs des attributs des entités dans un rapport HTML.
-
-Cela est utile pour comparer deux versions d&apos;une même couche.
-
-Il fonctionne en convertissant chaque table attributaire dans un fichier CSV puis en comparant les lignes de chaque fichier CSV.</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="107"/>
-        <source>Attribute difference</source>
-        <translation>Différences attributaires</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="111"/>
-        <source>Other CSV tools</source>
-        <translation>Autres outils CSV</translation>
     </message>
 </context>
 <context>
