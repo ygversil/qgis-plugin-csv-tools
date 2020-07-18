@@ -46,9 +46,9 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsProcessing,
     QgsProcessingException,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
-    QgsProcessingParameterVectorLayer,
     QgsSettings,
 )
 
@@ -74,12 +74,12 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
-        self.addParameter(QgsProcessingParameterVectorLayer(
+        self.addParameter(QgsProcessingParameterFeatureSource(
             self.ORIG_INPUT,
             self.tr('Original layer'),
             types=[QgsProcessing.TypeVector],
         ))
-        self.addParameter(QgsProcessingParameterVectorLayer(
+        self.addParameter(QgsProcessingParameterFeatureSource(
             self.NEW_INPUT,
             self.tr('New layer'),
             types=[QgsProcessing.TypeVector],
