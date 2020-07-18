@@ -62,7 +62,7 @@ if not HAS_DB_PROCESSING_PARAMETER:
 
 
 # TODO: write tests
-class FeatureDiffAlgorithm(QgisAlgorithm):
+class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
     """QGIS algorithm that takes two vector layers with identical columns
     and show differences between features of these two layers."""
 
@@ -109,11 +109,11 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
 
     def name(self):
         """Algorithm identifier."""
-        return 'attributediff'
+        return 'attributediffbetweenlayers'
 
     def displayName(self):
         """Algorithm human name."""
-        return self.tr('Attribute difference')
+        return self.tr('Attribute difference between layers')
 
     def group(self):
         """Algorithm group human name."""
