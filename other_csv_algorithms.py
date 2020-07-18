@@ -43,9 +43,9 @@ from pygments.lexers import DiffLexer
 from processing import run as run_algorithm
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
-    QgsDataSourceUri,
     QgsProcessing,
     QgsProcessingException,
+    QgsProcessingParameterExpression,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
@@ -70,6 +70,7 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
     ORIG_INPUT = 'ORIG_INPUT'
     NEW_INPUT = 'NEW_INPUT'
     FIELDS_TO_COMPARE = 'FIELDS_TO_COMPARE'
+    SORT_EXPRESSION = 'SORT_EXPRESSION'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
     def initAlgorithm(self, config):
@@ -90,6 +91,12 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
             None,
             self.ORIG_INPUT,
             allowMultiple=True,
+        ))
+        self.addParameter(QgsProcessingParameterExpression(
+            self.SORT_EXPRESSION,
+            self.tr('Sort expression'),
+            parentLayerParameterName=self.ORIG_INPUT,
+            defaultValue='',
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT_HTML_FILE,
@@ -123,22 +130,10 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
         orig_layer = self.parameterAsVectorLayer(parameters,
                                                  self.ORIG_INPUT,
                                                  context)
+        sort_expression = self.parameterAsExpression(parameters, self.SORT_EXPRESSION, context)
         new_layer = self.parameterAsVectorLayer(parameters,
                                                 self.NEW_INPUT,
                                                 context)
-        # Check for SQLite or PostgreSQL or CSV type
-        orig_layer_type = orig_layer.storageType()
-        new_layer_type = new_layer.storageType()
-        if not all(
-                any(substr in type for substr in ('GPKG',
-                                                  'SQLite',
-                                                  'PostgreSQL'))
-                for type in (orig_layer_type, new_layer_type)
-        ):
-            raise QgsProcessingException(self.tr(
-                'Can only compare SQLite (GeoPackage, Spatialite) or '
-                'PostgreSQL layers.'
-            ))
         # Check that fields are the same
         fields_to_compare = self.parameterAsFields(parameters,
                                                    self.FIELDS_TO_COMPARE,
@@ -149,40 +144,36 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
             raise QgsProcessingException(self.tr(
                 'Unable to compare layers with different fields or field order'
             ))
+        outputs = dict()
         with tempfile.NamedTemporaryFile('w', delete=False) as orig_csvf, \
                 tempfile.NamedTemporaryFile('w', delete=False) as new_csvf:
-            for layer, layer_type, csvf in (
-                (orig_layer, orig_layer_type, orig_csvf),
-                (new_layer, new_layer_type, new_csvf),
-            ):
-                if 'GPKG' in layer_type or 'SQLite' in layer_type:
-                    qgis_conn, table = (layer.dataProvider().dataSourceUri()
-                                        .split('|'))
-                    _, table = table.split('=')
-                    alg = 'exportsqlitequerytocsv'
-                elif 'PostgreSQL' in layer_type:
-                    uri = QgsDataSourceUri(
-                        layer.dataProvider().dataSourceUri()
-                    )
-                    qgis_conn = _connection_name_from_info(
-                        uri.connectionInfo()
-                    )
-                    if qgis_conn is None:
-                        raise QgsProcessingException(self.tr(
-                            'No database connection have been created for '
-                            'PostgreSQL layer {0}.'.format(layer.name)
-                        ))
-                    table = '{schema}.{table}'.format(schema=uri.schema(),
-                                                      table=uri.table())
-                    alg = 'exportpostgresqlquerytocsv'
-                select_sql = 'select {cols} from {table}'.format(
-                    cols=', '.join(fields_to_compare), table=table
-                )
-                run_algorithm('csvtools:{alg}'.format(alg=alg), {
-                    'DATABASE': qgis_conn,
-                    'SELECT_SQL': select_sql,
-                    'OUTPUT': csvf.name,
-                })
+            for layer, csvf in ((orig_layer, orig_csvf), (new_layer, new_csvf)):
+                outputs['droppedgeometries'] = run_algorithm('native:dropgeometries', {
+                    'INPUT': layer,
+                    'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                }, context=context, feedback=feedback, is_child_algorithm=True)
+                outputs['refactored'] = run_algorithm('native:refactorfields', {
+                    'INPUT': outputs['droppedgeometries']['OUTPUT'],
+                    'FIELDS_MAPPING': [{
+                        'expression': field_name,
+                        'name': field_name,
+                        'type': 10,
+                        'length': 0,
+                        'precision': 0,
+                    } for field_name in fields_to_compare],
+                    'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                }, context=context, feedback=feedback, is_child_algorithm=True)
+                outputs['ordered'] = run_algorithm('native:orderbyexpression', {
+                    'INPUT': outputs['refactored']['OUTPUT'],
+                    'EXPRESSION': sort_expression,
+                    'ASCENDING': True,
+                    'NULLS_FIRST': True,
+                    'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                }, context=context, feedback=feedback, is_child_algorithm=True)
+                run_algorithm('csvtools:exportlayertocsv', {
+                    'INPUT': outputs['ordered']['OUTPUT'],
+                    'OUTPUT': csvf.name
+                }, context=context, feedback=feedback, is_child_algorithm=True)
         with open(orig_csvf.name) as orig_csvf, \
                 open(new_csvf.name) as new_csvf:
             diff_output = difflib.unified_diff(
