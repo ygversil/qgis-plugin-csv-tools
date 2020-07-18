@@ -207,13 +207,15 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
 
     def shortHelpString(self):
         return self.tr(
-            "This algorithm takes two vector layers (SQLite or PostgreSQL) "
-            "with common fields (those common fields being in the same order) "
-            "and shows differences between features attributes in an HTML "
-            "report.\n\n"
+            "This algorithm takes two vector layers  with common fields (those common fields "
+            "being in the same order or the result will be unreadable) and shows differences "
+            "between attributes in an HTML report.\n\n"
             "This can be useful to compare two versions of the same layer.\n\n"
             "Under the hood, each attribute table is converted to CSV and the "
-            "two CSV files are diffed."
+            "two CSV files are diffed.\n\n"
+            "For the output to be correct, all lines in each CSV file must be written in the same "
+            "order. Thus, a sort expression must be given. For example, it can be a key field that "
+            "identifies features in each layer."
         )
 
 
