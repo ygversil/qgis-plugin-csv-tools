@@ -145,8 +145,8 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
                 'Unable to compare layers with different fields or field order'
             ))
         outputs = dict()
-        with tempfile.NamedTemporaryFile('w', delete=False) as orig_csvf, \
-                tempfile.NamedTemporaryFile('w', delete=False) as new_csvf:
+        with tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as orig_csvf, \
+                tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as new_csvf:
             for layer, csvf in ((orig_layer, orig_csvf), (new_layer, new_csvf)):
                 outputs['droppedgeometries'] = run_algorithm('native:dropgeometries', {
                     'INPUT': layer,
