@@ -45,6 +45,7 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsProcessing,
     QgsProcessingException,
+    QgsProcessingMultiStepFeedback,
     QgsProcessingParameterExpression,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
@@ -52,6 +53,7 @@ from qgis.core import (
     QgsSettings,
 )
 
+from .context_managers import QgisStepManager
 from .qgis_version import HAS_DB_PROCESSING_PARAMETER
 
 
@@ -127,6 +129,8 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
+        multi_feedback = QgsProcessingMultiStepFeedback(9, feedback)
+        run_next_step = QgisStepManager(multi_feedback)
         orig_layer = self.parameterAsVectorLayer(parameters,
                                                  self.ORIG_INPUT,
                                                  context)
@@ -148,34 +152,39 @@ class FeatureDiffAlgorithm(QgisAlgorithm):
         with tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as orig_csvf, \
                 tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as new_csvf:
             for layer, csvf in ((orig_layer, orig_csvf), (new_layer, new_csvf)):
-                outputs['droppedgeometries'] = run_algorithm('native:dropgeometries', {
-                    'INPUT': layer,
-                    'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
-                }, context=context, feedback=feedback, is_child_algorithm=True)
-                outputs['refactored'] = run_algorithm('native:refactorfields', {
-                    'INPUT': outputs['droppedgeometries']['OUTPUT'],
-                    'FIELDS_MAPPING': [{
-                        'expression': field_name,
-                        'name': field_name,
-                        'type': 10,
-                        'length': 0,
-                        'precision': 0,
-                    } for field_name in fields_to_compare],
-                    'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
-                }, context=context, feedback=feedback, is_child_algorithm=True)
-                outputs['ordered'] = run_algorithm('native:orderbyexpression', {
-                    'INPUT': outputs['refactored']['OUTPUT'],
-                    'EXPRESSION': sort_expression,
-                    'ASCENDING': True,
-                    'NULLS_FIRST': True,
-                    'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
-                }, context=context, feedback=feedback, is_child_algorithm=True)
-                run_algorithm('csvtools:exportlayertocsv', {
-                    'INPUT': outputs['ordered']['OUTPUT'],
-                    'OUTPUT': csvf.name
-                }, context=context, feedback=feedback, is_child_algorithm=True)
+                with run_next_step:
+                    outputs['droppedgeometries'] = run_algorithm('native:dropgeometries', {
+                        'INPUT': layer,
+                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
+                with run_next_step:
+                    outputs['refactored'] = run_algorithm('native:refactorfields', {
+                        'INPUT': outputs['droppedgeometries']['OUTPUT'],
+                        'FIELDS_MAPPING': [{
+                            'expression': field_name,
+                            'name': field_name,
+                            'type': 10,
+                            'length': 0,
+                            'precision': 0,
+                        } for field_name in fields_to_compare],
+                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
+                with run_next_step:
+                    outputs['ordered'] = run_algorithm('native:orderbyexpression', {
+                        'INPUT': outputs['refactored']['OUTPUT'],
+                        'EXPRESSION': sort_expression,
+                        'ASCENDING': True,
+                        'NULLS_FIRST': True,
+                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
+                with run_next_step:
+                    run_algorithm('csvtools:exportlayertocsv', {
+                        'INPUT': outputs['ordered']['OUTPUT'],
+                        'OUTPUT': csvf.name
+                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
         with open(orig_csvf.name) as orig_csvf, \
-                open(new_csvf.name) as new_csvf:
+                open(new_csvf.name) as new_csvf, \
+                run_next_step:
             diff_output = difflib.unified_diff(
                 orig_csvf.readlines(),
                 new_csvf.readlines(),
