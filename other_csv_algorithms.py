@@ -32,6 +32,7 @@ __revision__ = '$Format:%H$'
 
 from datetime import datetime
 from itertools import starmap
+import abc
 import difflib
 import io
 import os
@@ -53,6 +54,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
+    QgsProcessingParameterString,
     QgsSettings,
 )
 
@@ -60,32 +62,57 @@ from .context_managers import QgisStepManager
 from .qgis_version import HAS_DB_PROCESSING_PARAMETER
 
 
-if not HAS_DB_PROCESSING_PARAMETER:
+if HAS_DB_PROCESSING_PARAMETER:
+    from qgis.core import (
+        QgsProcessingParameterDatabaseSchema,
+        QgsProcessingParameterDatabaseTable,
+        QgsProcessingParameterProviderConnection,
+    )
+else:
     from processing.tools.postgis import uri_from_name as uri_from_db_conn_name
 
 
 # TODO: write tests
-class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
-    """QGIS algorithm that takes two vector layers with identical columns
-    and show differences between features of these two layers."""
+class _AbstractAttributeDiffAlgorithm(QgisAlgorithm):
+    """Abstract QGIS algorithm that factors in a single class code to compute attribute difference
+    between two layers."""
 
-    # Constants used to refer to parameters and outputs. They will be
-    # used when calling the algorithm from another algorithm, or when
-    # calling from the QGIS console.
-    ORIG_INPUT = 'ORIG_INPUT'
     NEW_INPUT = 'NEW_INPUT'
     FIELDS_TO_COMPARE = 'FIELDS_TO_COMPARE'
     HIGHLIGHT_METHOD = 'HIGHLIGHT_METHOD'
     SORT_EXPRESSION = 'SORT_EXPRESSION'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
+    @abc.abstractproperty
+    def step_count(self):
+        return None
+
+    @abc.abstractmethod
+    def _check_fields(self):
+        """Check that fields are the same."""
+
+    @abc.abstractmethod
+    def _generate_csv_files(self, orig_csvf, new_csvf):
+        """Generate CSV files that are to be diffed."""
+
+    @abc.abstractmethod
+    def _orig_name(self):
+        """Return the name to be used as original file in output."""
+
+    @abc.abstractmethod
+    def _read_parameters(self, parameters, context):
+        """Read parameters specific to this algorithm."""
+
+    def groupId(self):
+        """Algorithm group identifier."""
+        return 'othercsvtools'
+
+    def icon(self):
+        """Algorithm's icon (SVG)."""
+        return QIcon(':/plugins/csv_tools/diff_files.png')
+
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
-        self.addParameter(QgsProcessingParameterFeatureSource(
-            self.ORIG_INPUT,
-            self.tr('Original layer'),
-            types=[QgsProcessing.TypeVector],
-        ))
         self.addParameter(QgsProcessingParameterFeatureSource(
             self.NEW_INPUT,
             self.tr('New layer'),
@@ -121,134 +148,32 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
             None, True
         ))
 
-    def name(self):
-        """Algorithm identifier."""
-        return 'attributediffbetweenlayers'
-
-    def displayName(self):
-        """Algorithm human name."""
-        return self.tr('Attribute difference between layers')
-
-    def group(self):
-        """Algorithm group human name."""
-        return self.tr('Other CSV tools')
-
-    def groupId(self):
-        """Algorithm group identifier."""
-        return 'othercsvtools'
-
-    def icon(self):
-        """Algorithm's icon (SVG)."""
-        return QIcon(':/plugins/csv_tools/diff_files.png')
-
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
-        multi_feedback = QgsProcessingMultiStepFeedback(9, feedback)
-        run_next_step = QgisStepManager(multi_feedback)
-        orig_layer = self.parameterAsVectorLayer(parameters,
-                                                 self.ORIG_INPUT,
-                                                 context)
-        sort_expression = self.parameterAsExpression(parameters, self.SORT_EXPRESSION, context)
-        new_layer = self.parameterAsVectorLayer(parameters,
-                                                self.NEW_INPUT,
-                                                context)
-        # Check that fields are the same
-        fields_to_compare = self.parameterAsFields(parameters,
-                                                   self.FIELDS_TO_COMPARE,
-                                                   context)
-        new_layer_fields = [field.name() for field in new_layer.fields()
-                            if field.name() in fields_to_compare]
-        if new_layer_fields != fields_to_compare:
-            raise QgsProcessingException(self.tr(
-                'Unable to compare layers with different fields or field order'
-            ))
-        outputs = dict()
+        self.context = context
+        self._prepare_progress_bar(feedback)
+        self._read_common_parameters(parameters, context)
+        self._read_parameters(parameters, context)
+        self._check_fields()
+        self.outputs = dict()
+        self.results = dict()
         with tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as orig_csvf, \
                 tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as new_csvf:
-            for layer, csvf in ((orig_layer, orig_csvf), (new_layer, new_csvf)):
-                with run_next_step:
-                    outputs['droppedgeometries'] = run_algorithm('native:dropgeometries', {
-                        'INPUT': layer,
-                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
-                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
-                with run_next_step:
-                    outputs['refactored'] = run_algorithm('native:refactorfields', {
-                        'INPUT': outputs['droppedgeometries']['OUTPUT'],
-                        'FIELDS_MAPPING': [{
-                            'expression': field_name,
-                            'name': field_name,
-                            'type': 10,
-                            'length': 0,
-                            'precision': 0,
-                        } for field_name in fields_to_compare],
-                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
-                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
-                with run_next_step:
-                    outputs['ordered'] = run_algorithm('native:orderbyexpression', {
-                        'INPUT': outputs['refactored']['OUTPUT'],
-                        'EXPRESSION': sort_expression,
-                        'ASCENDING': True,
-                        'NULLS_FIRST': True,
-                        'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
-                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
-                with run_next_step:
-                    run_algorithm('csvtools:exportlayertocsv', {
-                        'INPUT': outputs['ordered']['OUTPUT'],
-                        'OUTPUT': csvf.name
-                    }, context=context, feedback=multi_feedback, is_child_algorithm=True)
-        highlight_method_idx = self.parameterAsEnum(parameters, self.HIGHLIGHT_METHOD, context)
-        with open(orig_csvf.name) as orig_csvf, \
-                open(new_csvf.name) as new_csvf, \
-                run_next_step:
-            if highlight_method_idx == 0:
-                diff_output = difflib.unified_diff(
-                    orig_csvf.readlines(),
-                    new_csvf.readlines(),
-                    fromfile=orig_layer.name(),
-                    tofile=new_layer.name(),
-                )
-            else:
-                differ = difflib.HtmlDiff(tabsize=2)
-                diff_output = differ.make_table(
-                    orig_csvf.readlines(),
-                    new_csvf.readlines(),
-                    fromdesc=orig_layer.name(),
-                    todesc=new_layer.name(),
-                    context=True,
-                    numlines=3,
-                )
-        results = dict()
-        output_file = self.parameterAsFileOutput(parameters,
-                                                 self.OUTPUT_HTML_FILE,
-                                                 context)
-        if output_file:
-            with io.StringIO() as diff_f:
-                diff_f.writelines(diff_output)
-                diff_output = diff_f.getvalue()
-            if diff_output:
-                diff_html = (highlight(diff_output, DiffLexer(), HtmlFormatter(full=True))
-                             if highlight_method_idx == 0
-                             else diff_output)
-            else:
-                diff_html = None
-            self._create_download_report(output_file, diff_html)
-            results[self.OUTPUT_HTML_FILE] = output_file
+            self._generate_csv_files(orig_csvf, new_csvf)
+        with self.run_next_step:
+            diff_output = _diff_csv_files(
+                orig_csvf, new_csvf, self._orig_name(), self.new_layer.name(),
+                method='udiff' if self.highlight_method_idx == 0 else 'ndiff'
+            )
+        if self.output_file:
+            diff_html = _html_version(
+                diff_output, method='udiff' if self.highlight_method_idx == 0 else 'ndiff'
+            )
+            self._create_download_report(self.output_file, diff_html)
+            self.results[self.OUTPUT_HTML_FILE] = self.output_file
         os.unlink(orig_csvf.name)
         os.unlink(new_csvf.name)
-        return results
-
-    def shortHelpString(self):
-        return self.tr(
-            "This algorithm takes two vector layers  with common fields (those common fields "
-            "being in the same order or the result will be unreadable) and shows differences "
-            "between attributes in an HTML report.\n\n"
-            "This can be useful to compare two versions of the same layer.\n\n"
-            "Under the hood, each attribute table is converted to CSV and the "
-            "two CSV files are diffed.\n\n"
-            "For the output to be correct, all lines in each CSV file must be written in the same "
-            "order. Thus, a sort expression must be given. For example, it can be a key field that "
-            "identifies features in each layer."
-        )
+        return self.results
 
     def _create_download_report(self, output_html_path, diff_html):
         """Create the given HTML file which is a report of found attribute differences."""
@@ -266,6 +191,119 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
                 content=tmpl_content,
             ))
 
+    def _layer_to_csv(self, layer, csvf):
+        """Export the given layer to the given CSV file."""
+        with self.run_next_step:
+            self.outputs['droppedgeometries'] = run_algorithm('native:dropgeometries', {
+                'INPUT': layer,
+                'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+            }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
+        with self.run_next_step:
+            self.outputs['refactored'] = run_algorithm('native:refactorfields', {
+                'INPUT': self.outputs['droppedgeometries']['OUTPUT'],
+                'FIELDS_MAPPING': [{
+                    'expression': field_name,
+                    'name': field_name,
+                    'type': 10,
+                    'length': 0,
+                    'precision': 0,
+                } for field_name in self.fields_to_compare],
+                'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+            }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
+        with self.run_next_step:
+            self.outputs['ordered'] = run_algorithm('native:orderbyexpression', {
+                'INPUT': self.outputs['refactored']['OUTPUT'],
+                'EXPRESSION': self.sort_expression,
+                'ASCENDING': True,
+                'NULLS_FIRST': True,
+                'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
+            }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
+        with self.run_next_step:
+            run_algorithm('csvtools:exportlayertocsv', {
+                'INPUT': self.outputs['ordered']['OUTPUT'],
+                'OUTPUT': csvf.name
+            }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
+
+    def _prepare_progress_bar(self, feedback):
+        """Prepare number of steps for progress bar."""
+        self.multi_feedback = QgsProcessingMultiStepFeedback(self.step_count, feedback)
+        self.run_next_step = QgisStepManager(self.multi_feedback)
+
+    def _read_common_parameters(self, parameters, context):
+        """Set value of parameters common to all concrete algorithms."""
+        self.new_layer = self.parameterAsVectorLayer(parameters, self.NEW_INPUT, context)
+        self.fields_to_compare = self.parameterAsFields(parameters, self.FIELDS_TO_COMPARE, context)
+        self.sort_expression = self.parameterAsExpression(parameters, self.SORT_EXPRESSION, context)
+        self.output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
+        self.highlight_method_idx = self.parameterAsEnum(parameters, self.HIGHLIGHT_METHOD, context)
+
+
+# TODO: write tests
+class AttributeDiffBetweenLayersAlgorithm(_AbstractAttributeDiffAlgorithm):
+    """QGIS algorithm that takes two vector layers with identical columns
+    and show differences between features of these two layers."""
+
+    ORIG_INPUT = 'ORIG_INPUT'
+
+    @property
+    def step_count(self):
+        return 9
+
+    def name(self):
+        """Algorithm identifier."""
+        return 'attributediffbetweenlayers'
+
+    def displayName(self):
+        """Algorithm human name."""
+        return self.tr('Attribute difference between layers')
+
+    def group(self):
+        """Algorithm group human name."""
+        return self.tr('Other CSV tools')
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm takes two vector layers  with common fields (those common fields "
+            "being in the same order or the result will be unreadable) and shows differences "
+            "between attributes in an HTML report.\n\n"
+            "This can be useful to compare two versions of the same layer.\n\n"
+            "Under the hood, each attribute table is converted to CSV and the "
+            "two CSV files are diffed.\n\n"
+            "For the output to be correct, all lines in each CSV file must be written in the same "
+            "order. Thus, a sort expression must be given. For example, it can be a key field that "
+            "identifies features in each layer."
+        )
+
+    def initAlgorithm(self, config):
+        """Initialize algorithm with inputs and output parameters."""
+        self.addParameter(QgsProcessingParameterFeatureSource(
+            self.ORIG_INPUT,
+            self.tr('Original layer'),
+            types=[QgsProcessing.TypeVector],
+        ))
+        super().initAlgorithm(config)
+
+    def _check_fields(self):
+        """Check that fields are the same."""
+        orig_layer_fields = [field.name() for field in self.orig_layer.fields()
+                             if field.name() in self.fields_to_compare]
+        if orig_layer_fields != self.fields_to_compare:
+            raise QgsProcessingException(self.tr(
+                'Unable to compare layers with different fields or field order'
+            ))
+
+    def _orig_name(self):
+        """Return the name to be used as original file in output."""
+        return self.orig_layer.name()
+
+    def _generate_csv_files(self, orig_csvf, new_csvf):
+        """Generate CSV files that are to be diffed."""
+        for layer, csvf in ((self.orig_layer, orig_csvf), (self.new_layer, new_csvf)):
+            self._layer_to_csv(layer, csvf)
+
+    def _read_parameters(self, parameters, context):
+        """Read parameters specific to this algorithm."""
+        self.orig_layer = self.parameterAsVectorLayer(parameters, self.ORIG_INPUT, context)
 
 def _connection_name_from_info(conn_info):
     settings = QgsSettings()
@@ -286,3 +324,41 @@ def _connection_name_from_info(conn_info):
         )):
             return group
     return None
+
+
+def _diff_csv_files(orig_csvf, new_csvf, orig_name, new_name, method='udiff'):
+    """Compute difference between the two CSV files and return the output."""
+    with open(orig_csvf.name) as orig_csvf, \
+            open(new_csvf.name) as new_csvf:
+        if method == 'udiff':
+            diff_output = difflib.unified_diff(
+                orig_csvf.readlines(),
+                new_csvf.readlines(),
+                fromfile=orig_name,
+                tofile=new_name,
+            )
+        else:
+            differ = difflib.HtmlDiff(tabsize=2)
+            diff_output = differ.make_table(
+                orig_csvf.readlines(),
+                new_csvf.readlines(),
+                fromdesc=orig_name,
+                todesc=new_name,
+                context=True,
+                numlines=3,
+            )
+    return diff_output
+
+
+def _html_version(diff_output, method='udiff'):
+    """Convert the given diff output to HTML if needed."""
+    with io.StringIO() as diff_f:
+        diff_f.writelines(diff_output)
+        diff_output = diff_f.getvalue()
+    if diff_output:
+        diff_html = (highlight(diff_output, DiffLexer(), HtmlFormatter(full=True))
+                     if method == 'udiff'
+                     else diff_output)
+    else:
+        diff_html = None
+    return diff_html
