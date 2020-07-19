@@ -333,6 +333,19 @@ class AttributeDiffWithPgAlgorithm(_AbstractAttributeDiffAlgorithm):
         """Algorithm group human name."""
         return self.tr('Other CSV tools')
 
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm takes a vector layer and a PostgreSQL/Postgis table with common "
+            "columns and shows differences between rows in an HTML report.\n\n"
+            "This can be useful to compare the layer with its original version in database before "
+            "submitting new or updated data to database.\n\n"
+            "Under the hood, the table and attribute table are converted to CSV and the "
+            "two CSV files are diffed.\n\n"
+            "For the output to be correct, all lines in each CSV file must be written in the same "
+            "order. Thus, a sort expression must be given. For example, it can be a key field that "
+            "identifies features in each layer."
+        )
+
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
         if HAS_DB_PROCESSING_PARAMETER:
