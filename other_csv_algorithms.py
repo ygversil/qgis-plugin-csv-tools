@@ -46,6 +46,7 @@ from pygments.lexers import DiffLexer
 from processing import run as run_algorithm
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
+    QgsApplication,
     QgsProcessing,
     QgsProcessingException,
     QgsProcessingMultiStepFeedback,
@@ -199,7 +200,12 @@ class _AbstractAttributeDiffAlgorithm(QgisAlgorithm):
                 'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
             }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
         with self.run_next_step:
-            self.outputs['refactored'] = run_algorithm('native:refactorfields', {
+            refactor_alg_ids = (list(filter(lambda alg: alg.id() == 'native:refactorfields',
+                                            QgsApplication.processingRegistry().algorithms()))
+                                or list(filter(lambda alg: alg.id() == 'qgis:refactorfields',
+                                               QgsApplication.processingRegistry().algorithms())))
+            refactor_alg_id = refactor_alg_ids[0]
+            self.outputs['refactored'] = run_algorithm(refactor_alg_id, {
                 'INPUT': self.outputs['droppedgeometries']['OUTPUT'],
                 'FIELDS_MAPPING': [{
                     'expression': field_name,
