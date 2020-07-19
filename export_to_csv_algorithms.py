@@ -290,7 +290,7 @@ class ExportLayerToCsv(QgisAlgorithm):
         options_dict = {
             'GEOMETRY': 'AS_WKT',
             'SEPARATOR': 'COMMA',
-            'STRING_QUOTING': 'IF_AMBIGUOUS',
+            'STRING_QUOTING': 'IF_NEEDED',
         }
         alg_params = {
             'INPUT': input_layer,
