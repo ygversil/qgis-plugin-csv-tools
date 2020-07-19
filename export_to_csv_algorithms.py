@@ -33,6 +33,7 @@ __revision__ = '$Format:%H$'
 
 import csv
 import io
+import os
 import platform
 import re
 import sqlite3
@@ -360,11 +361,12 @@ class ExportLayerToCsv(QgisAlgorithm):
         input_layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
         export_geom = self.parameterAsBoolean(parameters, self.EXPORT_GEOM, context)
-        sep_name, _ = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
-        quoting_name, _ = _QUOTING_STRATEGIES[self.parameterAsEnum(parameters, self.QUOTING,
-                                                                   context)]
-        lt_name, _ = _LINE_TERMINATORS[self.parameterAsEnum(parameters, self.LINE_TERMINATOR,
-                                                            context)]
+        sep_name, sep = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
+        quoting_name, quoting = _QUOTING_STRATEGIES[self.parameterAsEnum(parameters, self.QUOTING,
+                                                                         context)]
+        lt_name, lt = _LINE_TERMINATORS[self.parameterAsEnum(parameters, self.LINE_TERMINATOR,
+                                                             context)]
+        outputs = dict()
         options_dict = {
             'SEPARATOR': sep_name,
             'STRING_QUOTING': quoting_name,
@@ -372,12 +374,24 @@ class ExportLayerToCsv(QgisAlgorithm):
         }
         if export_geom:
             options_dict['GEOMETRY'] = 'AS_WKT'
-        alg_params = {
-            'INPUT': input_layer,
-            'OPTIONS': ' '.join('-lco {k}={v}'.format(k=k, v=v) for k, v in options_dict.items()),
-            'OUTPUT': csv_fpath,
-        }
-        return run_alg('gdal:convertformat', alg_params, context=context, feedback=feedback)
+        with tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as tmp_csvf:
+            outputs['converted'] = run_alg('gdal:convertformat', {
+                'INPUT': input_layer,
+                'OPTIONS': ' '.join('-lco {k}={v}'.format(k=k, v=v)
+                                    for k, v in options_dict.items()),
+                'OUTPUT': tmp_csvf.name
+            }, context=context, feedback=feedback)
+        if csv_fpath:
+            with open(csv_fpath, 'w') as output_csvf, \
+                    open(tmp_csvf.name) as tmp_csvf:
+                reader = csv.reader(tmp_csvf, delimiter=sep, quotechar='"', quoting=quoting,
+                                    lineterminator=lt)
+                writer = csv.writer(output_csvf, delimiter=sep, quotechar='"', quoting=quoting,
+                                    lineterminator=lt)
+                for row in reader:
+                    writer.writerow(_normalize_row(row))
+        os.unlink(tmp_csvf.name)
+        return {self.OUTPUT: csv_fpath}
 
 
 def _normalize_boolean(v):
