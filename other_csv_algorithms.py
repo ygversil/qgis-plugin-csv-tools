@@ -95,7 +95,7 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
             self.FIELDS_TO_COMPARE,
             self.tr('Fields to compare'),
             None,
-            self.ORIG_INPUT,
+            self.NEW_INPUT,
             allowMultiple=True,
         ))
         self.addParameter(QgsProcessingParameterEnum(
@@ -111,7 +111,7 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterExpression(
             self.SORT_EXPRESSION,
             self.tr('Sort expression'),
-            parentLayerParameterName=self.ORIG_INPUT,
+            parentLayerParameterName=self.NEW_INPUT,
             defaultValue='',
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
