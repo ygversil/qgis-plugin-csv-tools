@@ -43,6 +43,7 @@ from processing import run as run_alg
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsProcessing,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
@@ -67,6 +68,13 @@ else:
     from processing.tools.postgis import GeoDB
 
 
+_SEPARATORS = [
+    ('COMMA', ','),
+    ('SEMICOLON', ';'),
+    ('TAB', '\t'),
+]
+
+
 class _AbstractExportQueryToCsv(QgisAlgorithm):
     """Abstract algorithm that takes a ``SELECT`` SQL query, run it against a
     database, and export the results into a CSV file."""
@@ -76,6 +84,7 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
     # calling from the QGIS console.
     DATABASE = 'DATABASE'
     SELECT_SQL = 'SELECT_SQL'
+    SEPARATOR = 'SEPARATOR'
     OUTPUT = 'OUTPUT'
 
     def initAlgorithm(self, config):
@@ -84,6 +93,13 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
             self.SELECT_SQL,
             self.tr('SELECT SQL query'),
             multiLine=True,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.SEPARATOR,
+            self.tr('Separator'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _SEPARATORS],
+            defaultValue=0,
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT,
@@ -99,6 +115,7 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
         """Actual processing steps."""
         select_sql = self.parameterAsString(parameters, self.SELECT_SQL,
                                             context)
+        _, sep = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
         select_sql = str(select_sql).strip().replace('\n', ' ')
         # XXX: check if this a SELECT query
         qgis_conn = self._get_connection(parameters, self.DATABASE, context)
@@ -106,7 +123,7 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
                                                context)
         if csv_fpath:
             with open(csv_fpath, 'w') as csvf:
-                writer = csv.writer(csvf, delimiter='|', quotechar='"',
+                writer = csv.writer(csvf, delimiter=sep, quotechar='"',
                                     quoting=csv.QUOTE_MINIMAL)
                 for row in self._db_rows(qgis_conn, select_sql):
                     writer.writerow(_normalize_row(row))
@@ -240,7 +257,7 @@ class ExportLayerToCsv(QgisAlgorithm):
     """QGIS algorithm that takes a vector layer and converts it to a CSV file with WKT Geometry."""
 
     INPUT = 'INPUT'
-    OPTIONS = 'OPTIONS'
+    SEPARATOR = 'SEPARATOR'
     OUTPUT = 'OUTPUT'
 
     def name(self):
@@ -277,6 +294,13 @@ class ExportLayerToCsv(QgisAlgorithm):
             self.tr('Input vector layer'),
             types=[QgsProcessing.TypeVector],
         ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.SEPARATOR,
+            self.tr('Separator'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _SEPARATORS],
+            defaultValue=0,
+        ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT,
             self.tr('CSV file'),
@@ -287,9 +311,10 @@ class ExportLayerToCsv(QgisAlgorithm):
         """Actual processing steps."""
         input_layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+        sep_name, _ = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
         options_dict = {
             'GEOMETRY': 'AS_WKT',
-            'SEPARATOR': 'COMMA',
+            'SEPARATOR': sep_name,
             'STRING_QUOTING': 'IF_NEEDED',
         }
         alg_params = {
