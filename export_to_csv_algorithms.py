@@ -61,7 +61,7 @@ csv.field_size_limit(int(sys.maxsize / 1000))
 _DATETIME_REGEXP = re.compile(r'(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)'
                               r'[T\s]+'
                               r'(?P<hour>\d+):(?P<minute>\d+):(?P<second>\d+)'
-                              r'(?P<microseconds>.\d+)?Z?')
+                              r'\.?(?P<microsecond>\d+)(?P<Z>Z?)')
 
 
 if HAS_DB_PROCESSING_PARAMETER:
