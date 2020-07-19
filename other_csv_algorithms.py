@@ -305,6 +305,128 @@ class AttributeDiffBetweenLayersAlgorithm(_AbstractAttributeDiffAlgorithm):
         """Read parameters specific to this algorithm."""
         self.orig_layer = self.parameterAsVectorLayer(parameters, self.ORIG_INPUT, context)
 
+
+# TODO: write tests
+class AttributeDiffWithPgAlgorithm(_AbstractAttributeDiffAlgorithm):
+    """QGIS algorithm that takes a PostgreSQL/postgis table and a vector layer with identical
+    columns and show differences between attributes tables."""
+
+    DATABASE = 'DATABASE'
+    SCHEMA = 'SCHEMA'
+    TABLENAME = 'TABLENAME'
+
+    @property
+    def step_count(self):
+        return 6
+
+    def name(self):
+        """Algorithm identifier."""
+        return 'attributediffwithpg'
+
+    def displayName(self):
+        """Algorithm human name."""
+        return self.tr('Attribute difference with a PostgreSQL/Postgis table')
+
+    def group(self):
+        """Algorithm group human name."""
+        return self.tr('Other CSV tools')
+
+    def initAlgorithm(self, config):
+        """Initialize algorithm with inputs and output parameters."""
+        if HAS_DB_PROCESSING_PARAMETER:
+            db_param = QgsProcessingParameterProviderConnection(
+                self.DATABASE,
+                self.tr('PostgreSQL database (connection name)'),
+                'postgres',
+            )
+            schema_param = QgsProcessingParameterDatabaseSchema(
+                self.SCHEMA,
+                self.tr('PostgreSQL schema name'),
+                connectionParameterName=self.DATABASE,
+                defaultValue='public',
+            )
+            table_param = QgsProcessingParameterDatabaseTable(
+                self.TABLENAME,
+                self.tr('PostgreSQL original table name'),
+                connectionParameterName=self.DATABASE,
+                schemaParameterName=self.SCHEMA
+            )
+        else:
+            db_param = QgsProcessingParameterString(
+                self.DATABASE,
+                self.tr('PostgreSQL database (connection name)'),
+            )
+            db_param.setMetadata({
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'
+                }
+            })
+            schema_param = QgsProcessingParameterString(
+                self.SCHEMA,
+                self.tr('PostgreSQL schema name'),
+                'public',
+                False,
+                True,
+            )
+            schema_param.setMetadata({
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
+                    'connection_param': self.DATABASE,
+                }
+            })
+            table_param = QgsProcessingParameterString(
+                self.TABLENAME,
+                self.tr('PostgreSQL original table name'),
+                '',
+                False,
+                True,
+            )
+            table_param.setMetadata({
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
+                    'schema_param': self.SCHEMA,
+                }
+            })
+        self.addParameter(db_param)
+        self.addParameter(schema_param)
+        self.addParameter(table_param)
+        super().initAlgorithm(config)
+
+    def _check_fields(self):
+        """Check that fields are the same."""
+        # Not doing anything to avoid multiple requests to database.
+        # If fields are not the same, SELECT request will fail.
+
+    def _generate_csv_files(self, orig_csvf, new_csvf):
+        """Generate CSV files that are to be diffed."""
+        select_sql = 'select {cols} from {schema}.{table} order by {sort_exp}'.format(
+            cols=', '.join(self.fields_to_compare), schema=self.schema, table=self.tablename,
+            sort_exp=self.sort_expression
+        )
+        with self.run_next_step:
+            run_algorithm('csvtools:exportpostgresqlquerytocsv', {
+                'DATABASE': self.connection,
+                'SELECT_SQL': select_sql,
+                'OUTPUT': orig_csvf.name,
+            }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
+        self._layer_to_csv(self.new_layer, new_csvf)
+
+    def _orig_name(self):
+        """Return the name to be used as original file in output."""
+        return self.tr('Table in PostgreSQL database')
+
+    def _read_parameters(self, parameters, context):
+        """Read parameters specific to this algorithm."""
+        if HAS_DB_PROCESSING_PARAMETER:
+            self.connection = self.parameterAsConnectionName(parameters, self.DATABASE, context)
+            self.schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
+            self.tablename = self.parameterAsDatabaseTableName(parameters, self.TABLENAME, context)
+        else:
+            self.connection = self.parameterAsString(parameters, self.DATABASE, context)
+            self.schema = self.parameterAsString(parameters, self.SCHEMA, context)
+            self.tablename = self.parameterAsString(parameters, self.TABLENAME, context)
+
+
 def _connection_name_from_info(conn_info):
     settings = QgsSettings()
     settings.beginGroup('/PostgreSQL/connections/')
