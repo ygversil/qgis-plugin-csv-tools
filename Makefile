@@ -45,6 +45,7 @@ PLUGINNAME = csv_tools
 
 PY_FILES = \
 	__init__.py \
+	context_managers.py \
 	csv_tools.py \
 	csv_tools_provider.py \
 	export_to_csv_algorithms.py \
@@ -53,7 +54,7 @@ PY_FILES = \
 	qgis_version.py \
 	utils.py
 
-EXTRAS = metadata.txt
+EXTRAS = metadata.txt report_tmpl.html
 
 EXTRA_DIRS = icons
 

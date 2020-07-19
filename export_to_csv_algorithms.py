@@ -33,6 +33,8 @@ __revision__ = '$Format:%H$'
 
 import csv
 import io
+import os
+import platform
 import re
 import sqlite3
 import tempfile
@@ -43,6 +45,8 @@ from processing import run as run_alg
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsProcessing,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
@@ -58,13 +62,28 @@ csv.field_size_limit(int(sys.maxsize / 1000))
 _DATETIME_REGEXP = re.compile(r'(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)'
                               r'[T\s]+'
                               r'(?P<hour>\d+):(?P<minute>\d+):(?P<second>\d+)'
-                              r'(?P<microseconds>.\d+)?Z?')
+                              r'\.?(?P<microsecond>\d+)(?P<Z>Z?)')
 
 
 if HAS_DB_PROCESSING_PARAMETER:
     from qgis.core import QgsProcessingParameterProviderConnection
 else:
     from processing.tools.postgis import GeoDB
+
+
+_LINE_TERMINATORS = [
+    ('LF', '\n'),
+    ('CRLF', '\r\n'),
+]
+_SEPARATORS = [
+    ('COMMA', ','),
+    ('SEMICOLON', ';'),
+    ('TAB', '\t'),
+]
+_QUOTING_STRATEGIES = [
+    ('IF_NEEDED', csv.QUOTE_MINIMAL),
+    ('ALWAYS', csv.QUOTE_ALL),
+]
 
 
 class _AbstractExportQueryToCsv(QgisAlgorithm):
@@ -76,6 +95,9 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
     # calling from the QGIS console.
     DATABASE = 'DATABASE'
     SELECT_SQL = 'SELECT_SQL'
+    SEPARATOR = 'SEPARATOR'
+    QUOTING = 'QUOTING'
+    LINE_TERMINATOR = 'LINE_TERMINATOR'
     OUTPUT = 'OUTPUT'
 
     def initAlgorithm(self, config):
@@ -84,6 +106,26 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
             self.SELECT_SQL,
             self.tr('SELECT SQL query'),
             multiLine=True,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.SEPARATOR,
+            self.tr('Separator'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _SEPARATORS],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.QUOTING,
+            self.tr('Quoting'),
+            options=['{name}'.format(name=name) for name, _ in _QUOTING_STRATEGIES],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.LINE_TERMINATOR,
+            self.tr('End-line character'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _LINE_TERMINATORS],
+            defaultValue=1 if platform.win32_ver()[0] != '' else 0,
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT,
@@ -99,16 +141,18 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
         """Actual processing steps."""
         select_sql = self.parameterAsString(parameters, self.SELECT_SQL,
                                             context)
+        _, sep = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
+        _, quoting = _QUOTING_STRATEGIES[self.parameterAsEnum(parameters, self.QUOTING, context)]
+        _, lt = _LINE_TERMINATORS[self.parameterAsEnum(parameters, self.LINE_TERMINATOR, context)]
         select_sql = str(select_sql).strip().replace('\n', ' ')
         # XXX: check if this a SELECT query
         qgis_conn = self._get_connection(parameters, self.DATABASE, context)
-        qgis_conn = self.parameterAsString(parameters, self.DATABASE, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT,
                                                context)
         if csv_fpath:
             with open(csv_fpath, 'w') as csvf:
-                writer = csv.writer(csvf, delimiter='|', quotechar='"',
-                                    quoting=csv.QUOTE_MINIMAL)
+                writer = csv.writer(csvf, delimiter=sep, quotechar='"', quoting=quoting,
+                                    lineterminator=lt)
                 for row in self._db_rows(qgis_conn, select_sql):
                     writer.writerow(_normalize_row(row))
         return {self.OUTPUT: csv_fpath}
@@ -241,7 +285,10 @@ class ExportLayerToCsv(QgisAlgorithm):
     """QGIS algorithm that takes a vector layer and converts it to a CSV file with WKT Geometry."""
 
     INPUT = 'INPUT'
-    OPTIONS = 'OPTIONS'
+    EXPORT_GEOM = 'EXPORT_GEOM'
+    SEPARATOR = 'SEPARATOR'
+    QUOTING = 'QUOTING'
+    LINE_TERMINATOR = 'LINE_TERMINATOR'
     OUTPUT = 'OUTPUT'
 
     def name(self):
@@ -278,6 +325,31 @@ class ExportLayerToCsv(QgisAlgorithm):
             self.tr('Input vector layer'),
             types=[QgsProcessing.TypeVector],
         ))
+        self.addParameter(QgsProcessingParameterBoolean(
+            self.EXPORT_GEOM,
+            self.tr('Export geometry as WKT string?'),
+            defaultValue=True,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.SEPARATOR,
+            self.tr('Separator'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _SEPARATORS],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.QUOTING,
+            self.tr('Quoting'),
+            options=['{name}'.format(name=name) for name, _ in _QUOTING_STRATEGIES],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.LINE_TERMINATOR,
+            self.tr('End-line character'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _LINE_TERMINATORS],
+            defaultValue=1 if platform.win32_ver()[0] != '' else 0,
+        ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT,
             self.tr('CSV file'),
@@ -288,16 +360,42 @@ class ExportLayerToCsv(QgisAlgorithm):
         """Actual processing steps."""
         input_layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
-        alg_params = {
-            'INPUT': input_layer,
-            'OPTIONS': '-lco GEOMETRY=AS_WKT -lco SEPARATOR=COMMA -lco STRING_QUOTING=IF_AMBIGUOUS',
-            'OUTPUT': csv_fpath,
+        export_geom = self.parameterAsBoolean(parameters, self.EXPORT_GEOM, context)
+        sep_name, sep = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
+        quoting_name, quoting = _QUOTING_STRATEGIES[self.parameterAsEnum(parameters, self.QUOTING,
+                                                                         context)]
+        lt_name, lt = _LINE_TERMINATORS[self.parameterAsEnum(parameters, self.LINE_TERMINATOR,
+                                                             context)]
+        outputs = dict()
+        options_dict = {
+            'SEPARATOR': sep_name,
+            'STRING_QUOTING': quoting_name,
+            'LINEFORMAT': lt_name,
         }
-        return run_alg('gdal:convertformat', alg_params, context=context, feedback=feedback)
+        if export_geom:
+            options_dict['GEOMETRY'] = 'AS_WKT'
+        with tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as tmp_csvf:
+            outputs['converted'] = run_alg('gdal:convertformat', {
+                'INPUT': input_layer,
+                'OPTIONS': ' '.join('-lco {k}={v}'.format(k=k, v=v)
+                                    for k, v in options_dict.items()),
+                'OUTPUT': tmp_csvf.name
+            }, context=context, feedback=feedback)
+        if csv_fpath:
+            with open(csv_fpath, 'w') as output_csvf, \
+                    open(tmp_csvf.name) as tmp_csvf:
+                reader = csv.reader(tmp_csvf, delimiter=sep, quotechar='"', quoting=quoting,
+                                    lineterminator=lt)
+                writer = csv.writer(output_csvf, delimiter=sep, quotechar='"', quoting=quoting,
+                                    lineterminator=lt)
+                for row in reader:
+                    writer.writerow(_normalize_row(row))
+        os.unlink(tmp_csvf.name)
+        return {self.OUTPUT: csv_fpath}
 
 
 def _normalize_boolean(v):
-    return {'t': '1', 'f': '0'}.get(v, v)
+    return {'t': 'true', 'f': 'false'}.get(v, v)
 
 
 def _normalize_datetime(v):
@@ -308,7 +406,7 @@ def _normalize_datetime(v):
         return ('{year}-{month}-{day}'
                 'T'
                 '{hour}:{minute}:{second}'
-                'Z'.format(**m.groupdict()))
+                '.000{Z}'.format(**m.groupdict()))
 
 
 def _normalize_row(row):

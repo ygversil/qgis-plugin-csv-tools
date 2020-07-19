@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{report_title} - CSV Tools</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <link rel="shortcut icon" href="https://www.gravatar.com/avatar/d1863f123a013fb2cec13519670e8509">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <style type="text/css">
+table.diff {{font-family:Courier; border:medium; overflow:auto; display:block; white-space:nowrap;}}
+.diff_header {{background-color:#e0e0e0}}
+td.diff_header {{text-align:right}}
+.diff_next {{background-color:#c0c0c0}}
+.diff_add {{background-color:#aaffaa}}
+.diff_chg {{background-color:#ffff77}}
+.diff_sub {{background-color:#ffaaaa}}
+    </style>
+  </head>
+  <body>
+    <header>
+      <navbar>
+      <div class="container">
+        <img src="https://www.gravatar.com/avatar/d1863f123a013fb2cec13519670e8509" style="height:48px; width:48px;" alt="Avatar YgVersil"/>
+      </div>
+      </navbar>
+    </header>
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-1">{report_title}</h1>
+        <p class="subtitle is-3">{report_subtitle}</p>
+        <div class="content">{now}</div>
+        <h2 class="title is-2">{section_title}</h2>
+        <div class="content">
+          {content}
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+        <strong>CSV Tools</strong>&nbsp;: a QGIS extension written by
+        <a href="mailto:ygversil@lilo.org">Yann Voté</a>.
+        Homepage:
+        <a href="https://github.com/ygversil/qgis-plugin-csv-tools">
+          https://github.com/ygversil/qgis-plugin-csv-tools
+        </a>.
+        Source code under the <a href="https://opensource.org/licenses/GPL-2.0">GPLv2</a> license.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
