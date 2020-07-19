@@ -190,6 +190,8 @@ class _AbstractAttributeDiffAlgorithm(QgisAlgorithm):
         with self.run_next_step:
             run_algorithm('csvtools:exportlayertocsv', {
                 'INPUT': self.outputs['ordered']['OUTPUT'],
+                'SEPARATOR': 0,
+                'QUOTING': 0,
                 'OUTPUT': csvf.name
             }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
 
@@ -455,6 +457,8 @@ class AttributeDiffWithPgAlgorithm(_AbstractAttributeDiffAlgorithm):
             run_algorithm('csvtools:exportpostgresqlquerytocsv', {
                 'DATABASE': self.connection,
                 'SELECT_SQL': select_sql,
+                'SEPARATOR': 0,
+                'QUOTING': 0,
                 'OUTPUT': orig_csvf.name,
             }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
         self._layer_to_csv(self.new_layer, new_csvf)
