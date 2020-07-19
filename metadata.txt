@@ -24,6 +24,10 @@ repository=https://github.com/ygversil/qgis-plugin-csv-tools
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 0.7.0
+  * Completely reworker attribute diff algorithms,
+  * Allow to choose separator, quoting strategy, and line-ending char when exporting to CSV.
+  ====
   Version 0.6.1
   * Remove unwanted print
   ====
