@@ -41,7 +41,10 @@ from .export_to_csv_algorithms import (
     ExportPostgreSQLQueryToCsv,
     ExportSQLiteQueryToCsv,
 )
-from .other_csv_algorithms import AttributeDiffBetweenLayersAlgorithm
+from .other_csv_algorithms import (
+    AttributeDiffBetweenLayersAlgorithm,
+    AttributeDiffWithPgAlgorithm,
+)
 
 
 class CSVToolsProvider(QgsProcessingProvider):
@@ -61,6 +64,7 @@ class CSVToolsProvider(QgsProcessingProvider):
         Loads all algorithms belonging to this provider.
         """
         self.addAlgorithm(AttributeDiffBetweenLayersAlgorithm())
+        self.addAlgorithm(AttributeDiffWithPgAlgorithm())
         self.addAlgorithm(ExportLayerToCsv())
         self.addAlgorithm(ExportPostgreSQLQueryToCsv())
         self.addAlgorithm(ExportSQLiteQueryToCsv())
