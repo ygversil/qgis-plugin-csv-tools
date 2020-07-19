@@ -189,65 +189,70 @@ Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent êt
 <context>
     <name>ExportLayerToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="297"/>
+        <location filename="../export_to_csv_algorithms.py" line="299"/>
         <source>Export layer to CSV</source>
         <translation>Exporter une couche en CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="305"/>
+        <location filename="../export_to_csv_algorithms.py" line="307"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="313"/>
+        <location filename="../export_to_csv_algorithms.py" line="315"/>
         <source>This algorithm creates a CSV file from a vector layer. Geometries are converted to WKT strings.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos;une couche vectorielle. Les géométries sont converties en chaînes de caractères WKT.</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="320"/>
+        <location filename="../export_to_csv_algorithms.py" line="322"/>
         <source>Input vector layer</source>
         <translation>Couche vectorielle en entrée</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="345"/>
+        <location filename="../export_to_csv_algorithms.py" line="352"/>
         <source>CSV file</source>
         <translation>Fichier CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="325"/>
+        <location filename="../export_to_csv_algorithms.py" line="332"/>
         <source>Separator</source>
         <translation>Séparateur</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="338"/>
+        <location filename="../export_to_csv_algorithms.py" line="345"/>
         <source>End-line character</source>
         <translation>Caractère de fin de ligne</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="332"/>
+        <location filename="../export_to_csv_algorithms.py" line="339"/>
         <source>Quoting</source>
         <translation>Délimitation des valeurs</translation>
+    </message>
+    <message>
+        <location filename="../export_to_csv_algorithms.py" line="327"/>
+        <source>Export geometry as WKT string?</source>
+        <translation>Exporter les géométries en chaînes de caractères WKT ?</translation>
     </message>
 </context>
 <context>
     <name>ExportPostgreSQLQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="173"/>
+        <location filename="../export_to_csv_algorithms.py" line="174"/>
         <source>Database (connection name)</source>
         <translation>Base de données (nom de la connexion)</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="192"/>
+        <location filename="../export_to_csv_algorithms.py" line="193"/>
         <source>Export PostgreSQL query to CSV (COPY)</source>
         <translation>Export d&apos;une requête PostgreSQL en CSV (COPY)</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="196"/>
+        <location filename="../export_to_csv_algorithms.py" line="197"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="200"/>
+        <location filename="../export_to_csv_algorithms.py" line="201"/>
         <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against a PostgreSQL/Postgis database, then the result table is exported as CSV using the PostgreSQL COPY command.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos;une requête SQL de type SELECT. La requête est exécutée dans une base de données PostgreSQL (éventuellement avec l&apos;extension Postgis), et la table de résultats est ensuite exportée en CSV grâce à la commande COPY de PostgreSQL.</translation>
     </message>
@@ -255,22 +260,22 @@ Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent êt
 <context>
     <name>ExportSQLiteQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="240"/>
+        <location filename="../export_to_csv_algorithms.py" line="241"/>
         <source>GeoPackage or Spatialite database</source>
         <translation>Base de données GeoPackage ou Spatialite</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="252"/>
+        <location filename="../export_to_csv_algorithms.py" line="253"/>
         <source>Export SQLite query to CSV</source>
         <translation>Export d&apos;une requête SQLite en CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="256"/>
+        <location filename="../export_to_csv_algorithms.py" line="257"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="260"/>
+        <location filename="../export_to_csv_algorithms.py" line="261"/>
         <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against an SQLite database (Geopackage or Spatialite), then the result table is exported as CSV.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos; requête SQL de type SELECT. La requête est exécutée dans une base de données SQLite (Geopackage ou Spatialite), et la table de résultats est ensuite exportée en CSV.</translation>
     </message>
@@ -389,27 +394,27 @@ Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent êt
 <context>
     <name>_AbstractExportQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="103"/>
+        <location filename="../export_to_csv_algorithms.py" line="104"/>
         <source>SELECT SQL query</source>
         <translation>Requête SQL SELECT</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="128"/>
+        <location filename="../export_to_csv_algorithms.py" line="129"/>
         <source>CSV file</source>
         <translation>Fichier CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="108"/>
+        <location filename="../export_to_csv_algorithms.py" line="109"/>
         <source>Separator</source>
         <translation>Séparateur</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="121"/>
+        <location filename="../export_to_csv_algorithms.py" line="122"/>
         <source>End-line character</source>
         <translation>Caractère de fin de ligne</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="115"/>
+        <location filename="../export_to_csv_algorithms.py" line="116"/>
         <source>Quoting</source>
         <translation>Délimitation des valeurs</translation>
     </message>
