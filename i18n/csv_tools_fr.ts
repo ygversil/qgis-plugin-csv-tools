@@ -75,7 +75,7 @@ Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent êt
     <message>
         <location filename="../other_csv_algorithms.py" line="230"/>
         <source>&lt;p&gt;No differences found&lt;/p&gt;</source>
-        <translation>&lt;p&gtAucune différence trouvée&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Aucune différence trouvée&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../other_csv_algorithms.py" line="235"/>
