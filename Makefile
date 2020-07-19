@@ -54,7 +54,7 @@ PY_FILES = \
 	qgis_version.py \
 	utils.py
 
-EXTRAS = metadata.txt
+EXTRAS = metadata.txt report_tmpl.html
 
 EXTRA_DIRS = icons
 
