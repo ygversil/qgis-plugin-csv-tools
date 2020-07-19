@@ -44,6 +44,7 @@ from processing import run as run_alg
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsProcessing,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
@@ -283,6 +284,7 @@ class ExportLayerToCsv(QgisAlgorithm):
     """QGIS algorithm that takes a vector layer and converts it to a CSV file with WKT Geometry."""
 
     INPUT = 'INPUT'
+    EXPORT_GEOM = 'EXPORT_GEOM'
     SEPARATOR = 'SEPARATOR'
     QUOTING = 'QUOTING'
     LINE_TERMINATOR = 'LINE_TERMINATOR'
@@ -322,6 +324,11 @@ class ExportLayerToCsv(QgisAlgorithm):
             self.tr('Input vector layer'),
             types=[QgsProcessing.TypeVector],
         ))
+        self.addParameter(QgsProcessingParameterBoolean(
+            self.EXPORT_GEOM,
+            self.tr('Export geometry as WKT string?'),
+            defaultValue=True,
+        ))
         self.addParameter(QgsProcessingParameterEnum(
             self.SEPARATOR,
             self.tr('Separator'),
@@ -352,17 +359,19 @@ class ExportLayerToCsv(QgisAlgorithm):
         """Actual processing steps."""
         input_layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+        export_geom = self.parameterAsBoolean(parameters, self.EXPORT_GEOM, context)
         sep_name, _ = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
         quoting_name, _ = _QUOTING_STRATEGIES[self.parameterAsEnum(parameters, self.QUOTING,
                                                                    context)]
         lt_name, _ = _LINE_TERMINATORS[self.parameterAsEnum(parameters, self.LINE_TERMINATOR,
                                                             context)]
         options_dict = {
-            'GEOMETRY': 'AS_WKT',
             'SEPARATOR': sep_name,
             'STRING_QUOTING': quoting_name,
             'LINEFORMAT': lt_name,
         }
+        if export_geom:
+            options_dict['GEOMETRY'] = 'AS_WKT'
         alg_params = {
             'INPUT': input_layer,
             'OPTIONS': ' '.join('-lco {k}={v}'.format(k=k, v=v) for k, v in options_dict.items()),
