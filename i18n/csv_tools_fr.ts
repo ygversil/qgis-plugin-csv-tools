@@ -11,52 +11,52 @@
 <context>
     <name>AttributeDiffBetweenLayersAlgorithm</name>
     <message>
-        <location filename="../other_csv_algorithms.py" line="82"/>
+        <location filename="../other_csv_algorithms.py" line="84"/>
         <source>Original layer</source>
         <translation>Couche originale</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="87"/>
+        <location filename="../other_csv_algorithms.py" line="89"/>
         <source>New layer</source>
         <translation>Nouvelle couche</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="92"/>
+        <location filename="../other_csv_algorithms.py" line="94"/>
         <source>Fields to compare</source>
         <translation>Champs à comparer</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="99"/>
+        <location filename="../other_csv_algorithms.py" line="111"/>
         <source>Sort expression</source>
         <translation>Expression de tri</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="105"/>
+        <location filename="../other_csv_algorithms.py" line="117"/>
         <source>HTML report</source>
         <translation>Rapport HTML</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="105"/>
+        <location filename="../other_csv_algorithms.py" line="117"/>
         <source>HTML files (*.html)</source>
         <translation>Fichiers HTML (*.html)</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="118"/>
+        <location filename="../other_csv_algorithms.py" line="130"/>
         <source>Attribute difference between layers</source>
         <translation>Différences attributaires entre couches</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="122"/>
+        <location filename="../other_csv_algorithms.py" line="134"/>
         <source>Other CSV tools</source>
         <translation>Autres outils CSV</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="150"/>
+        <location filename="../other_csv_algorithms.py" line="162"/>
         <source>Unable to compare layers with different fields or field order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="215"/>
+        <location filename="../other_csv_algorithms.py" line="241"/>
         <source>This algorithm takes two vector layers  with common fields (those common fields being in the same order or the result will be unreadable) and shows differences between attributes in an HTML report.
 
 This can be useful to compare two versions of the same layer.
@@ -73,24 +73,39 @@ Il fonctionne en convertissant chaque table attributaire en un fichier CSV puis 
 Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent être générées dans le même ordre. C&apos;est pourquoi une expression de tri doit être indiquée. Elle peut être par exemple un champ clé qui permet d&apos;identifier les entités dans chaque couche.</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="230"/>
+        <location filename="../other_csv_algorithms.py" line="256"/>
         <source>&lt;p&gt;No differences found&lt;/p&gt;</source>
-        <translation>&lt;p&gtAucune différence trouvée&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Aucune différence trouvée&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="235"/>
+        <location filename="../other_csv_algorithms.py" line="261"/>
         <source>Attribute difference report</source>
         <translation>Rapport sur les différences attributaires</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="235"/>
+        <location filename="../other_csv_algorithms.py" line="261"/>
         <source>CSV Tools QGIS Extension</source>
         <translation>Extension QGIS CSV Tools</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="235"/>
+        <location filename="../other_csv_algorithms.py" line="261"/>
         <source>Differences found</source>
         <translation>Différences trouvées</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="101"/>
+        <source>Highlight method</source>
+        <translation>Méthode d&apos;affichage des différences</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="101"/>
+        <source>Only highlight different lines</source>
+        <translation>Ne montrer que les lignes différentes</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="101"/>
+        <source>Highligt different lines and inta-line character changes (Slower on large layers)</source>
+        <translation>Montrer les lignes différentes et les modifications de caractères intra-lignes (plus lent avec des grosses couches)</translation>
     </message>
 </context>
 <context>

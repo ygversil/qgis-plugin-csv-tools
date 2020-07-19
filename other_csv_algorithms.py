@@ -48,6 +48,7 @@ from qgis.core import (
     QgsProcessing,
     QgsProcessingException,
     QgsProcessingMultiStepFeedback,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterExpression,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
@@ -74,6 +75,7 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
     ORIG_INPUT = 'ORIG_INPUT'
     NEW_INPUT = 'NEW_INPUT'
     FIELDS_TO_COMPARE = 'FIELDS_TO_COMPARE'
+    HIGHLIGHT_METHOD = 'HIGHLIGHT_METHOD'
     SORT_EXPRESSION = 'SORT_EXPRESSION'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
@@ -95,6 +97,16 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
             None,
             self.ORIG_INPUT,
             allowMultiple=True,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.HIGHLIGHT_METHOD,
+            self.tr('Highlight method'),
+            options=[
+                self.tr('Only highlight different lines'),
+                self.tr('Highligt different lines and inta-line character changes (Slower on '
+                        'large layers)'),
+            ],
+            defaultValue=0,
         ))
         self.addParameter(QgsProcessingParameterExpression(
             self.SORT_EXPRESSION,
@@ -184,15 +196,27 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
                         'INPUT': outputs['ordered']['OUTPUT'],
                         'OUTPUT': csvf.name
                     }, context=context, feedback=multi_feedback, is_child_algorithm=True)
+        highlight_method_idx = self.parameterAsEnum(parameters, self.HIGHLIGHT_METHOD, context)
         with open(orig_csvf.name) as orig_csvf, \
                 open(new_csvf.name) as new_csvf, \
                 run_next_step:
-            diff_output = difflib.unified_diff(
-                orig_csvf.readlines(),
-                new_csvf.readlines(),
-                fromfile=orig_layer.name(),
-                tofile=new_layer.name(),
-            )
+            if highlight_method_idx == 0:
+                diff_output = difflib.unified_diff(
+                    orig_csvf.readlines(),
+                    new_csvf.readlines(),
+                    fromfile=orig_layer.name(),
+                    tofile=new_layer.name(),
+                )
+            else:
+                differ = difflib.HtmlDiff(tabsize=2)
+                diff_output = differ.make_table(
+                    orig_csvf.readlines(),
+                    new_csvf.readlines(),
+                    fromdesc=orig_layer.name(),
+                    todesc=new_layer.name(),
+                    context=True,
+                    numlines=3,
+                )
         results = dict()
         output_file = self.parameterAsFileOutput(parameters,
                                                  self.OUTPUT_HTML_FILE,
@@ -202,7 +226,9 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
                 diff_f.writelines(diff_output)
                 diff_output = diff_f.getvalue()
             if diff_output:
-                diff_html = highlight(diff_output, DiffLexer(), HtmlFormatter(full=True))
+                diff_html = (highlight(diff_output, DiffLexer(), HtmlFormatter(full=True))
+                             if highlight_method_idx == 0
+                             else diff_output)
             else:
                 diff_html = None
             self._create_download_report(output_file, diff_html)
