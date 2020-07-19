@@ -11,52 +11,27 @@
 <context>
     <name>AttributeDiffBetweenLayersAlgorithm</name>
     <message>
-        <location filename="../other_csv_algorithms.py" line="84"/>
+        <location filename="../other_csv_algorithms.py" line="279"/>
         <source>Original layer</source>
         <translation>Couche originale</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="89"/>
-        <source>New layer</source>
-        <translation>Nouvelle couche</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="94"/>
-        <source>Fields to compare</source>
-        <translation>Champs à comparer</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="111"/>
-        <source>Sort expression</source>
-        <translation>Expression de tri</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="117"/>
-        <source>HTML report</source>
-        <translation>Rapport HTML</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="117"/>
-        <source>HTML files (*.html)</source>
-        <translation>Fichiers HTML (*.html)</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="130"/>
+        <location filename="../other_csv_algorithms.py" line="258"/>
         <source>Attribute difference between layers</source>
         <translation>Différences attributaires entre couches</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="134"/>
+        <location filename="../other_csv_algorithms.py" line="262"/>
         <source>Other CSV tools</source>
         <translation>Autres outils CSV</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="162"/>
+        <location filename="../other_csv_algorithms.py" line="291"/>
         <source>Unable to compare layers with different fields or field order</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="241"/>
+        <location filename="../other_csv_algorithms.py" line="265"/>
         <source>This algorithm takes two vector layers  with common fields (those common fields being in the same order or the result will be unreadable) and shows differences between attributes in an HTML report.
 
 This can be useful to compare two versions of the same layer.
@@ -72,46 +47,44 @@ Il fonctionne en convertissant chaque table attributaire en un fichier CSV puis 
 
 Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent être générées dans le même ordre. C&apos;est pourquoi une expression de tri doit être indiquée. Elle peut être par exemple un champ clé qui permet d&apos;identifier les entités dans chaque couche.</translation>
     </message>
+</context>
+<context>
+    <name>AttributeDiffWithPgAlgorithm</name>
     <message>
-        <location filename="../other_csv_algorithms.py" line="256"/>
-        <source>&lt;p&gt;No differences found&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Aucune différence trouvée&lt;/p&gt;</translation>
+        <location filename="../other_csv_algorithms.py" line="328"/>
+        <source>Attribute difference with a PostgreSQL/Postgis table</source>
+        <translation>Différences attributaires avec une table PostgreSQL/Postgis</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="261"/>
-        <source>Attribute difference report</source>
-        <translation>Rapport sur les différences attributaires</translation>
+        <location filename="../other_csv_algorithms.py" line="332"/>
+        <source>Other CSV tools</source>
+        <translation>Autres outils CSV</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="261"/>
-        <source>CSV Tools QGIS Extension</source>
-        <translation>Extension QGIS CSV Tools</translation>
+        <location filename="../other_csv_algorithms.py" line="355"/>
+        <source>PostgreSQL database (connection name)</source>
+        <translation>Base de données PostgreSQL (nom de connection)</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="261"/>
-        <source>Differences found</source>
-        <translation>Différences trouvées</translation>
+        <location filename="../other_csv_algorithms.py" line="364"/>
+        <source>PostgreSQL schema name</source>
+        <translation>Nom du schéma PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="101"/>
-        <source>Highlight method</source>
-        <translation>Méthode d&apos;affichage des différences</translation>
+        <location filename="../other_csv_algorithms.py" line="377"/>
+        <source>PostgreSQL original table name</source>
+        <translation>Nom de la table originale PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../other_csv_algorithms.py" line="101"/>
-        <source>Only highlight different lines</source>
-        <translation>Ne montrer que les lignes différentes</translation>
-    </message>
-    <message>
-        <location filename="../other_csv_algorithms.py" line="101"/>
-        <source>Highligt different lines and inta-line character changes (Slower on large layers)</source>
-        <translation>Montrer les lignes différentes et les modifications de caractères intra-lignes (plus lent avec des grosses couches)</translation>
+        <location filename="../other_csv_algorithms.py" line="416"/>
+        <source>Table in PostgreSQL database</source>
+        <translation>Table dans la base de données PostgreSQL</translation>
     </message>
 </context>
 <context>
     <name>CSVToolsProvider</name>
     <message>
-        <location filename="../csv_tools_provider.py" line="84"/>
+        <location filename="../csv_tools_provider.py" line="88"/>
         <source>CSV Tools</source>
         <translation>Outils CSV</translation>
     </message>
@@ -119,27 +92,27 @@ Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent êt
 <context>
     <name>ExportLayerToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="253"/>
+        <location filename="../export_to_csv_algorithms.py" line="252"/>
         <source>Export layer to CSV</source>
         <translation>Exporter une couche en CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="261"/>
+        <location filename="../export_to_csv_algorithms.py" line="260"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="269"/>
+        <location filename="../export_to_csv_algorithms.py" line="268"/>
         <source>This algorithm creates a CSV file from a vector layer. Geometries are converted to WKT strings.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos;une couche vectorielle. Les géométries sont converties en chaînes de caractères WKT.</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="276"/>
+        <location filename="../export_to_csv_algorithms.py" line="275"/>
         <source>Input vector layer</source>
         <translation>Couche vectorielle en entrée</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="281"/>
+        <location filename="../export_to_csv_algorithms.py" line="280"/>
         <source>CSV file</source>
         <translation>Fichier CSV</translation>
     </message>
@@ -147,22 +120,22 @@ Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent êt
 <context>
     <name>ExportPostgreSQLQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="131"/>
+        <location filename="../export_to_csv_algorithms.py" line="130"/>
         <source>Database (connection name)</source>
         <translation>Base de données (nom de la connexion)</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="150"/>
+        <location filename="../export_to_csv_algorithms.py" line="149"/>
         <source>Export PostgreSQL query to CSV (COPY)</source>
         <translation>Export d&apos;une requête PostgreSQL en CSV (COPY)</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="154"/>
+        <location filename="../export_to_csv_algorithms.py" line="153"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="158"/>
+        <location filename="../export_to_csv_algorithms.py" line="157"/>
         <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against a PostgreSQL/Postgis database, then the result table is exported as CSV using the PostgreSQL COPY command.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos;une requête SQL de type SELECT. La requête est exécutée dans une base de données PostgreSQL (éventuellement avec l&apos;extension Postgis), et la table de résultats est ensuite exportée en CSV grâce à la commande COPY de PostgreSQL.</translation>
     </message>
@@ -170,22 +143,22 @@ Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent êt
 <context>
     <name>ExportSQLiteQueryToCsv</name>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="198"/>
+        <location filename="../export_to_csv_algorithms.py" line="197"/>
         <source>GeoPackage or Spatialite database</source>
         <translation>Base de données GeoPackage ou Spatialite</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="210"/>
+        <location filename="../export_to_csv_algorithms.py" line="209"/>
         <source>Export SQLite query to CSV</source>
         <translation>Export d&apos;une requête SQLite en CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="214"/>
+        <location filename="../export_to_csv_algorithms.py" line="213"/>
         <source>Export to CSV</source>
         <translation>Export vers CSV</translation>
     </message>
     <message>
-        <location filename="../export_to_csv_algorithms.py" line="218"/>
+        <location filename="../export_to_csv_algorithms.py" line="217"/>
         <source>This algorithm creates a CSV file from an SQL SELECT query. The query is ran against an SQLite database (Geopackage or Spatialite), then the result table is exported as CSV.</source>
         <translation>Cet algorithme crée un fichier CSV à partir d&apos; requête SQL de type SELECT. La requête est exécutée dans une base de données SQLite (Geopackage ou Spatialite), et la table de résultats est ensuite exportée en CSV.</translation>
     </message>
@@ -276,6 +249,69 @@ Pour que le résultat soit correct, les lignes de chaque fichier CSV doivent êt
         <location filename="../import_from_csv_algorithms.py" line="223"/>
         <source>This algorithm loads a CSV file as a vector layer, with or without geometry. If present, geometry may be given as one WKT column or as two X/Y columns.</source>
         <translation>Cet algorithme charge une couche vectorielle depuis un fichier CSV dans lequel les géométries sont données au format WKT dans une colonne.</translation>
+    </message>
+</context>
+<context>
+    <name>_AbstractAttributeDiffAlgorithm</name>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="116"/>
+        <source>New layer</source>
+        <translation>Nouvelle couche</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="121"/>
+        <source>Fields to compare</source>
+        <translation>Champs à comparer</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="128"/>
+        <source>Highlight method</source>
+        <translation>Méthode d&apos;affichage des différences</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="128"/>
+        <source>Only highlight different lines</source>
+        <translation>Ne montrer que les lignes différentes</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="128"/>
+        <source>Highligt different lines and inta-line character changes (Slower on large layers)</source>
+        <translation>Montrer les lignes différentes et les modifications de caractères intra-lignes (plus lent avec des grosses couches)</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="138"/>
+        <source>Sort expression</source>
+        <translation>Expression de tri</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="144"/>
+        <source>HTML report</source>
+        <translation>Rapport HTML</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="144"/>
+        <source>HTML files (*.html)</source>
+        <translation>Fichiers HTML (*.html)</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="181"/>
+        <source>&lt;p&gt;No differences found&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Aucune différence trouvée&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="186"/>
+        <source>Attribute difference report</source>
+        <translation>Rapport sur les différences attributaires</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="186"/>
+        <source>CSV Tools QGIS Extension</source>
+        <translation>Extension QGIS CSV Tools</translation>
+    </message>
+    <message>
+        <location filename="../other_csv_algorithms.py" line="186"/>
+        <source>Differences found</source>
+        <translation>Différences trouvées</translation>
     </message>
 </context>
 <context>
