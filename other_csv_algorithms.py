@@ -30,10 +30,12 @@ __copyright__ = '(C) 2019 by Yann Voté'
 
 __revision__ = '$Format:%H$'
 
+from datetime import datetime
 from itertools import starmap
 import difflib
 import io
 import os
+import pathlib
 import tempfile
 
 from PyQt5.QtGui import QIcon
@@ -196,10 +198,14 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
                                                  self.OUTPUT_HTML_FILE,
                                                  context)
         if output_file:
-            with open(output_file, 'w') as f, io.StringIO() as diff_f:
+            with io.StringIO() as diff_f:
                 diff_f.writelines(diff_output)
-                f.write(highlight(diff_f.getvalue(), DiffLexer(),
-                                  HtmlFormatter(full=True)))
+                diff_output = diff_f.getvalue()
+            if diff_output:
+                diff_html = highlight(diff_output, DiffLexer(), HtmlFormatter(full=True))
+            else:
+                diff_html = None
+            self._create_download_report(output_file, diff_html)
             results[self.OUTPUT_HTML_FILE] = output_file
         os.unlink(orig_csvf.name)
         os.unlink(new_csvf.name)
@@ -217,6 +223,22 @@ class AttributeDiffBetweenLayersAlgorithm(QgisAlgorithm):
             "order. Thus, a sort expression must be given. For example, it can be a key field that "
             "identifies features in each layer."
         )
+
+    def _create_download_report(self, output_html_path, diff_html):
+        """Create the given HTML file which is a report of found attribute differences."""
+        now = datetime.now()
+        tmpl_content = diff_html if diff_html else self.tr('<p>No differences found</p>')
+        tmpl_path = pathlib.Path(__file__).parent / 'report_tmpl.html'
+        output_html_path = pathlib.Path(output_html_path)
+        with tmpl_path.open(encoding='utf-8') as tmpl, \
+                output_html_path.open('w', encoding='utf-8') as f:
+            f.write(tmpl.read().format(
+                report_title=self.tr('Attribute difference report'),
+                report_subtitle=self.tr('CSV Tools QGIS Extension'),
+                now=now,
+                section_title=self.tr('Differences found'),
+                content=tmpl_content,
+            ))
 
 
 def _connection_name_from_info(conn_info):
