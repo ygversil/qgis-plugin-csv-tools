@@ -381,7 +381,7 @@ class ExportLayerToCsv(QgisAlgorithm):
 
 
 def _normalize_boolean(v):
-    return {'t': '1', 'f': '0'}.get(v, v)
+    return {'t': 'true', 'f': 'false'}.get(v, v)
 
 
 def _normalize_datetime(v):
