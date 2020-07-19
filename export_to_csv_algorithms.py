@@ -287,9 +287,14 @@ class ExportLayerToCsv(QgisAlgorithm):
         """Actual processing steps."""
         input_layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+        options_dict = {
+            'GEOMETRY': 'AS_WKT',
+            'SEPARATOR': 'COMMA',
+            'STRING_QUOTING': 'IF_AMBIGUOUS',
+        }
         alg_params = {
             'INPUT': input_layer,
-            'OPTIONS': '-lco GEOMETRY=AS_WKT -lco SEPARATOR=COMMA -lco STRING_QUOTING=IF_AMBIGUOUS',
+            'OPTIONS': ' '.join('-lco {k}={v}'.format(k=k, v=v) for k, v in options_dict.items()),
             'OUTPUT': csv_fpath,
         }
         return run_alg('gdal:convertformat', alg_params, context=context, feedback=feedback)
