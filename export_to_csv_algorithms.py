@@ -78,6 +78,10 @@ _SEPARATORS = [
     ('SEMICOLON', ';'),
     ('TAB', '\t'),
 ]
+_QUOTING_STRATEGIES = [
+    ('IF_NEEDED', csv.QUOTE_MINIMAL),
+    ('ALWAYS', csv.QUOTE_ALL),
+]
 
 
 class _AbstractExportQueryToCsv(QgisAlgorithm):
@@ -90,6 +94,7 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
     DATABASE = 'DATABASE'
     SELECT_SQL = 'SELECT_SQL'
     SEPARATOR = 'SEPARATOR'
+    QUOTING = 'QUOTING'
     LINE_TERMINATOR = 'LINE_TERMINATOR'
     OUTPUT = 'OUTPUT'
 
@@ -105,6 +110,12 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
             self.tr('Separator'),
             options=['{name} ("{char}")'.format(name=name, char=char)
                      for name, char in _SEPARATORS],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.QUOTING,
+            self.tr('Quoting'),
+            options=['{name}'.format(name=name) for name, _ in _QUOTING_STRATEGIES],
             defaultValue=0,
         ))
         self.addParameter(QgsProcessingParameterEnum(
@@ -129,6 +140,7 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
         select_sql = self.parameterAsString(parameters, self.SELECT_SQL,
                                             context)
         _, sep = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
+        _, quoting = _QUOTING_STRATEGIES[self.parameterAsEnum(parameters, self.QUOTING, context)]
         _, lt = _LINE_TERMINATORS[self.parameterAsEnum(parameters, self.LINE_TERMINATOR, context)]
         select_sql = str(select_sql).strip().replace('\n', ' ')
         # XXX: check if this a SELECT query
@@ -137,8 +149,8 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
                                                context)
         if csv_fpath:
             with open(csv_fpath, 'w') as csvf:
-                writer = csv.writer(csvf, delimiter=sep, quotechar='"',
-                                    quoting=csv.QUOTE_MINIMAL, lineterminator=lt)
+                writer = csv.writer(csvf, delimiter=sep, quotechar='"', quoting=quoting,
+                                    lineterminator=lt)
                 for row in self._db_rows(qgis_conn, select_sql):
                     writer.writerow(_normalize_row(row))
         return {self.OUTPUT: csv_fpath}
@@ -272,6 +284,7 @@ class ExportLayerToCsv(QgisAlgorithm):
 
     INPUT = 'INPUT'
     SEPARATOR = 'SEPARATOR'
+    QUOTING = 'QUOTING'
     LINE_TERMINATOR = 'LINE_TERMINATOR'
     OUTPUT = 'OUTPUT'
 
@@ -317,6 +330,12 @@ class ExportLayerToCsv(QgisAlgorithm):
             defaultValue=0,
         ))
         self.addParameter(QgsProcessingParameterEnum(
+            self.QUOTING,
+            self.tr('Quoting'),
+            options=['{name}'.format(name=name) for name, _ in _QUOTING_STRATEGIES],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
             self.LINE_TERMINATOR,
             self.tr('End-line character'),
             options=['{name} ("{char}")'.format(name=name, char=char)
@@ -334,12 +353,14 @@ class ExportLayerToCsv(QgisAlgorithm):
         input_layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         csv_fpath = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
         sep_name, _ = _SEPARATORS[self.parameterAsEnum(parameters, self.SEPARATOR, context)]
+        quoting_name, _ = _QUOTING_STRATEGIES[self.parameterAsEnum(parameters, self.QUOTING,
+                                                                   context)]
         lt_name, _ = _LINE_TERMINATORS[self.parameterAsEnum(parameters, self.LINE_TERMINATOR,
                                                             context)]
         options_dict = {
             'GEOMETRY': 'AS_WKT',
             'SEPARATOR': sep_name,
-            'STRING_QUOTING': 'IF_NEEDED',
+            'STRING_QUOTING': quoting_name,
             'LINEFORMAT': lt_name,
         }
         alg_params = {
