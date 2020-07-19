@@ -112,43 +112,6 @@ class _AbstractAttributeDiffAlgorithm(QgisAlgorithm):
         """Algorithm's icon (SVG)."""
         return QIcon(':/plugins/csv_tools/diff_files.png')
 
-    def initAlgorithm(self, config):
-        """Initialize algorithm with inputs and output parameters."""
-        self.addParameter(QgsProcessingParameterFeatureSource(
-            self.NEW_INPUT,
-            self.tr('New layer'),
-            types=[QgsProcessing.TypeVector],
-        ))
-        self.addParameter(QgsProcessingParameterField(
-            self.FIELDS_TO_COMPARE,
-            self.tr('Fields to compare'),
-            None,
-            self.NEW_INPUT,
-            allowMultiple=True,
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            self.HIGHLIGHT_METHOD,
-            self.tr('Highlight method'),
-            options=[
-                self.tr('Only highlight different lines'),
-                self.tr('Highligt different lines and inta-line character changes (Slower on '
-                        'large layers)'),
-            ],
-            defaultValue=0,
-        ))
-        self.addParameter(QgsProcessingParameterExpression(
-            self.SORT_EXPRESSION,
-            self.tr('Sort expression'),
-            parentLayerParameterName=self.NEW_INPUT,
-            defaultValue='',
-        ))
-        self.addParameter(QgsProcessingParameterFileDestination(
-            self.OUTPUT_HTML_FILE,
-            self.tr('HTML report'),
-            self.tr('HTML files (*.html)'),
-            None, True
-        ))
-
     def processAlgorithm(self, parameters, context, feedback):
         """Actual processing steps."""
         self.context = context
@@ -287,7 +250,40 @@ class AttributeDiffBetweenLayersAlgorithm(_AbstractAttributeDiffAlgorithm):
             self.tr('Original layer'),
             types=[QgsProcessing.TypeVector],
         ))
-        super().initAlgorithm(config)
+        self.addParameter(QgsProcessingParameterFeatureSource(
+            self.NEW_INPUT,
+            self.tr('New layer'),
+            types=[QgsProcessing.TypeVector],
+        ))
+        self.addParameter(QgsProcessingParameterField(
+            self.FIELDS_TO_COMPARE,
+            self.tr('Fields to compare'),
+            None,
+            self.NEW_INPUT,
+            allowMultiple=True,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.HIGHLIGHT_METHOD,
+            self.tr('Highlight method'),
+            options=[
+                self.tr('Only highlight different lines'),
+                self.tr('Highligt different lines and inta-line character changes (Slower on '
+                        'large layers)'),
+            ],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterExpression(
+            self.SORT_EXPRESSION,
+            self.tr('Sort expression'),
+            parentLayerParameterName=self.NEW_INPUT,
+            defaultValue='',
+        ))
+        self.addParameter(QgsProcessingParameterFileDestination(
+            self.OUTPUT_HTML_FILE,
+            self.tr('HTML report'),
+            self.tr('HTML files (*.html)'),
+            None, True
+        ))
 
     def _check_fields(self):
         """Check that fields are the same."""
@@ -396,7 +392,40 @@ class AttributeDiffWithPgAlgorithm(_AbstractAttributeDiffAlgorithm):
         self.addParameter(db_param)
         self.addParameter(schema_param)
         self.addParameter(table_param)
-        super().initAlgorithm(config)
+        self.addParameter(QgsProcessingParameterFeatureSource(
+            self.NEW_INPUT,
+            self.tr('New layer'),
+            types=[QgsProcessing.TypeVector],
+        ))
+        self.addParameter(QgsProcessingParameterField(
+            self.FIELDS_TO_COMPARE,
+            self.tr('Fields to compare'),
+            None,
+            self.NEW_INPUT,
+            allowMultiple=True,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.HIGHLIGHT_METHOD,
+            self.tr('Highlight method'),
+            options=[
+                self.tr('Only highlight different lines'),
+                self.tr('Highligt different lines and inta-line character changes (Slower on '
+                        'large layers)'),
+            ],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterExpression(
+            self.SORT_EXPRESSION,
+            self.tr('Sort expression (put in ORDER BY clause)'),
+            parentLayerParameterName=self.NEW_INPUT,
+            defaultValue='',
+        ))
+        self.addParameter(QgsProcessingParameterFileDestination(
+            self.OUTPUT_HTML_FILE,
+            self.tr('HTML report'),
+            self.tr('HTML files (*.html)'),
+            None, True
+        ))
 
     def _check_fields(self):
         """Check that fields are the same."""
