@@ -392,7 +392,7 @@ def _normalize_datetime(v):
         return ('{year}-{month}-{day}'
                 'T'
                 '{hour}:{minute}:{second}'
-                'Z'.format(**m.groupdict()))
+                '.000{Z}'.format(**m.groupdict()))
 
 
 def _normalize_row(row):
