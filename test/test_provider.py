@@ -66,9 +66,9 @@ class CSVToolsProviderTest(unittest.TestCase):
                              'exportpostgresqlquerytocsv',
                              'exportsqlitequerytocsv',
                              'loadcsvfile',
-                             'exportlayertocsv'
-                             'attributediffbetweenlayers'
-                             'attributediffwithpg'
+                             'exportlayertocsv',
+                             'attributediffbetweenlayers',
+                             'attributediffwithpg',
                          )))
 
 
