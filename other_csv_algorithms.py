@@ -31,7 +31,6 @@ __copyright__ = '(C) 2019 by Yann Voté'
 __revision__ = '$Format:%H$'
 
 from datetime import datetime
-from itertools import starmap
 import abc
 import difflib
 import io
@@ -56,7 +55,6 @@ from qgis.core import (
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
-    QgsSettings,
 )
 
 from .context_managers import QgisStepManager
@@ -69,8 +67,6 @@ if HAS_DB_PROCESSING_PARAMETER:
         QgsProcessingParameterDatabaseTable,
         QgsProcessingParameterProviderConnection,
     )
-else:
-    from processing.tools.postgis import uri_from_name as uri_from_db_conn_name
 
 
 # TODO: write tests
@@ -477,27 +473,6 @@ class AttributeDiffWithPgAlgorithm(_AbstractAttributeDiffAlgorithm):
             self.connection = self.parameterAsString(parameters, self.DATABASE, context)
             self.schema = self.parameterAsString(parameters, self.SCHEMA, context)
             self.tablename = self.parameterAsString(parameters, self.TABLENAME, context)
-
-
-def _connection_name_from_info(conn_info):
-    settings = QgsSettings()
-    settings.beginGroup('/PostgreSQL/connections/')
-    for group in settings.childGroups():
-        if all(starmap(
-                lambda x, y: x == y,
-                zip(
-                    filter(
-                        lambda v: not v.startswith('sslrootcert'),
-                        conn_info.split()
-                    ),
-                    filter(
-                        lambda v: not v.startswith('sslrootcert'),
-                        uri_from_db_conn_name(group).connectionInfo().split()
-                    )
-                )
-        )):
-            return group
-    return None
 
 
 def _diff_csv_files(orig_csvf, new_csvf, orig_name, new_name, method='udiff'):
