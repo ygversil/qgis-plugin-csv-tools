@@ -141,7 +141,7 @@ class LoadCSVAlgorithm(QgisAlgorithm):
             self.tr('Input CSV file'),
             extension='csv',
         ))
-        self.delimiters = [',', ';', '|', 't']
+        self.delimiters = [',', ';', 't']
         self.addParameter(QgsProcessingParameterEnum(
             self.DELIMITER,
             self.tr('Column delimiter'),
