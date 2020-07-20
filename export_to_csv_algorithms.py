@@ -403,12 +403,13 @@ class ExportLayerToCsv(QgisAlgorithm):
         if export_geom:
             options_dict['GEOMETRY'] = 'AS_WKT'
         with tempfile.NamedTemporaryFile('w', suffix='.csv', delete=False) as tmp_csvf:
-            outputs['converted'] = run_alg('gdal:convertformat', {
-                'INPUT': input_layer,
-                'OPTIONS': ' '.join('-lco {k}={v}'.format(k=k, v=v)
-                                    for k, v in options_dict.items()),
-                'OUTPUT': tmp_csvf.name
-            }, context=context, feedback=feedback)
+            pass
+        outputs['converted'] = run_alg('gdal:convertformat', {
+            'INPUT': input_layer,
+            'OPTIONS': ' '.join('-lco {k}={v}'.format(k=k, v=v)
+                                for k, v in options_dict.items()),
+            'OUTPUT': tmp_csvf.name
+        }, context=context, feedback=feedback)
         if csv_fpath:
             with open(csv_fpath, 'w') as output_csvf, \
                     open(tmp_csvf.name) as tmp_csvf:
