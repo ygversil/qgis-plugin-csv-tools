@@ -102,36 +102,6 @@ class _AbstractExportQueryToCsv(QgisAlgorithm):
 
     def initAlgorithm(self, config):
         """Initialize algorithm with inputs and output parameters."""
-        self.addParameter(QgsProcessingParameterString(
-            self.SELECT_SQL,
-            self.tr('SELECT SQL query'),
-            multiLine=True,
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            self.SEPARATOR,
-            self.tr('Separator'),
-            options=['{name} ("{char}")'.format(name=name, char=char)
-                     for name, char in _SEPARATORS],
-            defaultValue=0,
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            self.QUOTING,
-            self.tr('Quoting'),
-            options=['{name}'.format(name=name) for name, _ in _QUOTING_STRATEGIES],
-            defaultValue=0,
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            self.LINE_TERMINATOR,
-            self.tr('End-line character'),
-            options=['{name} ("{char}")'.format(name=name, char=char)
-                     for name, char in _LINE_TERMINATORS],
-            defaultValue=1 if platform.win32_ver()[0] != '' else 0,
-        ))
-        self.addParameter(QgsProcessingParameterFileDestination(
-            self.OUTPUT,
-            self.tr('CSV file'),
-            'CSV files (*.csv)',
-        ))
 
     def groupId(self):
         """Algorithm group identifier."""
@@ -183,7 +153,36 @@ class ExportPostgreSQLQueryToCsv(_AbstractExportQueryToCsv):
                 }
             })
         self.addParameter(db_param)
-        super().initAlgorithm(config)
+        self.addParameter(QgsProcessingParameterString(
+            self.SELECT_SQL,
+            self.tr('SELECT SQL query'),
+            multiLine=True,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.SEPARATOR,
+            self.tr('Separator'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _SEPARATORS],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.QUOTING,
+            self.tr('Quoting'),
+            options=['{name}'.format(name=name) for name, _ in _QUOTING_STRATEGIES],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.LINE_TERMINATOR,
+            self.tr('End-line character'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _LINE_TERMINATORS],
+            defaultValue=1 if platform.win32_ver()[0] != '' else 0,
+        ))
+        self.addParameter(QgsProcessingParameterFileDestination(
+            self.OUTPUT,
+            self.tr('CSV file'),
+            'CSV files (*.csv)',
+        ))
 
     def name(self):
         """Algorithm identifier."""
@@ -243,7 +242,36 @@ class ExportSQLiteQueryToCsv(_AbstractExportQueryToCsv):
             self.DATABASE,
             self.tr('GeoPackage or Spatialite database')
         ))
-        super().initAlgorithm(config)
+        self.addParameter(QgsProcessingParameterString(
+            self.SELECT_SQL,
+            self.tr('SELECT SQL query'),
+            multiLine=True,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.SEPARATOR,
+            self.tr('Separator'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _SEPARATORS],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.QUOTING,
+            self.tr('Quoting'),
+            options=['{name}'.format(name=name) for name, _ in _QUOTING_STRATEGIES],
+            defaultValue=0,
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            self.LINE_TERMINATOR,
+            self.tr('End-line character'),
+            options=['{name} ("{char}")'.format(name=name, char=char)
+                     for name, char in _LINE_TERMINATORS],
+            defaultValue=1 if platform.win32_ver()[0] != '' else 0,
+        ))
+        self.addParameter(QgsProcessingParameterFileDestination(
+            self.OUTPUT,
+            self.tr('CSV file'),
+            'CSV files (*.csv)',
+        ))
 
     def name(self):
         """Algorithm identifier."""
