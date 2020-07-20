@@ -25,6 +25,7 @@ repository=https://github.com/ygversil/qgis-plugin-csv-tools
 # Uncomment the following line and add your changelog:
 changelog=
   Version 0.7.1
+  * use same separator list (`,`, `;`, and `\t`) for both import and export algorithms,
   * [bugfix] semicolon-separated CSV files are now imported without error message.
   ====
   Version 0.7.0
