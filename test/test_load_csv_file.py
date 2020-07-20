@@ -57,17 +57,17 @@ class QgisCsvUriTest(unittest.TestCase):
             ('Semicolon delimiter',
              {'delimiter': ';'},
              'file://{}?type=csv&useHeader=Yes&decimalPoint=.&trimFields=Yes&detectTypes=yes&'
-             'subsetIndex=no&watchFile=no&delimiter=%3B&geomType=none&'
+             'subsetIndex=no&watchFile=no&delimiter=;&geomType=none&'
              'spatialIndex=no'.format(csv_path)),
             ('Semicolon delimiter with spaces',
              {'delimiter': ' ; '},
              'file://{}?type=csv&useHeader=Yes&decimalPoint=.&trimFields=Yes&detectTypes=yes&'
-             'subsetIndex=no&watchFile=no&delimiter=%3B&geomType=none&'
+             'subsetIndex=no&watchFile=no&delimiter=;&geomType=none&'
              'spatialIndex=no'.format(csv_path)),
-            ('Pipe delimiter',
-             {'delimiter': '|'},
+            ('Tab delimiter',
+             {'delimiter': 'tab'},
              'file://{}?type=csv&useHeader=Yes&decimalPoint=.&trimFields=Yes&detectTypes=yes&'
-             'subsetIndex=no&watchFile=no&delimiter=%7C&geomType=none&'
+             'subsetIndex=no&watchFile=no&delimiter=\\t&geomType=none&'
              'spatialIndex=no'.format(csv_path)),
             ('Comma decimal point',
              {'decimal_point': ','},
@@ -84,12 +84,12 @@ class QgisCsvUriTest(unittest.TestCase):
             ('Semicolon delimiter, single quote char',
              {'delimiter': ';', 'quotechar': "'"},
              'file://{}?type=csv&useHeader=Yes&decimalPoint=.&trimFields=Yes&detectTypes=yes&'
-             'subsetIndex=no&watchFile=no&delimiter=%3B&quote=%27&geomType=none&'
+             'subsetIndex=no&watchFile=no&delimiter=;&quote=%27&geomType=none&'
              'spatialIndex=no'.format(csv_path)),
             ('Semicolon delimiter, WKT geometry',
              {'delimiter': ';', 'geometry_data': 0, 'wkt_field': 'wkt', 'crs': 2154},
              'file://{}?type=csv&useHeader=Yes&decimalPoint=.&trimFields=Yes&detectTypes=yes&'
-             'subsetIndex=no&watchFile=no&delimiter=%3B&wktField=wkt&crs=2154&'
+             'subsetIndex=no&watchFile=no&delimiter=;&wktField=wkt&crs=2154&'
              'spatialIndex=yes'.format(csv_path)),
             ('XY geometry',
              {'geometry_data': 1, 'x_field': 'lon', 'y_field': 'lat', 'crs': 4326},

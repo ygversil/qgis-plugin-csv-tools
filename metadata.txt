@@ -10,7 +10,7 @@
 name=CSV Tools
 qgisMinimumVersion=3.0
 description=Adds new processing algorithms and models that deal with CSV files
-version=0.7.0
+version=0.7.1
 author=Yann Voté
 email=ygversil@lilo.org
 
@@ -24,6 +24,14 @@ repository=https://github.com/ygversil/qgis-plugin-csv-tools
 
 # Uncomment the following line and add your changelog:
 changelog=
+  Version 0.7.1
+  * all strings have translation,
+  * clean useless code,
+  * use same separator list (`,`, `;`, and `\t`) for both import and export algorithms,
+  * [bugfix] fix "int too large" bug on Windows,
+  * [bugfix] tab-separated CSV files are now imported without error message.
+  * [bugfix] semicolon-separated CSV files are now imported without error message.
+  ====
   Version 0.7.0
   * Completely reworker attribute diff algorithms,
   * Allow to choose separator, quoting strategy, and line-ending char when exporting to CSV.
@@ -31,7 +39,7 @@ changelog=
   Version 0.6.1
   * Remove unwanted print
   ====
-  Version 0.7.0
+  Version 0.6.0
   * bugfix: error message about too large columns,
   * QGIS 3.14 compatibility
   ====

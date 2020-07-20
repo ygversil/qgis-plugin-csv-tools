@@ -77,7 +77,7 @@ def _qgis_csv_uri(csv_path, **kwargs):
         ('watchFile', 'no'),
     )
     if delimiter != ',':
-        params += (('delimiter', delimiter),)
+        params += (('delimiter', delimiter if delimiter != 'tab' else '\\t'),)
     if quotechar != '"':
         params += (('quote', quotechar),)
     if geometry_data == 0:
@@ -112,7 +112,7 @@ def _qgis_csv_uri(csv_path, **kwargs):
         )
     return '{base_uri}?{params}'.format(
         base_uri=base_uri,
-        params=urllib.parse.urlencode(params, safe=r'\:')
+        params=urllib.parse.urlencode(params, safe=r'\:;')
     )
 
 
@@ -141,7 +141,7 @@ class LoadCSVAlgorithm(QgisAlgorithm):
             self.tr('Input CSV file'),
             extension='csv',
         ))
-        self.delimiters = [',', ';', '|', 't']
+        self.delimiters = [',', ';', 'tab']
         self.addParameter(QgsProcessingParameterEnum(
             self.DELIMITER,
             self.tr('Column delimiter'),
