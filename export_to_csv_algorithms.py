@@ -35,7 +35,6 @@ import ctypes
 import csv
 import io
 import os
-import platform
 import re
 import sqlite3
 import tempfile
@@ -176,7 +175,7 @@ class ExportPostgreSQLQueryToCsv(_AbstractExportQueryToCsv):
             self.tr('End-line character'),
             options=['{name} ("{char}")'.format(name=name, char=char)
                      for name, char in _LINE_TERMINATORS],
-            defaultValue=1 if platform.win32_ver()[0] != '' else 0,
+            defaultValue=0,
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT,
@@ -265,7 +264,7 @@ class ExportSQLiteQueryToCsv(_AbstractExportQueryToCsv):
             self.tr('End-line character'),
             options=['{name} ("{char}")'.format(name=name, char=char)
                      for name, char in _LINE_TERMINATORS],
-            defaultValue=1 if platform.win32_ver()[0] != '' else 0,
+            defaultValue=0,
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT,
@@ -376,7 +375,7 @@ class ExportLayerToCsv(QgisAlgorithm):
             self.tr('End-line character'),
             options=['{name} ("{char}")'.format(name=name, char=char)
                      for name, char in _LINE_TERMINATORS],
-            defaultValue=1 if platform.win32_ver()[0] != '' else 0,
+            defaultValue=0,
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT,
