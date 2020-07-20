@@ -27,6 +27,7 @@ changelog=
   Version 0.7.1
   * clean useless code,
   * use same separator list (`,`, `;`, and `\t`) for both import and export algorithms,
+  * [bugfix] fix "int too large" bug on Windows,
   * [bugfix] tab-separated CSV files are now imported without error message.
   * [bugfix] semicolon-separated CSV files are now imported without error message.
   ====
