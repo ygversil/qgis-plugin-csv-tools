@@ -112,7 +112,7 @@ def _qgis_csv_uri(csv_path, **kwargs):
         )
     return '{base_uri}?{params}'.format(
         base_uri=base_uri,
-        params=urllib.parse.urlencode(params, safe=r'\:')
+        params=urllib.parse.urlencode(params, safe=r'\:;')
     )
 
 
