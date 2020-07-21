@@ -46,11 +46,11 @@ from processing import run as run_algorithm
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from qgis.core import (
     QgsApplication,
+    QgsExpression,
     QgsProcessing,
     QgsProcessingException,
     QgsProcessingMultiStepFeedback,
     QgsProcessingParameterEnum,
-    QgsProcessingParameterExpression,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
@@ -77,7 +77,7 @@ class _AbstractAttributeDiffAlgorithm(QgisAlgorithm):
     NEW_INPUT = 'NEW_INPUT'
     FIELDS_TO_COMPARE = 'FIELDS_TO_COMPARE'
     HIGHLIGHT_METHOD = 'HIGHLIGHT_METHOD'
-    SORT_EXPRESSION = 'SORT_EXPRESSION'
+    SORT_FIELDS = 'SORT_FIELDS'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
     @abc.abstractproperty
@@ -176,9 +176,12 @@ class _AbstractAttributeDiffAlgorithm(QgisAlgorithm):
                 'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
             }, context=self.context, feedback=self.multi_feedback, is_child_algorithm=True)
         with self.run_next_step:
+            sort_exp = 'concat({})'.format(
+                ', '.join(QgsExpression.quotedColumnRef(field) for field in self.sort_fields)
+            )
             self.outputs['ordered'] = run_algorithm('native:orderbyexpression', {
                 'INPUT': self.outputs['refactored']['OUTPUT'],
-                'EXPRESSION': self.sort_expression,
+                'EXPRESSION': sort_exp,
                 'ASCENDING': True,
                 'NULLS_FIRST': True,
                 'OUTPUT': QgsProcessing.TEMPORARY_OUTPUT,
@@ -200,7 +203,7 @@ class _AbstractAttributeDiffAlgorithm(QgisAlgorithm):
         """Set value of parameters common to all concrete algorithms."""
         self.new_layer = self.parameterAsVectorLayer(parameters, self.NEW_INPUT, context)
         self.fields_to_compare = self.parameterAsFields(parameters, self.FIELDS_TO_COMPARE, context)
-        self.sort_expression = self.parameterAsExpression(parameters, self.SORT_EXPRESSION, context)
+        self.sort_fields = self.parameterAsFields(parameters, self.SORT_FIELDS, context)
         self.output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
         self.highlight_method_idx = self.parameterAsEnum(parameters, self.HIGHLIGHT_METHOD, context)
 
@@ -270,11 +273,12 @@ class AttributeDiffBetweenLayersAlgorithm(_AbstractAttributeDiffAlgorithm):
             ],
             defaultValue=0,
         ))
-        self.addParameter(QgsProcessingParameterExpression(
-            self.SORT_EXPRESSION,
-            self.tr('Sort expression'),
-            parentLayerParameterName=self.NEW_INPUT,
-            defaultValue='',
+        self.addParameter(QgsProcessingParameterField(
+            self.SORT_FIELDS,
+            self.tr('Sort Fields'),
+            None,
+            self.NEW_INPUT,
+            allowMultiple=True,
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT_HTML_FILE,
@@ -425,11 +429,12 @@ class AttributeDiffWithPgAlgorithm(_AbstractAttributeDiffAlgorithm):
             ],
             defaultValue=0,
         ))
-        self.addParameter(QgsProcessingParameterExpression(
-            self.SORT_EXPRESSION,
-            self.tr('Sort expression (put in ORDER BY clause)'),
-            parentLayerParameterName=self.NEW_INPUT,
-            defaultValue='',
+        self.addParameter(QgsProcessingParameterField(
+            self.SORT_FIELDS,
+            self.tr('Sort fields'),
+            None,
+            self.NEW_INPUT,
+            allowMultiple=True,
         ))
         self.addParameter(QgsProcessingParameterFileDestination(
             self.OUTPUT_HTML_FILE,
@@ -445,9 +450,11 @@ class AttributeDiffWithPgAlgorithm(_AbstractAttributeDiffAlgorithm):
 
     def _generate_csv_files(self, orig_csvf, new_csvf):
         """Generate CSV files that are to be diffed."""
-        select_sql = 'select {cols} from {schema}.{table} order by {sort_exp}'.format(
+        select_sql = 'select {cols} from {schema}.{table}'.format(
             cols=', '.join(self.fields_to_compare), schema=self.schema, table=self.tablename,
-            sort_exp=self.sort_expression
+        )
+        select_sql = '{select_sql} order by {sort_exp}'.format(
+            select_sql=select_sql, sort_exp=', '.join(self.sort_fields)
         )
         with self.run_next_step:
             run_algorithm('csvtools:exportpostgresqlquerytocsv', {
